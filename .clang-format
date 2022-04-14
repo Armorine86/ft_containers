@@ -1,0 +1,5 @@
+BasedOnStyle: Mozilla
+IndentWidth: 4
+AccessModifierOffset: -2
+AlignConsecutiveDeclarations: true
+Language: Cpp

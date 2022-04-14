@@ -1,4 +1,4 @@
-NAME 				=	
+NAME 				=	ft_containers
 
 OS					:= $(shell uname)
 
@@ -6,49 +6,49 @@ INC_PATH			=	src/includes/
 OBJS_PATH 			=	obj/
 SRCS_PATH 			=	src/
 CC 					=	#Choose Compiler
-CFLAGS				=	-Wall -Werror -Wextra -Wpedantic
+CFLAGS				=	-Wall -Werror -Wextra -Wpedantic -std=c++98
 RM					=	rm -rf
 
-INC_FILES 			=	
+INC_FILES 			=	defines.hpp colors.hpp
 
 SRCS_FILES			=	main.cpp
 
-FOLDER_1_FILES		=	
-FOLDER_1_HDRS		=	
+VECTOR_FILES		=	
+VECTOR_HDRS			=	Vector.hpp Vec_Iterator.hpp
 
-FOLDER_2_FILES		=	
-FOLDER_2_HDRS		=	
+MAP_FILES			=	
+MAP_HDRS			=	
 				
-FOLDER_3_FILES		= 	
-FOLDER_3_HDRS		= 	
+STACK_FILES			= 	
+STACK_HDRS			= 	
 
-FOLDER_4_FILES		=	
-FOLDER_4_HDRS		=	
+TESTER_FILES		=	
+TESTER_HDRS			=	
 
-FOLDER_1_PATH		= 	$(SRCS_PATH)#folder 1
-FOLDER_2_PATH		=	$(SRCS_PATH)#folder 2
-FOLDER_3_PATH		=	$(SRCS_PATH)#folder 3
-FOLDER_4_PATH		=	$(SRCS_PATH)#folder 4
+VECTOR_PATH			= 	$(SRCS_PATH)Vector
+# MAP_PATH			=	$(SRCS_PATH)Map
+# STACK_PATH			=	$(SRCS_PATH)Stack
+# TESTER_PATH			=	testers/
 
 SRCS 				=	$(addprefix $(SRCS_PATH), $(SRCS_FILES))
-UTILS_SRCS			= 	$(addprefix $(FOLDER_1_PATH), $(FOLDER_1_FILES))
-PARSER_SRCS			= 	$(addprefix $(FOLDER_2_PATH), $(FOLDER_2_FILES))
-SERVER_SRCS			=	$(addprefix $(FOLDER_3_PATH), $(FOLDER_3_FILES))
-CGI_SRCS			=	$(addprefix $(FOLDER_4_PATH), $(FOLDER_4_FILES))
+# VECTOR_SRCS			= 	$(addprefix $(VECTOR_PATH), $(VECTOR_FILES))
+# MAP_SRCS			= 	$(addprefix $(MAP_PATH), $(MAP_FILES))
+# STACK_SRCS			=	$(addprefix $(STACK_PATH), $(STACK_FILES))
+# TESTER_SRCS			=	$(addprefix $(TESTER_PATH), $(TESTER_FILES))
 
-OBJS_FILES			= 	$(SRCS_FILES:.cpp=.o) $(FOLDER_1_FILES:.cpp=.o) $(FOLDER_3_FILES:.cpp=.o)\
-						$(FOLDER_2_FILES:.cpp=.o) $(FOLDER_4_FILES:.cpp=.o)
+OBJS_FILES			= 	$(SRCS_FILES:.cpp=.o) #$(VECTOR_FILES:.cpp=.o) $(STACK_FILES:.cpp=.o)\
+						$(MAP_FILES:.cpp=.o) $(TESTER_FILES:.cpp=.o)
 
 INCLUDES			=	$(addprefix $(INC_PATH), $(INC_FILES))	
 OBJS 				=	$(addprefix $(OBJS_PATH), $(OBJS_FILES))
 
-VPATH				=	$(SRCS_PATH) $(FOLDER_1_PATH) $(FOLDER_3_PATH) $(FOLDER_2_PATH) $(FOLDER_4_PATH)
+VPATH				=	$(SRCS_PATH) #$(VECTOR_PATH) $(STACK_PATH) $(MAP_PATH) $(TESTER_PATH)
 
 ALL_INCLUDES		= 	-I$(INC_PATH)\
-						-I$(FOLDER_1_PATH)\
-						-I$(FOLDER_2_PATH)\
-						-I$(FOLDER_3_PATH)\
-						-I$(FOLDER_4_PATH)\
+						# -I$(VECTOR_PATH)\
+						# -I$(MAP_PATH)\
+						# -I$(STACK_PATH)\
+						# -I$(TESTER_PATH)\
 
 USAGE				=	#Program Usage Message
 
