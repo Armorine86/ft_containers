@@ -7,7 +7,7 @@ AlignEscapedNewlines: Right
 AllowShortBlocksOnASingleLine: Empty
 AllowShortFunctionsOnASingleLine: true
 AllowShortIfStatementsOnASingleLine: false
-AlwaysBreakTemplateDeclarations: Yes
+AlwaysBreakTemplateDeclarations: No
 BinPackArguments: false
 BinPackParameters: false
 BreakBeforeBraces: Linux
@@ -23,4 +23,3 @@ PackConstructorInitializers: NextLine
 PointerAlignment: Left
 ReferenceAlignment: Pointer
 Standard: Cpp03
-SeparateDefinitionBlocks: Always

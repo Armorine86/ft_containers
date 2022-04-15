@@ -14,7 +14,7 @@ INC_FILES 			=	defines.hpp colors.hpp
 SRC_FILES			=
 
 VECTOR_FILES		=	
-VECTOR_HDRS			=	Vector.hpp Vec_Iterator.hpp
+VECTOR_HDRS			=	Vector.hpp Iterator.hpp
 
 MAP_FILES			=	
 MAP_HDRS			=	
