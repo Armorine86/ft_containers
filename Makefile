@@ -5,13 +5,13 @@ OS					:= $(shell uname)
 INC_PATH			=	src/includes/
 OBJS_PATH 			=	obj/
 SRCS_PATH 			=	src/
-CC 					=	#Choose Compiler
+CC 					=	clang++
 CFLAGS				=	-Wall -Werror -Wextra -Wpedantic -std=c++98
 RM					=	rm -rf
 
 INC_FILES 			=	defines.hpp colors.hpp
 
-SRCS_FILES			=	main.cpp
+SRC_FILES			=
 
 VECTOR_FILES		=	
 VECTOR_HDRS			=	Vector.hpp Vec_Iterator.hpp
@@ -30,13 +30,13 @@ VECTOR_PATH			= 	$(SRCS_PATH)Vector
 # STACK_PATH			=	$(SRCS_PATH)Stack
 # TESTER_PATH			=	testers/
 
-SRCS 				=	$(addprefix $(SRCS_PATH), $(SRCS_FILES))
+SRCS 				=	$(addprefix $(SRCS_PATH), $(SRC_FILES))
 # VECTOR_SRCS			= 	$(addprefix $(VECTOR_PATH), $(VECTOR_FILES))
-# MAP_SRCS			= 	$(addprefix $(MAP_PATH), $(MAP_FILES))
+# MAP_SRCS				= 	$(addprefix $(MAP_PATH), $(MAP_FILES))
 # STACK_SRCS			=	$(addprefix $(STACK_PATH), $(STACK_FILES))
 # TESTER_SRCS			=	$(addprefix $(TESTER_PATH), $(TESTER_FILES))
 
-OBJS_FILES			= 	$(SRCS_FILES:.cpp=.o) #$(VECTOR_FILES:.cpp=.o) $(STACK_FILES:.cpp=.o)\
+OBJS_FILES			= 	$(SRC_FILES:.cpp=.o) #$(VECTOR_FILES:.cpp=.o) $(STACK_FILES:.cpp=.o)\
 						$(MAP_FILES:.cpp=.o) $(TESTER_FILES:.cpp=.o)
 
 INCLUDES			=	$(addprefix $(INC_PATH), $(INC_FILES))	
