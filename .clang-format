@@ -4,8 +4,8 @@ IndentWidth: 4
 AlignArrayOfStructures: Left
 AlignConsecutiveBitFields: true
 AlignEscapedNewlines: Right
-AllowShortBlocksOnASingleLine: Empty
-AllowShortFunctionsOnASingleLine: true
+# AllowShortBlocksOnASingleLine: true
+AllowShortFunctionsOnASingleLine: All
 AllowShortIfStatementsOnASingleLine: false
 AlwaysBreakTemplateDeclarations: Yes
 BinPackArguments: false

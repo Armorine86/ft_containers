@@ -11,10 +11,10 @@ RM					=	rm -rf
 
 INC_FILES 			=	defines.hpp colors.hpp
 
-SRC_FILES			=
+SRC_FILES			=	main.cpp
 
 VECTOR_FILES		=	
-VECTOR_HDRS			=	Vector.hpp Iterator.hpp iterator_traits.hpp
+VECTOR_HDRS			=	Vector.hpp Iterator.hpp Iterator_traits.hpp
 
 MAP_FILES			=	
 MAP_HDRS			=	
@@ -25,7 +25,7 @@ STACK_HDRS			=
 TESTER_FILES		=	
 TESTER_HDRS			=	
 
-VECTOR_PATH			= 	$(SRCS_PATH)Vector
+VECTOR_PATH			= 	$(SRCS_PATH)Vector/
 # MAP_PATH			=	$(SRCS_PATH)Map
 # STACK_PATH			=	$(SRCS_PATH)Stack
 # TESTER_PATH			=	testers/
@@ -45,7 +45,7 @@ OBJS 				=	$(addprefix $(OBJS_PATH), $(OBJS_FILES))
 VPATH				=	$(SRCS_PATH) #$(VECTOR_PATH) $(STACK_PATH) $(MAP_PATH) $(TESTER_PATH)
 
 ALL_INCLUDES		= 	-I$(INC_PATH)\
-						# -I$(VECTOR_PATH)\
+					 	-I$(VECTOR_PATH)\
 						# -I$(MAP_PATH)\
 						# -I$(STACK_PATH)\
 						# -I$(TESTER_PATH)\

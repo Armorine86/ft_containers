@@ -1,20 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Vec_Iterator.hpp                                   :+:      :+:    :+:   */
+/*   Iterator.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/13 10:16:30 by mmondell          #+#    #+#             */
-/*   Updated: 2022/04/14 19:49:43 by mmondell         ###   ########.fr       */
-/*         src********************************************************************** */
+/*   Updated: 2022/04/19 14:21:26 by mmondell         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #pragma once
 
 #include <cstddef>
 #include <iterator>
 
-#include "iterator_traits.hpp"
+#include "Iterator_traits.hpp"
 #include "type_traits.hpp"
 
 namespace ft
@@ -46,21 +47,22 @@ class normal_iterator
 
   public:
     typedef It iterator_type;
-    typedef typename trait_type::iterator_categrory iterator_categrory;
-    typedef typename trait_type::value_type value_type;
-    typedef typename trait_type::difference_type difference_type;
-    typedef typename trait_type::reference reference;
-    typedef typename trait_type::pointer pointer;
+    typedef typename iterator_traits<It>::iterator_categrory iterator_categrory;
+    typedef typename iterator_traits<It>::value_type value_type;
+    typedef typename iterator_traits<It>::difference_type difference_type;
+    typedef typename iterator_traits<It>::reference reference;
+    typedef typename iterator_traits<It>::pointer pointer;
 
-    //* ========== Constructors ===========
+  //* ========== Constructors ===========
 
-    normal_iterator() : elem(T()) {}
-    explicit normal_iterator(const iterator_type& It) : elem(It) {}
+    normal_iterator() : elem(It()) {}
+    explicit normal_iterator(const iterator_type& iter) : elem(iter) {}
 
     template<typename Iter>
     normal_iterator(
-      const normal_iterator < Iter,
-      typename enable_if<is_same<Iter, typename Container::pointer>::value, Container>::type& it) :
+      const normal_iterator<Iter,
+      typename enable_if<is_same<Iter, typename Container::pointer>::value,
+                                      Container>::type>& it) :
       elem(it.base()) {}
       ~normal_iterator() {}
 
@@ -69,6 +71,25 @@ class normal_iterator
         elem = src.elem;
         return *this;
       }
+
+  //* ========== Operators ==========
+  public:
+    normal_iterator& operator++() { ++elem; return *this; }
+    normal_iterator operator++(int) { return normal_iterator(elem++); }
+    normal_iterator& operator--() { --elem; return *this; }
+    normal_iterator operator--(int) { return normal_iterator(elem--); }
+
+    reference operator*() { return *elem; } const
+    pointer operator->() { return elem; } const
+
+    reference operator[](difference_type n) { return elem[n]; }
+
+    normal_iterator& operator+=(difference_type n) { elem += n; return *this; }
+    normal_iterator operator+(difference_type n) { return normal_iterator(elem + n); }
+    normal_iterator& operator-=(difference_type n) { elem -= n; return *this; }
+    normal_iterator operator-(difference_type n) { return normal_iterator(elem - n); }
+
+    const It& base() { return elem; } const
 };
 
 template<typename T>

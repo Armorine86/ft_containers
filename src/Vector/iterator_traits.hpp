@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Iterator_Traits.hpp                                :+:      :+:    :+:   */
+/*   iterator_traits.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/19 08:41:30 by mmondell          #+#    #+#             */
-/*   Updated: 2022/04/19 08:51:24 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/04/19 13:45:05 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,13 @@ namespace ft
 {
 
 //* Iterator_traits template
-template<typename Iter>
+template<typename T>
 struct iterator_traits {
-    typedef typename Iter::iterator_category iterator_category;
-    typedef typename Iter::reference reference;
-    typedef typename Iter::pointer pointer;
-    typedef typename Iter::value_type value_type;
-    typedef typename Iter::difference_type difference_type;
+    typedef typename T::iterator_category iterator_category;
+    typedef typename T::reference reference;
+    typedef typename T::pointer pointer;
+    typedef typename T::value_type value_type;
+    typedef typename T::difference_type difference_type;
 };
 
 //* T* Specialication
