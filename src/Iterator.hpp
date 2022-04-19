@@ -14,6 +14,8 @@
 #include <cstddef>
 #include <iterator>
 
+#include "type_traits.hpp"
+
 namespace ft
 {
 
@@ -48,13 +50,55 @@ struct iterator_traits<const T*> {
 };
 
 //* Iterator Template
-template<typename Category, typename T, typename Distance = std::ptrdiff_t,
-         typename Pointer = T*, typename Reference = T&>
+template<typename Category,
+         typename T,
+         typename Distance = std::ptrdiff_t,
+         typename Pointer = T*,
+         typename Reference = T&>
 struct iterator {
     typedef Category iterator_category;
     typedef T value_type;
     typedef Distance difference_type;
     typedef Pointer pointer;
     typedef Reference reference;
+};
+
+//* ====================== normal_iterator Class ======================
+
+template<typename It, typename Container>
+class normal_iterator
+{
+  protected:
+    typedef iterator_traits<It> trait_type;
+    It elem;
+
+  public:
+    typedef It iterator_type;
+    typedef typename trait_type::iterator_categrory iterator_categrory;
+    typedef typename trait_type::value_type value_type;
+    typedef typename trait_type::difference_type difference_type;
+    typedef typename trait_type::reference reference;
+    typedef typename trait_type::pointer pointer;
+
+    //* ========== Constructors ===========
+
+    normal_iterator() : elem(T()) {}
+    explicit normal_iterator(const iterator_type& It) : elem(It) {}
+
+    template<typename Iter>
+    normal_iterator(
+      const normal_iterator < Iter,
+      typename enable_if<is_same<Iter, typename Container::pointer>::value, Container>::type& it) : elem(it.base())
+};
+
+template<typename T>
+class reverse_iterator : iterator<typename iterator_traits<T>::iterator_category,
+                                  typename iterator_traits<T>::value_type,
+                                  typename iterator_traits<T>::difference_type,
+                                  typename iterator_traits<T>::pointer,
+                                  typename iterator_traits<T>::reference>
+{
+  public:
+  
 };
 } // namespace ft

@@ -21,7 +21,6 @@ template<typename T, typename Alloc = std::allocator<T> >
 class vector
 {
   public:
-
     // *** Member Types ***
     typedef Alloc allocator_type;
     typedef T value_type;
@@ -37,7 +36,5 @@ class vector
     typedef allocator_type::size_type size_type;
 
     // *** Member Functions ***
-
-    
 };
 } // namespace ft
