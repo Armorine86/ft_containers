@@ -14,40 +14,11 @@
 #include <cstddef>
 #include <iterator>
 
+#include "iterator_traits.hpp"
 #include "type_traits.hpp"
 
 namespace ft
 {
-
-//* Iterator_traits template
-template<typename Iter>
-struct iterator_traits {
-    typedef typename Iter::iterator_category iterator_category;
-    typedef typename Iter::reference reference;
-    typedef typename Iter::pointer pointer;
-    typedef typename Iter::value_type value_type;
-    typedef typename Iter::difference_type difference_type;
-};
-
-//* T* Specialication
-template<typename T>
-struct iterator_traits<T*> {
-    typedef std::random_access_iterator_tag iterator_category;
-    typedef T value_type;
-    typedef T& reference;
-    typedef T* pointer;
-    typedef std::ptrdiff_t difference_type;
-};
-
-//* T& Specialization
-template<typename T>
-struct iterator_traits<const T*> {
-    typedef std::random_access_iterator_tag iterator_category;
-    typedef T value_type;
-    typedef const T& reference;
-    typedef const T* pointer;
-    typedef std::ptrdiff_t difference_type;
-};
 
 //* Iterator Template
 template<typename Category,
@@ -64,6 +35,7 @@ struct iterator {
 };
 
 //* ====================== normal_iterator Class ======================
+
 
 template<typename It, typename Container>
 class normal_iterator
@@ -88,17 +60,26 @@ class normal_iterator
     template<typename Iter>
     normal_iterator(
       const normal_iterator < Iter,
-      typename enable_if<is_same<Iter, typename Container::pointer>::value, Container>::type& it) : elem(it.base())
+      typename enable_if<is_same<Iter, typename Container::pointer>::value, Container>::type& it) :
+      elem(it.base()) {}
+      ~normal_iterator() {}
+
+      normal_iterator& operator=(const normal_iterator& src)
+      {
+        elem = src.elem;
+        return *this;
+      }
 };
 
 template<typename T>
-class reverse_iterator : iterator<typename iterator_traits<T>::iterator_category,
+class reverse_iterator : public std::iterator<typename iterator_traits<T>::iterator_category,
                                   typename iterator_traits<T>::value_type,
                                   typename iterator_traits<T>::difference_type,
                                   typename iterator_traits<T>::pointer,
                                   typename iterator_traits<T>::reference>
 {
   public:
-  
+    
 };
+
 } // namespace ft
