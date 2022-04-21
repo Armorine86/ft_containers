@@ -14,11 +14,10 @@
 
 #include <cstddef>
 
-namespace ft
-{
+namespace ft {
 
 //* Iterator_traits template
-template<typename T>
+template <typename T>
 struct iterator_traits {
     typedef typename T::iterator_category iterator_category;
     typedef typename T::reference reference;
@@ -28,7 +27,7 @@ struct iterator_traits {
 };
 
 //* T* Specialication
-template<typename T>
+template <typename T>
 struct iterator_traits<T*> {
     typedef std::random_access_iterator_tag iterator_category;
     typedef T value_type;
@@ -38,7 +37,7 @@ struct iterator_traits<T*> {
 };
 
 //* T& Specialization
-template<typename T>
+template <typename T>
 struct iterator_traits<const T*> {
     typedef std::random_access_iterator_tag iterator_category;
     typedef T value_type;

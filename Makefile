@@ -44,16 +44,16 @@ OBJS 				=	$(addprefix $(OBJS_PATH), $(OBJS_FILES))
 
 VPATH				=	$(SRCS_PATH) #$(VECTOR_PATH) $(STACK_PATH) $(MAP_PATH) $(TESTER_PATH)
 
-ALL_INCLUDES		= 	-I$(INC_PATH)\
-					 	-I$(VECTOR_PATH)\
-						# -I$(MAP_PATH)\
-						# -I$(STACK_PATH)\
-						# -I$(TESTER_PATH)\
+ALL_INCLUDES		= 	$(INC_PATH) \
+					 	$(VECTOR_PATH) \
+						# $(MAP_PATH) \
+						$(STACK_PATH) \
+						$(TESTER_PATH) \
 
 USAGE				=	#Program Usage Message
 
 $(OBJS_PATH)%.o: %.cpp
-	@$(CC) $(CFLAGS) $(ALL_INCLUDES) -c $< -o $@
+	$(CC) $(CFLAGS) $(addprefix -I, $(ALL_INCLUDES)) -c $< -o $@
 	@printf "\033[93m▓▓▓\033[0m"
 
 all:	$(NAME)
@@ -85,6 +85,9 @@ debug:	$(NAME)
 
 redebug : fclean debug
 
+fmt		:
+	clang-format -i $(SRCS) $(addsuffix *, $(ALL_INCLUDES))
+
 clean:
 	@$(RM) $(OBJS_FILES) $(OBJS_PATH) 
 	@echo "\033[34;1mCLEAN DONE\033[0m"
@@ -97,4 +100,4 @@ re: fclean all
 
 redebug: fclean debug
 
-.PHONY: all clean fclean re linux debug redebug
+.PHONY: all clean fclean re linux debug redebug fmt

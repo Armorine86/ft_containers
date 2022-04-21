@@ -14,12 +14,10 @@
 
 #include <memory>
 
-namespace ft
-{
+namespace ft {
 
-template<typename T, typename Alloc = std::allocator<T> >
-class vector
-{
+template <typename T, typename Alloc = std::allocator<T> >
+class vector {
   public:
     // *** Member Types ***
     typedef Alloc allocator_type;

@@ -1,4 +1,4 @@
-BasedOnStyle: Mozilla
+BasedOnStyle: LLVM
 AccessModifierOffset: -2
 IndentWidth: 4
 AlignArrayOfStructures: Left
@@ -7,12 +7,21 @@ AlignEscapedNewlines: Right
 # AllowShortBlocksOnASingleLine: true
 AllowShortFunctionsOnASingleLine: All
 AllowShortIfStatementsOnASingleLine: false
+AlwaysBreakAfterDefinitionReturnType: None
 AlwaysBreakTemplateDeclarations: Yes
-BinPackArguments: false
-BinPackParameters: false
-BreakBeforeBraces: Linux
-BreakConstructorInitializers: AfterColon
-BreakInheritanceList: AfterComma
+# BinPackArguments: false
+# BinPackParameters: false
+# BreakBeforeBraces: Linux
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterEnum: true
+  AfterStruct: false
+  AfterClass: false
+  SplitEmptyFunction: false
+  AfterFunction: false
+  SplitEmptyNamespace: false
+BreakConstructorInitializers: BeforeColon
+BreakInheritanceList: BeforeColon
 ColumnLimit: 100
 Cpp11BracedListStyle: false
 EmptyLineBeforeAccessModifier: Always

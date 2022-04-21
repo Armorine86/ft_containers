@@ -6,21 +6,21 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/18 13:59:36 by mmondell          #+#    #+#             */
-/*   Updated: 2022/04/18 14:26:49 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/04/20 09:13:38 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-namespace ft
-{
-//* ================== Enable_if ==================
+namespace ft {
+/* ================== Enable_if ==================
+ *
+ * type: 	either T or no such member, depending on the value of B
+ */
+template <bool B, typename T = void>
+struct enable_if {};
 
-template<bool B, typename T = void>
-struct enable_if {
-};
-
-template<typename T>
+template <typename T>
 struct enable_if<true, T> {
     typedef T type;
 };
@@ -35,56 +35,43 @@ struct false_type {
     typedef false_type type;
 };
 
-template<typename T, typename U>
-struct is_same : public false_type {
-};
+template <typename T, typename U>
+struct is_same : public false_type {};
 
-template<typename T>
-struct is_same<T, T> : public true_type {
-};
+template <typename T>
+struct is_same<T, T> : public true_type {};
 
-template<typename>
-struct is_integral : public false_type {
-};
+template <typename>
+struct is_integral : public false_type {};
 
-template<>
-struct is_integral<bool> : public true_type {
-};
+template <>
+struct is_integral<bool> : public true_type {};
 
-template<>
-struct is_integral<char> : public true_type {
-};
+template <>
+struct is_integral<char> : public true_type {};
 
-template<>
-struct is_integral<unsigned char> : public true_type {
-};
+template <>
+struct is_integral<unsigned char> : public true_type {};
 
-template<>
-struct is_integral<signed char> : public true_type {
-};
+template <>
+struct is_integral<signed char> : public true_type {};
 
-template<>
-struct is_integral<short int> : public true_type {
-};
+template <>
+struct is_integral<short int> : public true_type {};
 
-template<>
-struct is_integral<unsigned short int> : public true_type {
-};
+template <>
+struct is_integral<unsigned short int> : public true_type {};
 
-template<>
-struct is_integral<int> : public true_type {
-};
+template <>
+struct is_integral<int> : public true_type {};
 
-template<>
-struct is_integral<unsigned int> : public true_type {
-};
+template <>
+struct is_integral<unsigned int> : public true_type {};
 
-template<>
-struct is_integral<long int> : public true_type {
-};
+template <>
+struct is_integral<long int> : public true_type {};
 
-template<>
-struct is_integral<unsigned long int> : public true_type {
-};
+template <>
+struct is_integral<unsigned long int> : public true_type {};
 
 } // namespace ft
