@@ -1,18 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   iterator_traits.hpp                                :+:      :+:    :+:   */
+/*   Iterator_traits.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/19 08:41:30 by mmondell          #+#    #+#             */
-/*   Updated: 2022/04/19 13:45:05 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/04/21 11:39:43 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include <cstddef>
+#include <iterator>
 
 namespace ft {
 
