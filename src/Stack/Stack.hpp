@@ -14,7 +14,4 @@
 
 #include "Iterator.hpp"
 
-namespace ft {
-
-	
-}
+namespace ft {}

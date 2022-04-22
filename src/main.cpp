@@ -1,5 +1,13 @@
 #include "Iterator.hpp"
-#include <array>
+#include "Vector.hpp"
+#include <iostream>
+#include <string>
 #include <vector>
 
-int main(void) { return 0; }
+int main(void) {
+
+    ft::vector<int> vec;
+
+    std::vector<int> vec2;
+    return 0;
+}

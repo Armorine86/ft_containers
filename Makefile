@@ -53,7 +53,7 @@ ALL_INCLUDES		= 	$(INC_PATH) \
 USAGE				=	#Program Usage Message
 
 $(OBJS_PATH)%.o: %.cpp
-	$(CC) $(CFLAGS) $(addprefix -I, $(ALL_INCLUDES)) -c $< -o $@
+	@$(CC) $(CFLAGS) $(addprefix -I, $(ALL_INCLUDES)) -c $< -o $@
 	@printf "\033[93m▓▓▓\033[0m"
 
 all:	$(NAME)

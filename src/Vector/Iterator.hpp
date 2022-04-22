@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/13 10:16:30 by mmondell          #+#    #+#             */
-/*   Updated: 2022/04/22 08:28:53 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/04/22 15:25:56 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,15 +40,15 @@ struct iterator {
 //* |       normal_iterator Class              |
 //* ============================================
 
-template <typename It, typename Container>
+template <typename It_Type, typename Container>
 class normal_iterator {
   protected:
-    typedef iterator_traits<It> trait_type;
-    It elem;
+    typedef iterator_traits<It_Type> trait_type;
+    It_Type elem;
 
     // clang-format off
   public:
-    typedef It iterator_type;
+    typedef It_Type iterator_type;
     typedef typename trait_type::iterator_categrory iterator_categrory;
     typedef typename trait_type::value_type         value_type;
     typedef typename trait_type::difference_type    difference_type;
@@ -58,7 +58,7 @@ class normal_iterator {
 
     //* ========== Constructors ===========
 
-    normal_iterator() : elem(It()) {}
+    normal_iterator() : elem(It_Type()) {}
     explicit normal_iterator(const iterator_type& iter) : elem(iter) {}
 
     template <typename Iter>
@@ -100,19 +100,19 @@ class normal_iterator {
 //* |        reverse_iterator Class            |
 //* ============================================
 
-template <typename It>
-class reverse_iterator
-    : public ft::iterator<
-          typename iterator_traits<It>::iterator_category, typename iterator_traits<It>::value_type,
-          typename iterator_traits<It>::difference_type, typename iterator_traits<It>::pointer,
-          typename iterator_traits<It>::reference> {
+template <typename It_Type>
+class reverse_iterator : public ft::iterator<typename iterator_traits<It_Type>::iterator_category,
+                                             typename iterator_traits<It_Type>::value_type,
+                                             typename iterator_traits<It_Type>::difference_type,
+                                             typename iterator_traits<It_Type>::pointer,
+                                             typename iterator_traits<It_Type>::reference> {
   protected:
-    typedef iterator_traits<It> trait_type;
-    It elem;
+    typedef iterator_traits<It_Type> trait_type;
+    It_Type elem;
 
     // clang-format off
   public:
-    typedef It iterator_type;
+    typedef It_Type iterator_type;
     typedef typename trait_type::iterator_categrory iterator_categrory;
     typedef typename trait_type::value_type         value_type;
     typedef typename trait_type::difference_type    difference_type;
@@ -120,7 +120,7 @@ class reverse_iterator
     typedef typename trait_type::pointer            pointer;
     // clang-format on
 
-    reverse_iterator() : elem(It()) {}
+    reverse_iterator() : elem(It_Type()) {}
     explicit reverse_iterator(const iterator_type& iter) : elem(iter) {}
 
     template <typename Iter>
@@ -140,7 +140,7 @@ class reverse_iterator
     reverse_iterator& operator--()    { ++elem; return *this; }
     reverse_iterator operator--(int)  { reverse_iterator tmp = *this; ++elem; return tmp; }
 
-    reference operator*() const { It tmp = elem; return *--tmp; }
+    reference operator*() const { It_Type tmp = elem; return *--tmp; }
     pointer operator->() const  { return &(operator*()); }
 
     reference operator[](difference_type n) const { return *(*this + n); }
