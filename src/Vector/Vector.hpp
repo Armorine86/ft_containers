@@ -6,13 +6,14 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/13 10:16:33 by mmondell          #+#    #+#             */
-/*   Updated: 2022/04/14 15:33:27 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/04/22 09:28:56 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include <memory>
+#include "Iterator.hpp"
 
 namespace ft {
 
@@ -20,18 +21,12 @@ template <typename T, typename Alloc = std::allocator<T> >
 class vector {
   public:
     // *** Member Types ***
-    typedef Alloc allocator_type;
     typedef T value_type;
-    typedef T& reference;
-    typedef T* pointer;
-    typedef const T& const_reference;
-    typedef const T* const_pointer;
-    typedef random_access_iterator<value_type> iterator;
-    typedef random_access_iterator<const value_type> const_iterator;
-    typedef ft::reverse_iterator<iterator> reverse_iterator;
-    typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
-    typedef iterator_traits<iterator>::difference_type difference_type;
-    typedef allocator_type::size_type size_type;
+    typedef Alloc allocator_type;
+    typedef typename allocator_type::reference reference;
+    typedef allocator_type::pointer pointer;
+    typedef const allocator_type::const_reference const_reference:
+    typedef const allocator_type::const_pointer const_pointer:
 
     // *** Member Functions ***
 };

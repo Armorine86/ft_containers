@@ -1,11 +1,5 @@
 #include "Iterator.hpp"
+#include <array>
+#include <vector>
 
-int main(void) {
-
-    int i = 0;
-
-    (void)i;
-
-    return 0;
-}
-
+int main(void) { return 0; }

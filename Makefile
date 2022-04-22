@@ -27,7 +27,7 @@ TESTER_HDRS			=
 
 VECTOR_PATH			= 	$(SRCS_PATH)Vector/
 # MAP_PATH			=	$(SRCS_PATH)Map
-# STACK_PATH			=	$(SRCS_PATH)Stack
+STACK_PATH			=	$(SRCS_PATH)Stack/
 # TESTER_PATH			=	testers/
 
 SRCS 				=	$(addprefix $(SRCS_PATH), $(SRC_FILES))
@@ -46,8 +46,8 @@ VPATH				=	$(SRCS_PATH) #$(VECTOR_PATH) $(STACK_PATH) $(MAP_PATH) $(TESTER_PATH)
 
 ALL_INCLUDES		= 	$(INC_PATH) \
 					 	$(VECTOR_PATH) \
-						# $(MAP_PATH) \
 						$(STACK_PATH) \
+						# $(MAP_PATH) \
 						$(TESTER_PATH) \
 
 USAGE				=	#Program Usage Message
