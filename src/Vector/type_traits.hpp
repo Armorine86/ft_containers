@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/18 13:59:36 by mmondell          #+#    #+#             */
-/*   Updated: 2022/04/20 09:13:38 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/04/25 08:12:07 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,8 @@
 namespace ft {
 /* ================== Enable_if ==================
  *
- * type: 	either T or no such member, depending on the value of B
+ *  type   : either T or no such member, depending on the value of B
+ *  SFINAE : Substitution Failure Is Not An Error
  */
 template <bool B, typename T = void>
 struct enable_if {};

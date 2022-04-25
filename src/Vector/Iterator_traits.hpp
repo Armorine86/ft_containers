@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/19 08:41:30 by mmondell          #+#    #+#             */
-/*   Updated: 2022/04/22 08:51:33 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/04/25 09:41:54 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 namespace ft {
 
 //* Iterator_traits template
+
 template <typename T>
 struct iterator_traits {
     typedef typename T::iterator_category iterator_category;
@@ -28,6 +29,7 @@ struct iterator_traits {
 };
 
 //* T* Specialication
+
 template <typename T>
 struct iterator_traits<T*> {
     typedef T* pointer;
@@ -38,6 +40,7 @@ struct iterator_traits<T*> {
 };
 
 //* T& Specialization
+
 template <typename T>
 struct iterator_traits<const T*> {
     typedef T value_type;
