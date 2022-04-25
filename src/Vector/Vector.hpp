@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/13 10:16:33 by mmondell          #+#    #+#             */
-/*   Updated: 2022/04/25 12:29:20 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/04/25 15:57:52 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,10 +49,10 @@ class vector {
      */
 
     //* default constructor
-    vector() : alloc_(), start(), end(), capacity() {}
+    vector() : alloc_(), start(), end(), capacity_() {}
 
     //* Default Constructor: empty container with no elements
-    explicit vector(const allocator_type& alloc) : alloc_(alloc), start(), end(), capacity() {}
+    explicit vector(const allocator_type& alloc) : alloc_(alloc), start(), end(), capacity_() {}
 
     /**
      ** Fill Constructor:
@@ -73,7 +73,7 @@ class vector {
 
         start = alloc_.allocate(n);
         end = start;
-        capacity = start + n;
+        capacity_ = start + n;
 
         for (size_type i = 0; i != n; ++i) {
             alloc_.construct(end, val);
@@ -95,17 +95,17 @@ class vector {
     vector(InputIterator first,
            typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type last,
            const allocator_type& alloc = allocator_type())
-        : alloc_(alloc), start(), end(), capacity() {
+        : alloc_(alloc), start(), end(), capacity_() {
 
         typedef typename iterator_traits<InputIterator>::iterator_category category;
         range_construct(first, last, category());
     }
 
     //* Copy Constructor
-    // vector(const vector& src) {} // TODO
+    //vector(const vector& src) {} // TODO
 
     //* Operator= Constructor
-    // vector& operator=(const vector& rhs) {} // TODO
+    //vector& operator=(const vector& rhs) {} // TODO
 
     //* Destructor
     //~vector(){};
@@ -126,6 +126,10 @@ class vector {
 
         return (*this)[pos];
     }
+
+    /**
+     * @return Returns a const reference at specified location pos
+     */
     const_reference at(size_type pos) const {
         if (pos > size())
             throw std::out_of_range("Accessed Index is Out Of Range");
@@ -135,6 +139,12 @@ class vector {
 
     reference operator[](size_type pos) { return *(start + pos); }
     const_reference operator[](size_type pos) const { return *(start + pos); }
+
+    reference front() { return *start; }
+    const_reference front() const { return *start; }
+
+    reference back() { return *(end - 1); }
+    const_reference back() const { return *(end - 1); }
     //* =============== CAPACITY FUNCTIONS ===============
 
     /**
@@ -167,7 +177,53 @@ class vector {
      * @return The number of elements in the Vector
      */
     size_type size() { return static_cast<size_type>(end - start); }
+    
+    void reserve(size_type new_cap) {
 
+        if (new_cap > capacity())
+            check_size(new_cap);
+        
+        pointer new_start = alloc_.allocate(new_cap);
+        pointer new_end;
+
+        //TODO Finish implementing RESERVE.
+    }
+
+    /**
+     * @return Returns the number of elements that the container has currently allocated space for. 
+     */
+    size_type capacity() const { return static_cast<size_type>(capacity_ - start); }
+
+    //* =============== MODIFIERS FUNCTIONS ===============
+
+    /**
+     * Adds an element at the end of the vector.
+     * If Capacity is reached, reallocate size() * 2,
+     * If Vector is empty, allocate 1
+     */
+    void push_back(const value_type& value) {
+        
+        if (end == capacity_) {
+            size_type new_cap = (empty()) ? size() * 2 : 1;
+            reserve(new_cap);
+        }
+        alloc_.construct(end, value);
+        ++end;
+    }
+
+    // iterator insert(iterator position, const T& value) {
+        
+    // }
+    
+    // void insert(iterator pos, size_type n, const T& value) {
+        
+    // }
+
+    // template <typename InputIterator>
+    // void insert(iterator pos, InputIterator first, InputIterator last) {
+        
+    // }
+    
     /*
      *  ==================================================
      *  |          PRIVATE MEMBERS FUNCTIONS             |
@@ -189,9 +245,9 @@ class vector {
 
   private:
     allocator_type alloc_; //* the Allocator type which takes the type to allocate
-    pointer start;         //* start pointer
-    pointer end;           //* end pointer (one after last element)
-    pointer capacity;      //* the total amount of allocated memory
-};
+    pointer start; //* start pointer
+    pointer end; //* end pointer (one after last element)
+    pointer capacity_; //* A pointer to the maximum allowed elements for the currently allocated memory
+}; // class vector
 
 } // namespace ft
