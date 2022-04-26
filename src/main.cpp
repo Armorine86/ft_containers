@@ -31,7 +31,7 @@ int main(void) {
 
         for (size_t i = 0; i < 10; ++i)
             vec.push_back(i);
-        
+
         for (size_t i = 0; i < 10; ++i)
             vec1.push_back(i);
 
@@ -39,7 +39,7 @@ int main(void) {
         std::cout << vec.capacity() << std::endl;
         std::cout << vec.max_size() << std::endl;
 
-        std::cout<< std::endl;
+        std::cout << std::endl;
 
         std::cout << vec1.size() << std::endl;
         std::cout << vec1.capacity() << std::endl;

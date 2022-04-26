@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/13 10:16:33 by mmondell          #+#    #+#             */
-/*   Updated: 2022/04/25 15:57:52 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/04/25 21:43:32 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,10 +49,10 @@ class vector {
      */
 
     //* default constructor
-    vector() : alloc_(), start(), end(), capacity_() {}
+    vector() : alloc_(), start_(), end_(), capacity_() {}
 
     //* Default Constructor: empty container with no elements
-    explicit vector(const allocator_type& alloc) : alloc_(alloc), start(), end(), capacity_() {}
+    explicit vector(const allocator_type& alloc) : alloc_(alloc), start_(), end_(), capacity_() {}
 
     /**
      ** Fill Constructor:
@@ -71,13 +71,13 @@ class vector {
 
         check_size(n);
 
-        start = alloc_.allocate(n);
-        end = start;
-        capacity_ = start + n;
+        start_ = alloc_.allocate(n);
+        end_ = start_;
+        capacity_ = start_ + n;
 
         for (size_type i = 0; i != n; ++i) {
-            alloc_.construct(end, val);
-            end++;
+            alloc_.construct(end_, val);
+            end_++;
         }
     }
 
@@ -95,17 +95,17 @@ class vector {
     vector(InputIterator first,
            typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type last,
            const allocator_type& alloc = allocator_type())
-        : alloc_(alloc), start(), end(), capacity_() {
+        : alloc_(alloc), start_(), end_(), capacity_() {
 
         typedef typename iterator_traits<InputIterator>::iterator_category category;
-        range_construct(first, last, category());
+        vec_init(first, last, category());
     }
 
     //* Copy Constructor
-    //vector(const vector& src) {} // TODO
+    // vector(const vector& src) {} // TODO
 
     //* Operator= Constructor
-    //vector& operator=(const vector& rhs) {} // TODO
+    // vector& operator=(const vector& rhs) {} // TODO
 
     //* Destructor
     //~vector(){};
@@ -137,14 +137,27 @@ class vector {
         return (*this)[pos];
     }
 
-    reference operator[](size_type pos) { return *(start + pos); }
-    const_reference operator[](size_type pos) const { return *(start + pos); }
+    reference operator[](size_type pos) { return *(start_ + pos); }
+    const_reference operator[](size_type pos) const { return *(start_ + pos); }
 
-    reference front() { return *start; }
-    const_reference front() const { return *start; }
+    reference front() { return *start_; }
+    const_reference front() const { return *start_; }
 
-    reference back() { return *(end - 1); }
-    const_reference back() const { return *(end - 1); }
+    reference back() { return *(end_ - 1); }
+    const_reference back() const { return *(end_ - 1); }
+
+    //* =============== ITERATORS FUNCTIONS ===============
+
+    iterator begin() { return iterator(start_); }
+    const_iterator begin() const { return const_iterator(start_); }
+    reverse_iterator rbegin() { return reverse_iterator(end_ - 1); }
+    const_reverse_iterator rbegin() const { return const_reverse_iterator(end_ - 1); }
+
+    iterator end() { return iterator(end_); }
+    const_iterator end() const { return iterator(end_); }
+    reverse_iterator rend() { return reverse_iterator(start_ - 1); }
+    const_reverse_iterator rend() const { return const_reverse_iterator(start_ - 1); }
+
     //* =============== CAPACITY FUNCTIONS ===============
 
     /**
@@ -176,25 +189,50 @@ class vector {
     /**
      * @return The number of elements in the Vector
      */
-    size_type size() { return static_cast<size_type>(end - start); }
-    
+    size_type size() { return static_cast<size_type>(end_ - start_); }
+
+    /**
+     * Increase the capacity to a value that's greater or equal to new_cap.
+     * If new_cap is smaller than current capacity the function does nothing.
+     */
     void reserve(size_type new_cap) {
 
+        if (new_cap < capacity())
+            return;
         if (new_cap > capacity())
-            check_size(new_cap);
-        
-        pointer new_start = alloc_.allocate(new_cap);
-        pointer new_end;
+            check_size(new_cap); // if Realloc needed, check if smaller than Max Size
 
-        //TODO Finish implementing RESERVE.
+        pointer new_start = alloc_.allocate(new_cap);
+        pointer new_end = construct_vec(new_start, start_, end_);
+
+        deallocate_vec();
+
+        start_ = new_start;
+        end_ = new_end;
+        capacity_ = start_ + new_cap;
     }
 
     /**
-     * @return Returns the number of elements that the container has currently allocated space for. 
+     * @return Returns the number of elements that the container has currently allocated space for.
      */
-    size_type capacity() const { return static_cast<size_type>(capacity_ - start); }
+    size_type capacity() const { return static_cast<size_type>(capacity_ - start_); }
 
     //* =============== MODIFIERS FUNCTIONS ===============
+
+    /**
+     * Erases elements at position pos
+     */
+    //*iterator erase(iterator pos) {}
+
+    /**
+     * Erases elements in range [first, last]
+     */
+    //*iterator erase(iterator first, iterator last) {}
+
+    /**
+     * Erases all elements from the container.
+     */
+    void clear() { erase(start_, end_); }
 
     /**
      * Adds an element at the end of the vector.
@@ -202,28 +240,28 @@ class vector {
      * If Vector is empty, allocate 1
      */
     void push_back(const value_type& value) {
-        
-        if (end == capacity_) {
+
+        if (end_ == capacity_) {
             size_type new_cap = (empty()) ? size() * 2 : 1;
             reserve(new_cap);
         }
-        alloc_.construct(end, value);
-        ++end;
+        alloc_.construct(end_, value);
+        ++end_;
     }
 
     // iterator insert(iterator position, const T& value) {
-        
+
     // }
-    
+
     // void insert(iterator pos, size_type n, const T& value) {
-        
+
     // }
 
     // template <typename InputIterator>
     // void insert(iterator pos, InputIterator first, InputIterator last) {
-        
+
     // }
-    
+
     /*
      *  ==================================================
      *  |          PRIVATE MEMBERS FUNCTIONS             |
@@ -231,10 +269,25 @@ class vector {
      */
 
     template <typename InputIterator>
-    void range_construct(InputIterator first, InputIterator last, std::input_iterator_tag) {
+    void vec_init(InputIterator first, InputIterator last, std::input_iterator_tag) {
 
         for (; first != last; ++first)
             push_back(*first);
+    }
+
+    template <typename Iter>
+    pointer construct_vec(pointer new_start, Iter start, Iter end) {
+
+        for (; start != end; ++new_start, (void)++start)
+            alloc_.construct(new_start, *start);
+
+        return new_start;
+    }
+
+    void deallocate_vec() {
+
+        // clear();
+        alloc_.deallocate(start_, capacity());
     }
 
     /*
@@ -245,9 +298,9 @@ class vector {
 
   private:
     allocator_type alloc_; //* the Allocator type which takes the type to allocate
-    pointer start; //* start pointer
-    pointer end; //* end pointer (one after last element)
-    pointer capacity_; //* A pointer to the maximum allowed elements for the currently allocated memory
-}; // class vector
+    pointer start_;        //* start pointer
+    pointer end_;          //* end pointer (one after last element)
+    pointer capacity_;     //* A pointer to the maximum allowed elements
+};                         // class vector
 
 } // namespace ft
