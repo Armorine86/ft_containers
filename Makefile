@@ -2,7 +2,7 @@ NAME 				=	ft_containers
 
 OS					:= $(shell uname)
 
-INC_PATH			=	src/includes/
+INC_PATH			=	includes/
 OBJS_PATH 			=	obj/
 SRCS_PATH 			=	src/
 CC 					=	clang++
@@ -25,9 +25,9 @@ STACK_HDRS			=
 TESTER_FILES		=	
 TESTER_HDRS			=	
 
-VECTOR_PATH			= 	$(SRCS_PATH)Vector/
+VECTOR_PATH			= 	Vector/
 # MAP_PATH			=	$(SRCS_PATH)Map
-STACK_PATH			=	$(SRCS_PATH)Stack/
+STACK_PATH			=	Stack/
 # TESTER_PATH			=	testers/
 
 SRCS 				=	$(addprefix $(SRCS_PATH), $(SRC_FILES))
@@ -44,9 +44,8 @@ OBJS 				=	$(addprefix $(OBJS_PATH), $(OBJS_FILES))
 
 VPATH				=	$(SRCS_PATH) #$(VECTOR_PATH) $(STACK_PATH) $(MAP_PATH) $(TESTER_PATH)
 
-ALL_INCLUDES		= 	$(INC_PATH) \
-					 	$(VECTOR_PATH) \
-						$(STACK_PATH) \
+ALL_INCLUDES		= 	$(addprefix $(INC_PATH), $(VECTOR_PATH)) \
+						$(addprefix $(INC_PATH), $(STACK_PATH)) \
 						# $(MAP_PATH) \
 						$(TESTER_PATH) \
 
@@ -81,6 +80,7 @@ $(OBJS_PATH):
 
 debug:	CFLAGS += -g -fstandalone-debug -fno-limit-debug-info
 debug:	$(NAME)
+	@printf "\033[32;1m\nCompiling with: \033[38;5;208m$(CFLAGS)\033[0m \\n"
 
 redebug : fclean debug
 
