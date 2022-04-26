@@ -80,7 +80,6 @@ $(OBJS_PATH):
 
 debug:	CFLAGS += -g -fstandalone-debug -fno-limit-debug-info
 debug:	$(NAME)
-	@printf "\033[32;1m\nCompiling with: \033[38;5;208m$(CFLAGS)\033[0m \\n"
 
 redebug : fclean debug
 

@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/13 10:16:33 by mmondell          #+#    #+#             */
-/*   Updated: 2022/04/25 21:43:32 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/04/26 15:40:18 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 #include <cstddef>
 #include <limits>
 #include <memory>
-#include <vector>
+//#include <vector>
 
 namespace ft {
 
@@ -32,8 +32,6 @@ class vector {
     typedef Allocator                                   allocator_type;
     typedef size_t                                      size_type;
     typedef ptrdiff_t                                   difference_type;
-    // typedef typename allocator_type::reference          reference;
-    // typedef typename allocator_type::const_reference    const_reference;
     typedef typename allocator_type::pointer            pointer;
     typedef typename allocator_type::const_pointer      const_pointer;
     typedef ft::normal_iterator<pointer, vector>        iterator; //* normal_iterator<T, Container>
@@ -75,10 +73,7 @@ class vector {
         end_ = start_;
         capacity_ = start_ + n;
 
-        for (size_type i = 0; i != n; ++i) {
-            alloc_.construct(end_, val);
-            end_++;
-        }
+        fill_construct(val, n);
     }
 
     /**
@@ -97,18 +92,26 @@ class vector {
            const allocator_type& alloc = allocator_type())
         : alloc_(alloc), start_(), end_(), capacity_() {
 
-        typedef typename iterator_traits<InputIterator>::iterator_category category;
+        typedef typename iterator_traits<vector::iterator>::iterator_category category;
         vec_init(first, last, category());
     }
 
     //* Copy Constructor
-    // vector(const vector& src) {} // TODO
+    vector(const vector& src) : alloc_(src.alloc_), start_(), end_(), capacity_() {
+
+        typedef typename iterator_traits<vector::iterator>::iterator_category category;
+        vec_init(src.first, src.last, category());
+    }
 
     //* Operator= Constructor
-    // vector& operator=(const vector& rhs) {} // TODO
+    vector& operator=(const vector& rhs) {
+        if (this == &rhs)
+            return *this;
+        assign(rhs.begin(), rhs.end());
+    }
 
     //* Destructor
-    //~vector(){};
+    ~vector() { deallocate_vec(); };
     /*
      *  ==================================================
      *  |           PUBLIC MEMBER FUNCTIONS              |
@@ -155,8 +158,8 @@ class vector {
 
     iterator end() { return iterator(end_); }
     const_iterator end() const { return iterator(end_); }
-    reverse_iterator rend() { return reverse_iterator(start_ - 1); }
-    const_reverse_iterator rend() const { return const_reverse_iterator(start_ - 1); }
+    reverse_iterator rend() { return reverse_iterator(start_); }
+    const_reverse_iterator rend() const { return const_reverse_iterator(start_); }
 
     //* =============== CAPACITY FUNCTIONS ===============
 
@@ -197,7 +200,7 @@ class vector {
      */
     void reserve(size_type new_cap) {
 
-        if (new_cap < capacity())
+        if (new_cap <= capacity())
             return;
         if (new_cap > capacity())
             check_size(new_cap); // if Realloc needed, check if smaller than Max Size
@@ -219,20 +222,60 @@ class vector {
 
     //* =============== MODIFIERS FUNCTIONS ===============
 
+    template <typename InputIterator>
+    void assign(InputIterator first, InputIterator last) {
+
+        typedef typename iterator_traits<InputIterator>::iterator_category category;
+        clear();
+        vec_init(first, last, category());
+    }
+
+    void assign(size_type n, const value_type& val) {
+
+        clear();
+        fill_construct(val, n);
+    }
     /**
-     * Erases elements at position pos
+     * Erase element at position pos.
      */
-    //*iterator erase(iterator pos) {}
+    iterator erase(iterator pos) {
+
+        if (pos == end() - 1) {
+            --end_;
+            alloc_.destroy(end_);
+            return end();
+        }
+
+        return erase(pos, pos + 1);
+    }
 
     /**
-     * Erases elements in range [first, last]
+     * Erases all elements in range [first, last].
+     * Shifts all elements to the left.
+     * @return Returns a pointer on the element first + 1.
+     * @return If last is equal to end(), returns
      */
-    //*iterator erase(iterator first, iterator last) {}
+    iterator erase(iterator first, iterator last) {
+
+        if (last == end())
+            return end();
+
+        difference_type diff = std::distance(first, last);
+        pointer old_end = end_;
+
+        if (diff > 0) {
+            shift_left(first, last);
+            end_ -= diff;
+            range_destroy(end_, old_end);
+        }
+
+        return last - diff;
+    }
 
     /**
      * Erases all elements from the container.
      */
-    void clear() { erase(start_, end_); }
+    void clear() { erase(iterator(start_), iterator(end_)); }
 
     /**
      * Adds an element at the end of the vector.
@@ -268,6 +311,31 @@ class vector {
      *  ==================================================
      */
 
+    /**
+     * Shifts all elements to the left inside the vector
+     */
+    void shift_left(iterator& first, iterator& last) {
+
+        for (iterator it = last; it != end(); ++it) {
+            alloc_.destroy(first.base());
+            *first = *it;
+            // alloc_.construct(first.base(), *it);
+            ++first;
+        }
+    }
+
+    /**
+     * Fills Vector with N elements of type val
+     * @param val Type of Element
+     * @param n Number of elements
+     */
+    void fill_construct(const value_type& val, size_type n) {
+
+        for (size_type i = 0; i != n; ++i) {
+            alloc_.construct(end_, val);
+            end_++;
+        }
+    }
     template <typename InputIterator>
     void vec_init(InputIterator first, InputIterator last, std::input_iterator_tag) {
 
@@ -284,10 +352,22 @@ class vector {
         return new_start;
     }
 
+    /**
+     * Deallocate elements beginning at start pointer up to capacity()
+     */
     void deallocate_vec() {
 
-        // clear();
+        clear();
         alloc_.deallocate(start_, capacity());
+    }
+
+    /**
+     * Calls Allocator::destroy() on each elements from first to last
+     */
+    void range_destroy(pointer first, pointer last) {
+
+        for (; first != last; ++first)
+            alloc_.destroy(first);
     }
 
     /*
