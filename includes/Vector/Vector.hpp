@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/13 10:16:33 by mmondell          #+#    #+#             */
-/*   Updated: 2022/04/26 15:40:18 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/04/27 09:56:17 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,6 +112,8 @@ class vector {
 
     //* Destructor
     ~vector() { deallocate_vec(); };
+
+    allocator_type get_allocator() const { return allocator_type(); }
     /*
      *  ==================================================
      *  |           PUBLIC MEMBER FUNCTIONS              |
@@ -140,14 +142,45 @@ class vector {
         return (*this)[pos];
     }
 
+    /**
+     * @return Returns a reference to the the element at index pos
+     */ 
     reference operator[](size_type pos) { return *(start_ + pos); }
+
+    /**
+     * @return Returns a const reference to the the element at index pos
+     */ 
     const_reference operator[](size_type pos) const { return *(start_ + pos); }
 
+    /**
+     * @return Returns a reference to the first element of the vector
+     */ 
     reference front() { return *start_; }
+
+    /**
+     * @return Returns a const reference to the first element of the vector
+     */ 
     const_reference front() const { return *start_; }
 
+    /**
+     * @return Returns a reference to the last element of the vector
+     */
     reference back() { return *(end_ - 1); }
+
+    /**
+     * @return Returns a const reference to the last element of the vector
+     */
     const_reference back() const { return *(end_ - 1); }
+
+    /**
+     * @return Returns a pointer to the underling array serving as element storage
+     */
+    value_type* data() { return start_; }
+
+    /**
+     * @return Returns a const pointer to the underling array serving as element storage
+     */
+    const value_type* data() const { return start_; }
 
     //* =============== ITERATORS FUNCTIONS ===============
 
@@ -169,21 +202,12 @@ class vector {
     bool empty() { return size(); }
 
     /**
-     * @return THROWS if max_size() is equal or bigger than
-     * maximum allowed vector size
-     */
-    void check_size(size_type n) {
-        if (n >= max_size())
-            throw std::length_error("Vector Max Size Exceeded");
-    }
-
-    /**
      *  @param diffmax the maximum elements of type T
      *  @param allocmax the maximum memory allocation
      *  @return The Vector Maximum Size
      */
     size_type max_size() {
-        const size_t diffmax = std::numeric_limits<difference_type>::max() / sizeof(T);
+        const size_t diffmax = std::numeric_limits<difference_type>::max() / sizeof(value_type);
         const size_t allocmax = alloc_.max_size();
 
         return std::min(diffmax, allocmax);
@@ -312,6 +336,15 @@ class vector {
      */
 
     /**
+     * @return THROWS if max_size() is equal or bigger than
+     * maximum allowed vector size
+     */
+    void check_size(size_type n) {
+        if (n >= max_size())
+            throw std::length_error("Vector Max Size Exceeded");
+    }
+
+    /**
      * Shifts all elements to the left inside the vector
      */
     void shift_left(iterator& first, iterator& last) {
@@ -378,7 +411,7 @@ class vector {
 
   private:
     allocator_type alloc_; //* the Allocator type which takes the type to allocate
-    pointer start_;        //* start pointer
+    pointer start_;        //* start pointer to first element
     pointer end_;          //* end pointer (one after last element)
     pointer capacity_;     //* A pointer to the maximum allowed elements
 };                         // class vector
