@@ -193,15 +193,12 @@ int main(void) {
             std_vec.push_back(i);
         }
 
-        ft_it = ft_vec.begin();
-        std_it = std_vec.begin();
-        for (size_t i = 0; i < 3; ++i) {
-            ++ft_it;
-            ++std_it;
-        }
+        ft_it = ft_vec.begin() + 3;
+        std_it = std_vec.begin() + 3;
+        
 
-        ft_it = ft_vec.end();
-        std_it = std_vec.end();
+        // ft_it = ft_vec.end();
+        // std_it = std_vec.end();
 
 
         std::cout << "STD_VEC before Insert:\n";
@@ -217,19 +214,21 @@ int main(void) {
         std::cout << "\nFT Capacity: " << ft_vec.capacity() << std::endl;
 
         size_t ft_cap = ft_vec.capacity();
-        //size_t std_cap = std_vec.capacity();
+        size_t std_cap = std_vec.capacity();
         
-        for (size_t i = 1; i < 5; ++i) {
+        for (size_t i = 1; i < 15; ++i) {
 
             ft_vec.insert(ft_it, 42);
             if (ft_vec.capacity() > ft_cap){
                 ft_cap = ft_vec.capacity();
-
                 ft_it = ft_vec.end();
             }
-            // std_vec.insert(std_it, 42);
-            // if (std_vec.capacity() > std_cap)
-            //     std_it = std_vec.end();
+
+            std_vec.insert(std_it, 42);
+            if (std_vec.capacity() > std_cap) {
+                std_cap = std_vec.capacity();    
+                std_it = std_vec.end();
+            }
         }
 
         std::cout << "\nSTD_VEC AFTER Insert:\n";

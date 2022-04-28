@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/13 10:16:33 by mmondell          #+#    #+#             */
-/*   Updated: 2022/04/28 15:04:00 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/04/28 18:56:44 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -326,8 +326,11 @@ class vector {
         
         size_type n = 1; //Single Element
         if (end_ == capacity_) {
+            
+            difference_type diff = std::distance(begin(), pos);
             size_type new_cap = (empty()) ? size() * 2 : 1;
             reserve(new_cap);
+            pos = begin() + diff; 
         }
         
         end_ += n;
