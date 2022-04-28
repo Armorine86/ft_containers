@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/13 10:16:33 by mmondell          #+#    #+#             */
-/*   Updated: 2022/04/27 09:56:17 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/04/28 15:04:00 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include <cstddef>
 #include <limits>
 #include <memory>
+#include <iostream>
 //#include <vector>
 
 namespace ft {
@@ -277,7 +278,7 @@ class vector {
      * Erases all elements in range [first, last].
      * Shifts all elements to the left.
      * @return Returns a pointer on the element first + 1.
-     * @return If last is equal to end(), returns
+     * If last == end(), returns an Iterator to end_
      */
     iterator erase(iterator first, iterator last) {
 
@@ -302,7 +303,7 @@ class vector {
     void clear() { erase(iterator(start_), iterator(end_)); }
 
     /**
-     * Adds an element at the end of the vector.
+     * Adds a single element at the end of the vector.
      * If Capacity is reached, reallocate size() * 2,
      * If Vector is empty, allocate 1
      */
@@ -316,9 +317,28 @@ class vector {
         ++end_;
     }
 
-    // iterator insert(iterator position, const T& value) {
+    /**
+     * Insert a single element before pos.
+     * Reallocates the vector if size() surpasses capacity()
+     * @return An Iterator that points to the first of the newly inserted elements
+     */
+    iterator insert(iterator pos, const T& val) {
+        
+        size_type n = 1; //Single Element
+        if (end_ == capacity_) {
+            size_type new_cap = (empty()) ? size() * 2 : 1;
+            reserve(new_cap);
+        }
+        
+        end_ += n;
+        
+        shift_right(pos, n);
 
-    // }
+        alloc_.destroy(pos.base());
+        alloc_.construct(pos.base(), val);
+
+        return pos;
+    }
 
     // void insert(iterator pos, size_type n, const T& value) {
 
@@ -345,14 +365,24 @@ class vector {
     }
 
     /**
+     * Shifts all elements at n position to the right as long as it is inside capacity.
+     */
+    void shift_right(iterator& pos, size_type n) {
+        
+        for (iterator it = end() - 1; it >= pos; --it) {
+            *(it + n) = *it;
+            //alloc_.destroy(it.base());
+        }
+    }
+    /**
      * Shifts all elements to the left inside the vector
+     * Increments first iterator
      */
     void shift_left(iterator& first, iterator& last) {
 
         for (iterator it = last; it != end(); ++it) {
             alloc_.destroy(first.base());
             *first = *it;
-            // alloc_.construct(first.base(), *it);
             ++first;
         }
     }
@@ -394,6 +424,12 @@ class vector {
         alloc_.deallocate(start_, capacity());
     }
 
+    void print_vec() {
+
+        for (pointer first = start_; first != end_; ++first)
+            std::cout << " " << *first;
+    }
+
     /**
      * Calls Allocator::destroy() on each elements from first to last
      */
@@ -415,5 +451,6 @@ class vector {
     pointer end_;          //* end pointer (one after last element)
     pointer capacity_;     //* A pointer to the maximum allowed elements
 };                         // class vector
+
 
 } // namespace ft

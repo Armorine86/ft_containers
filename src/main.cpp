@@ -2,6 +2,7 @@
 #include "Vector.hpp"
 #include <exception>
 #include <iostream>
+#include <ostream>
 #include <string>
 #include <vector>
 
@@ -73,11 +74,15 @@ int main(void) {
     //         std::cout << "ft::vec: " << std::flush;
     //         for (size_t i = 0; i < ft_vec.size(); ++i)
     //             std::cout << ft_vec.at(i) << std::flush;
+    //         std::cout << "\nsize: " << ft_vec.size() << std::endl;
+    //         std::cout << "size: " << ft_vec.capacity() << std::endl;
     //         std::cout << std::endl;
 
     //         std::cout << "std::vec: " << std::flush;
     //         for (size_t i = 0; i < ft_vec.size(); ++i)
     //             std::cout << std_vec.at(i) << std::flush;
+    //         std::cout << "\nsize: " << std_vec.size() << std::endl;
+    //         std::cout << "capacity: " << std_vec.capacity() << std::endl;
     //         std::cout << std::endl;
 
     //         std::cout << std::endl;
@@ -95,6 +100,7 @@ int main(void) {
     //             std::cout << ft_vec.at(i) << std::flush;
 
     //         std::cout << "\nsize: " << ft_vec.size() << std::endl;
+    //         std::cout << "size: " << ft_vec.capacity() << std::endl;
     //         std::cout << std::endl;
 
     //         std::vector<int>::iterator it1, end_it1;
@@ -109,7 +115,8 @@ int main(void) {
     //         for (size_t i = 0; i < std_vec.size(); ++i)
     //             std::cout << std_vec.at(i) << std::flush;
 
-    //         std::cout << "\nsize: " << ft_vec.size() << std::endl;
+    //         std::cout << "\nsize: " << std_vec.size() << std::endl;
+    //         std::cout << "capacity: " << std_vec.capacity() << std::endl;
     //         std::cout << std::endl;
 
     //     } catch (std::exception &e) {
@@ -117,66 +124,127 @@ int main(void) {
     //     }
     // }
 
-    //* Data()  returns address
+    // //* Data()  returns address
+
+    // {
+    //     ft::vector<int> ft_vec;
+
+    //     std::vector<int> std_vec;
+
+        // for (size_t i = 0; i < 50; ++i) {
+        //     ft_vec.push_back(i);
+        //     std_vec.push_back(i);
+        // }
+
+    //     int* ft_ptr = ft_vec.data();
+    //     int* std_ptr = std_vec.data();
+
+    //     std::cout << "ft_vec data: " << *ft_ptr << std::endl;
+    //     std::cout << "std_vec data: " << *std_ptr << std::endl;
+
+    //     ++ft_ptr;
+    //     ++std_ptr;
+
+    //     std::cout << std::endl;
+
+    //     std::cout << "ft_vec data: " << *ft_ptr << std::endl;
+    //     std::cout << "std_vec data: " << *std_ptr << std::endl;
+    
+    //     std::cout << std::endl;
+
+    //     std::cout << "ft_vec data: " << ft_ptr[35] << std::endl;
+    //     std::cout << "std_vec data: " << std_ptr[35] << std::endl;
+
+    //     std::cout << std::endl;
+    // }
+
+    // {
+    //     ft::vector<int> ft_vec;
+
+    //     ft_vec.push_back(1);
+    //     //ft_vec.clear();
+
+    //     int* ft_ptr = ft_vec.data();
+
+    //     std::vector<int> std_vec;
+
+    //     std_vec.push_back(1);
+    //     //std_vec.clear();
+
+    //     int* std_ptr = std_vec.data();
+
+    //     std::cout << ft_ptr << std::endl;
+    //     std::cout << std_ptr << std::endl;
+
+    //     std::cout << std::endl;
+
+    // }
+
+    //* INSERT 
     {
-        {
-            ft::vector<int> ft_vec;
+        ft::vector<int> ft_vec;
+        ft::vector<int>::iterator ft_it;
 
-            std::vector<int> std_vec;
+        std::vector<int> std_vec;
+        std::vector<int>::iterator std_it;
 
-            // for (size_t i = 0; i < 50; ++i) {
-            //     ft_vec.push_back(i);
-            //     std_vec.push_back(i);
-            // }
+        for (size_t i = 1; i < 6; ++i) {
+            ft_vec.push_back(i);
+            std_vec.push_back(i);
+        }
 
-            int* ft_ptr = ft_vec.data();
-            int* std_ptr = std_vec.data();
+        ft_it = ft_vec.begin();
+        std_it = std_vec.begin();
+        for (size_t i = 0; i < 3; ++i) {
+            ++ft_it;
+            ++std_it;
+        }
 
-            std::cout << "ft_vec data: " << *ft_ptr << std::endl;
-            std::cout << "std_vec data: " << *std_ptr << std::endl;
+        ft_it = ft_vec.end();
+        std_it = std_vec.end();
 
-            ++ft_ptr;
-            ++std_ptr;
 
-            std::cout << std::endl;
-
-            std::cout << "ft_vec data: " << *ft_ptr << std::endl;
-            std::cout << "std_vec data: " << *std_ptr << std::endl;
+        std::cout << "STD_VEC before Insert:\n";
+        for (size_t i = 0; i < std_vec.size(); ++i)
+            std::cout << " " << std_vec[i] << std::flush;
+    
+        std::cout << "\nSTD Capacity: " << std_vec.capacity() << std::endl;
         
-            std::cout << std::endl;
+        std::cout << "\n" << std::endl;
 
-            std::cout << "ft_vec data: " << ft_ptr[35] << std::endl;
-            std::cout << "std_vec data: " << std_ptr[35] << std::endl;
+        std::cout << "FT_VEC before Insert:" << std::endl;
+        ft_vec.print_vec();
+        std::cout << "\nFT Capacity: " << ft_vec.capacity() << std::endl;
 
-            std::cout << std::endl;
+        size_t ft_cap = ft_vec.capacity();
+        //size_t std_cap = std_vec.capacity();
+        
+        for (size_t i = 1; i < 5; ++i) {
+
+            ft_vec.insert(ft_it, 42);
+            if (ft_vec.capacity() > ft_cap){
+                ft_cap = ft_vec.capacity();
+
+                ft_it = ft_vec.end();
+            }
+            // std_vec.insert(std_it, 42);
+            // if (std_vec.capacity() > std_cap)
+            //     std_it = std_vec.end();
         }
 
-        {
-            ft::vector<int> ft_vec;
+        std::cout << "\nSTD_VEC AFTER Insert:\n";
+        for (size_t i = 0; i < std_vec.size(); ++i)
+            std::cout << " " << std_vec[i] << std::flush;
+        
+        std::cout << "\nSTD Capacity: " << std_vec.capacity() << std::endl;
+        
+        std::cout << "\n" << std::endl;
 
-            ft_vec.push_back(1);
-            ft_vec.clear();
-
-            int* ft_ptr = ft_vec.data();
-
-            std::vector<int> std_vec;
-
-            std_vec.push_back(1);
-            std_vec.clear();
-
-            int* std_ptr = std_vec.data();
-
-            std::cout << ft_ptr << std::endl;
-            std::cout << std_ptr << std::endl;
-
-            std::cout << std::endl;
-
-        }
-
+        std::cout << "FT_VEC AFTER Insert:" << std::endl;
+        ft_vec.print_vec();
+        std::cout << "\nFT Capacity: " << ft_vec.capacity() << std::endl;
     }
 
-    {
-
-    }
     return 0;
 }
+
