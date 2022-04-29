@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/13 10:16:33 by mmondell          #+#    #+#             */
-/*   Updated: 2022/04/29 11:07:36 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/04/29 13:21:04 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,9 @@
 #include "Iterator.hpp"
 #include <algorithm>
 #include <cstddef>
+#include <iostream>
 #include <limits>
 #include <memory>
-#include <iostream>
 #include <unistd.h>
 //#include <vector>
 
@@ -146,22 +146,22 @@ class vector {
 
     /**
      * @return Returns a reference to the the element at index pos
-     */ 
+     */
     reference operator[](size_type pos) { return *(start_ + pos); }
 
     /**
      * @return Returns a const reference to the the element at index pos
-     */ 
+     */
     const_reference operator[](size_type pos) const { return *(start_ + pos); }
 
     /**
      * @return Returns a reference to the first element of the vector
-     */ 
+     */
     reference front() { return *start_; }
 
     /**
      * @return Returns a const reference to the first element of the vector
-     */ 
+     */
     const_reference front() const { return *start_; }
 
     /**
@@ -278,7 +278,7 @@ class vector {
     /**
      * Erases all elements in range [first, last].
      * Shifts all elements to the left.
-     * 
+     *
      * @return Returns a pointer on the element first + 1.
      * If last == end(), returns an Iterator to end_
      */
@@ -325,18 +325,18 @@ class vector {
      * @return An Iterator that points to the first of the newly inserted elements
      */
     iterator insert(iterator pos, const T& val) {
-        
-        size_type n = 1; //Single Element
+
+        size_type n = 1; // Single Element
         if (end_ == capacity_) {
-            
+
             difference_type diff = std::distance(begin(), pos);
-            size_type new_cap = (empty()) ? size() * 2 : 1;
+            size_type new_cap = (empty()) ? get_newcap(n) : 1;
             reserve(new_cap);
-            pos = begin() + diff; 
+            pos = begin() + diff;
         }
-        
+
         end_ += n;
-        
+
         shift_right(pos, n);
 
         alloc_.destroy(pos.base());
@@ -349,28 +349,37 @@ class vector {
 
         if (size() + n > capacity()) {
             difference_type diff = std::distance(begin(), pos);
-            size_type new_cap = (empty()) ? size() + n : 1;
+            size_type new_cap = (empty()) ? get_newcap(size() + n) : 1;
             reserve(new_cap);
-            pos = begin() + diff; 
+            pos = begin() + diff;
         }
-        
-        end_ = capacity_;
-        
+
         shift_right(pos, n);
 
-        for (size_type i = 0; i < n; ++pos, ++i) {
-            
-            alloc_.destroy(pos.base());
-            alloc_.construct(pos.base(), val);
-            // print_vec();
-            // std::cout << std::endl;
-        }
+        end_ = capacity_;
+
+        range_construct(pos, pos + n, val);
     }
 
-    // template <typename InputIterator>
-    // void insert(iterator pos, InputIterator first, InputIterator last) {
+    template <typename InputIterator>
+    void insert(iterator pos, InputIterator first,
+                typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type last) {
 
-    // }
+        difference_type n = std::distance(first, last);
+        difference_type diff = std::distance(begin(), pos);
+
+        if (size() + n > capacity()) {
+            size_type new_cap = (empty()) ? get_newcap(size() + n) : 1;
+            reserve(new_cap);
+            pos = begin() + diff;
+        }
+
+        shift_right(pos, n);
+
+        end_ += n;
+
+        range_construct(pos, pos + n, first);
+    }
 
     /*
      *  ==================================================
@@ -391,12 +400,14 @@ class vector {
      * Shifts all elements at n position to the right as long as it is inside capacity.
      */
     void shift_right(iterator& pos, size_type n) {
-        
-        iterator cpy = pos;
-        
-        for (; cpy + n != end(); ++cpy) {
+
+        iterator cpy = end() - 1;
+        if (end_ == capacity_)
+            cpy = end();
+
+        for (; cpy >= pos; --cpy) {
             *(cpy + n) = *cpy;
-        }    
+        }
     }
 
     /**
@@ -440,6 +451,24 @@ class vector {
         return new_start;
     }
 
+    void range_construct(iterator& first, iterator last, const value_type& val) {
+
+        for (; first != last; ++first) {
+
+            alloc_.destroy(first.base());
+            alloc_.construct(first.base(), val);
+        }
+    }
+
+    void range_construct(iterator& first, iterator last, iterator& value) {
+
+        for (; first != last; ++first, ++value) {
+
+            alloc_.destroy(first.base());
+            alloc_.construct(first.base(), *value);
+        }
+    }
+
     /**
      * Deallocate elements beginning at start pointer up to capacity()
      */
@@ -451,8 +480,9 @@ class vector {
 
     void print_vec() {
 
-        for (pointer first = start_; first != end_; ++first)
-            std::cout << " " << *first << std::flush;
+        for (pointer first = start_; first != capacity_; ++first)
+            std::cout << *first << " " << std::flush;
+        std::cout << std::endl;
     }
 
     /**
@@ -462,6 +492,20 @@ class vector {
 
         for (; first != last; ++first)
             alloc_.destroy(first);
+    }
+
+    /**
+     * @param Total_elems size() + N new elements
+     * @return Returns new capacity based on final total elements of the vector
+     */
+    size_type get_newcap(const size_type& total_elems) {
+
+        size_type new_cap = capacity();
+
+        if (new_cap >= max_size() / 2)
+            return max_size();
+
+        return std::max(total_elems, new_cap * 2);
     }
 
     /*
@@ -476,6 +520,5 @@ class vector {
     pointer end_;          //* end pointer (one after last element)
     pointer capacity_;     //* A pointer to the maximum allowed elements
 };                         // class vector
-
 
 } // namespace ft
