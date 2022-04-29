@@ -180,68 +180,109 @@ int main(void) {
 
     // }
 
-    //* INSERT 
-    {
-        ft::vector<int> ft_vec;
-        ft::vector<int>::iterator ft_it;
+    //* SINGLE INSERT 
+    // {
+    //     ft::vector<int> ft_vec;
+    //     ft::vector<int>::iterator ft_it;
 
-        std::vector<int> std_vec;
-        std::vector<int>::iterator std_it;
+    //     std::vector<int> std_vec;
+    //     std::vector<int>::iterator std_it;
 
-        for (size_t i = 1; i < 6; ++i) {
-            ft_vec.push_back(i);
-            std_vec.push_back(i);
-        }
+    //     for (size_t i = 1; i < 6; ++i) {
+    //         ft_vec.push_back(i);
+    //         std_vec.push_back(i);
+    //     }
 
-        ft_it = ft_vec.begin() + 3;
-        std_it = std_vec.begin() + 3;
+    //     ft_it = ft_vec.begin() + 3;
+    //     std_it = std_vec.begin() + 3;
         
 
-        // ft_it = ft_vec.end();
-        // std_it = std_vec.end();
+    //     // ft_it = ft_vec.end();
+    //     // std_it = std_vec.end();
 
 
-        std::cout << "STD_VEC before Insert:\n";
-        for (size_t i = 0; i < std_vec.size(); ++i)
-            std::cout << " " << std_vec[i] << std::flush;
+    //     std::cout << "STD_VEC before Insert:\n";
+    //     for (size_t i = 0; i < std_vec.size(); ++i)
+    //         std::cout << " " << std_vec[i] << std::flush;
     
-        std::cout << "\nSTD Capacity: " << std_vec.capacity() << std::endl;
+    //     std::cout << "\nSTD Capacity: " << std_vec.capacity() << std::endl;
         
-        std::cout << "\n" << std::endl;
+    //     std::cout << "\n" << std::endl;
 
-        std::cout << "FT_VEC before Insert:" << std::endl;
-        ft_vec.print_vec();
-        std::cout << "\nFT Capacity: " << ft_vec.capacity() << std::endl;
+    //     std::cout << "FT_VEC before Insert:" << std::endl;
+    //     ft_vec.print_vec();
+    //     std::cout << "\nFT Capacity: " << ft_vec.capacity() << std::endl;
 
-        size_t ft_cap = ft_vec.capacity();
-        size_t std_cap = std_vec.capacity();
+    //     size_t ft_cap = ft_vec.capacity();
+    //     size_t std_cap = std_vec.capacity();
         
-        for (size_t i = 1; i < 15; ++i) {
+    //     for (size_t i = 1; i < 15; ++i) {
 
-            ft_vec.insert(ft_it, 42);
-            if (ft_vec.capacity() > ft_cap){
-                ft_cap = ft_vec.capacity();
-                ft_it = ft_vec.end();
-            }
+    //         ft_vec.insert(ft_it, 42);
+    //         if (ft_vec.capacity() > ft_cap){
+    //             ft_cap = ft_vec.capacity();
+    //             ft_it = ft_vec.end();
+    //         }
 
-            std_vec.insert(std_it, 42);
-            if (std_vec.capacity() > std_cap) {
-                std_cap = std_vec.capacity();    
-                std_it = std_vec.end();
-            }
+    //         std_vec.insert(std_it, 42);
+    //         if (std_vec.capacity() > std_cap) {
+    //             std_cap = std_vec.capacity();    
+    //             std_it = std_vec.end();
+    //         }
+    //     }
+
+        // std::cout << "\nSTD_VEC AFTER Insert:\n";
+        // for (size_t i = 0; i < std_vec.size(); ++i)
+        //     std::cout << " " << std_vec[i] << std::flush;
+        
+        // std::cout << "\nSTD Capacity: " << std_vec.capacity() << std::endl;
+        
+        // std::cout << "\n" << std::endl;
+
+        // std::cout << "FT_VEC AFTER Insert:" << std::endl;
+        // ft_vec.print_vec();
+        // std::cout << "\nFT Capacity: " << ft_vec.capacity() << std::endl;
+    // }
+
+    {
+        ft::vector<int> vec;
+
+        std::vector<int> vec2;
+
+        for (size_t i = 1; i < 11; ++i) {
+            vec.push_back(i);
+            vec2.push_back(i);
         }
 
         std::cout << "\nSTD_VEC AFTER Insert:\n";
-        for (size_t i = 0; i < std_vec.size(); ++i)
-            std::cout << " " << std_vec[i] << std::flush;
+        for (size_t i = 0; i < vec2.size(); ++i)
+            std::cout << " " << vec2[i] << std::flush;
         
-        std::cout << "\nSTD Capacity: " << std_vec.capacity() << std::endl;
+        std::cout << "\nSTD Capacity: " << vec2.capacity() << std::endl;
         
         std::cout << "\n" << std::endl;
 
         std::cout << "FT_VEC AFTER Insert:" << std::endl;
-        ft_vec.print_vec();
-        std::cout << "\nFT Capacity: " << ft_vec.capacity() << std::endl;
+        vec.print_vec();
+        std::cout << "\nFT Capacity: " << vec.capacity() << std::endl;
+
+        ft::vector<int>::iterator it = vec.begin() + 3;
+        std::vector<int>::iterator it2 = vec2.begin() + 3;
+
+        vec.insert(it, 15, 42);
+        vec2.insert(it2, 15, 42);
+
+        std::cout << "\nSTD_VEC AFTER Insert:\n";
+        for (size_t i = 0; i < vec2.size(); ++i)
+            std::cout << " " << vec2[i] << std::flush;
+        
+        std::cout << "\nSTD Capacity: " << vec2.capacity() << std::endl;
+        
+        std::cout << "\n" << std::endl;
+
+        std::cout << "FT_VEC AFTER Insert:" << std::endl;
+        vec.print_vec();
+        std::cout << "\nFT Capacity: " << vec.capacity() << std::endl;
     }
 
     return 0;

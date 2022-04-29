@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/13 10:16:33 by mmondell          #+#    #+#             */
-/*   Updated: 2022/04/28 18:56:44 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/04/29 11:07:36 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include <limits>
 #include <memory>
 #include <iostream>
+#include <unistd.h>
 //#include <vector>
 
 namespace ft {
@@ -208,7 +209,7 @@ class vector {
      *  @return The Vector Maximum Size
      */
     size_type max_size() {
-        const size_t diffmax = std::numeric_limits<difference_type>::max() / sizeof(value_type);
+        const size_t diffmax = std::numeric_limits<difference_type>::max();
         const size_t allocmax = alloc_.max_size();
 
         return std::min(diffmax, allocmax);
@@ -277,6 +278,7 @@ class vector {
     /**
      * Erases all elements in range [first, last].
      * Shifts all elements to the left.
+     * 
      * @return Returns a pointer on the element first + 1.
      * If last == end(), returns an Iterator to end_
      */
@@ -343,9 +345,27 @@ class vector {
         return pos;
     }
 
-    // void insert(iterator pos, size_type n, const T& value) {
+    void insert(iterator pos, size_type n, const T& val) {
 
-    // }
+        if (size() + n > capacity()) {
+            difference_type diff = std::distance(begin(), pos);
+            size_type new_cap = (empty()) ? size() + n : 1;
+            reserve(new_cap);
+            pos = begin() + diff; 
+        }
+        
+        end_ = capacity_;
+        
+        shift_right(pos, n);
+
+        for (size_type i = 0; i < n; ++pos, ++i) {
+            
+            alloc_.destroy(pos.base());
+            alloc_.construct(pos.base(), val);
+            // print_vec();
+            // std::cout << std::endl;
+        }
+    }
 
     // template <typename InputIterator>
     // void insert(iterator pos, InputIterator first, InputIterator last) {
@@ -372,11 +392,13 @@ class vector {
      */
     void shift_right(iterator& pos, size_type n) {
         
-        for (iterator it = end() - 1; it >= pos; --it) {
-            *(it + n) = *it;
-            //alloc_.destroy(it.base());
-        }
+        iterator cpy = pos;
+        
+        for (; cpy + n != end(); ++cpy) {
+            *(cpy + n) = *cpy;
+        }    
     }
+
     /**
      * Shifts all elements to the left inside the vector
      * Increments first iterator
@@ -430,7 +452,7 @@ class vector {
     void print_vec() {
 
         for (pointer first = start_; first != end_; ++first)
-            std::cout << " " << *first;
+            std::cout << " " << *first << std::flush;
     }
 
     /**
