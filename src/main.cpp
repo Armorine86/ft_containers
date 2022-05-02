@@ -6,6 +6,27 @@
 #include <string>
 #include <vector>
 
+
+template <typename T>
+std::ostream& operator<<(std::ostream& os, ft::vector<T>& vec) {
+
+    os << "FT::VEC : ";
+    for (size_t i = 0; i < vec.size(); ++i)
+        os << vec[i] << " ";
+    
+    return os;
+}
+
+template <typename T>
+std::ostream& operator<<(std::ostream& os, std::vector<T> vec)
+{
+    os << "STD::VEC: ";
+    for (size_t i = 0; i < vec.size(); ++i)
+        os << vec[i] << " ";
+    
+    return os;
+}
+
 int main(void) {
 
     // {
@@ -323,37 +344,124 @@ int main(void) {
     //     std::cout << "\nFT Capacity: " << vec.capacity() << std::endl;
     // }
 
+    // {
+    //     ft::vector<int> vec;
+    //     std::vector<int> std_vec;
+
+    //     ft::vector<int>::reverse_iterator r_it;
+    //     std::vector<int>::reverse_iterator std_r_it;
+
+    //     for (size_t i = 1; i < 6; ++i) {
+    //         vec.push_back(i * 5);
+    //         std_vec.push_back(i * 5);
+    //     }
+
+    //     std::cout << "STD_VEC: ";
+    //     for (size_t i = 0; i < std_vec.size(); ++i)
+    //         std::cout << std_vec[i] << " " << std::flush;
+    //     std::cout << std::endl;
+
+    //     std::cout << "FT_VEC : " << std::flush;
+    //     vec.print_vec();
+
+    //     r_it = vec.rbegin();
+    //     std_r_it = std_vec.rbegin();
+
+    //     std::cout << std::endl;
+
+    //     std::cout << "STD *IT: " << *std_r_it << std::endl;
+    //     std::cout << "FT *IT : " << *r_it << std::endl;
+
+    //     r_it = r_it + 4;
+    //     std_r_it = std_r_it + 4;
+
+    //     std::cout << std::endl;
+
+    //     std::cout << "STD IT + 5: " << *std_r_it << std::endl;
+    //     std::cout << "FT IT + 5 : " << *r_it << std::endl;
+
+    //     r_it = r_it + 4;
+    //     std_r_it = std_r_it + 4;
+
+    //     std::cout << std::endl;
+
+    //     std::cout << "STD IT + 5: " << *std_r_it << std::endl;
+    //     std::cout << "FT IT + 5 : " << *r_it << std::endl;
+    // }
+
+    //* REVERSE ITERATORS TEST
+    // {
+    //     const int size = 5;
+    //     ft::vector<int> vct(size);
+    //     ft::vector<int>::reverse_iterator it = vct.rbegin();
+    //     ft::vector<int>::const_reverse_iterator ite = vct.rbegin();
+
+    //     for (int i = 0; i < size; ++i)
+    //         it[i] = (size - i) * 5;
+
+    //     it = it + 5;
+    //     it = 1 + it;
+    //     it = it - 4;
+    //     std::cout << *(it += 2) << std::endl;
+    //     std::cout << *(it -= 1) << std::endl;
+
+    //     *(it -= 2) = 42;
+    //     *(it += 2) = 21;
+
+    //     std::cout << "const_ite +=/-=: " << *(ite += 2) << " | " << *(ite -= 2) << std::endl;
+
+    //     std::cout << "(it == const_it): " << (ite == it) << std::endl;
+    //     std::cout << "(const_ite - it): " << (ite - it) << std::endl;
+    //     std::cout << "(ite + 3 == it): " << (ite + 3 == it) << std::endl;
+    //     std::cout << "#####################################" << std::endl;
+    // }
+
+    // {
+    //     const int size = 5;
+    //     std::vector<int> vct(size);
+    //     std::vector<int>::reverse_iterator it = vct.rbegin();
+    //     std::vector<int>::const_reverse_iterator ite = vct.rbegin();
+
+    //     for (int i = 0; i < size; ++i)
+    //         it[i] = (size - i) * 5;
+
+    //     it = it + 5;
+    //     it = 1 + it;
+    //     it = it - 4;
+    //     std::cout << *(it += 2) << std::endl;
+    //     std::cout << *(it -= 1) << std::endl;
+
+    //     *(it -= 2) = 42;
+    //     *(it += 2) = 21;
+
+    //     std::cout << "const_ite +=/-=: " << *(ite += 2) << " | " << *(ite -= 2) << std::endl;
+
+    //     std::cout << "(it == const_it): " << (ite == it) << std::endl;
+    //     std::cout << "(const_ite - it): " << (ite - it) << std::endl;
+    //     std::cout << "(ite + 3 == it): " << (ite + 3 == it) << std::endl;
+    //     std::cout << "#####################################" << std::endl;
+    // }
+
     {
         ft::vector<int> vec;
-        std::vector<int> std_vec;
+        std::vector<int> vec2;
 
-        ft::vector<int>::reverse_iterator r_it;
-        std::vector<int>::reverse_iterator std_r_it;
-
-        for (size_t i = 1; i < 6; ++i) {
+        for (size_t i = 1; i < 11; ++i) {
             vec.push_back(i * 5);
-            std_vec.push_back(i * 5);
+            vec2.push_back(i * 5);
         }
 
-        std::cout << "STD_VEC: ";
-        for (size_t i = 0; i < std_vec.size(); ++i)
-            std::cout << std_vec[i] << " " << std::flush;
+        std::cout << vec2 << std::endl;
+        std::cout << vec << std::endl;
+
+        vec.resize(15);
+        vec2.resize(15);
+
         std::cout << std::endl;
-
-        std::cout << "FT_VEC: " << std::flush;
-        vec.print_vec();
-
-        r_it = vec.rbegin();
-        std_r_it = std_vec.rbegin();
-
-        std::cout << "STD IT: " << *std_r_it << std::endl;
-        std::cout << "FT IT: " << *r_it << std::endl;
-
-        r_it = r_it + 5;
-        std_r_it = std_r_it + 5;
-
-        std::cout << "STD IT + 5: " << *std_r_it << std::endl;
-        std::cout << "FT IT +: " << *r_it << std::endl;
+        
+        std::cout << vec2 << "\nSize: " << vec2.size() << "\nCapacity: " << vec2.capacity() << std::endl;
+        std::cout << std::endl;
+        std::cout << vec << "\nSize: " << vec.size() << "\nCapacity: " << vec2.capacity() << std::endl;
     }
     return 0;
 }

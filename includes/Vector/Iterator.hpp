@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/13 10:16:30 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/02 13:32:07 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/02 14:27:17 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -352,12 +352,12 @@ inline bool operator>=(const reverse_iterator<Iter>& left, const reverse_iterato
 template <typename Left_Iter, typename Right_Iter>
 inline typename reverse_iterator<Left_Iter>::difference_type operator-( const reverse_iterator<Left_Iter>& left,
                                                                         const reverse_iterator<Right_Iter>& right)
-{ return left.base() - right.base(); }
+{ return right.base() - left.base(); }
 
 template <typename Iter>
 inline typename reverse_iterator<Iter>::difference_type operator-(  const reverse_iterator<Iter>& left,
                                                                     const reverse_iterator<Iter>& right)
-{ return left.base() - right.base(); }
+{ return right.base() - left.base(); }
 
 template <typename Iter>
 inline typename reverse_iterator<Iter>::difference_type operator+(  const reverse_iterator<Iter>& left,

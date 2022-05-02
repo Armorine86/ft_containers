@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/13 10:16:33 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/02 13:38:28 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/02 15:52:13 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -260,12 +260,12 @@ class vector {
     /**
      * Assigns new contents to the vector, replacing its current contents, and modifying its size accordingly.
      * Any elements held in the container before the call are destroyed and replaced by newly constructed elements (no assignments of elements take place).
-     * This causes an automatic reallocation of the allocated storage space if -and only if- the new vector size surpasses the current vector capacity.
+     * This causes an automatic reallocation of the allocated storage space if -and only if- the new vector size surpasses the current vector capacity.j
      */
     void assign(size_type n, const value_type& val) {
 
         clear();
-        fill_construct(val, n);
+        vec_init(val, n);
     }
 
     /**
@@ -327,7 +327,7 @@ class vector {
     void push_back(const value_type& value) {
 
         if (end_ == capacity_) {
-            size_type new_cap = (empty()) ? size() * 2 : 1;
+            size_type new_cap = (empty()) ? get_newcap(size() + 1) : 1;
             reserve(new_cap);
         }
         alloc_.construct(end_, value);
@@ -406,6 +406,17 @@ class vector {
         range_construct(pos, pos + n, first);
     }
 
+    void resize(size_type n, value_type val = value_type()) {
+
+        if (size() > n) {
+            pointer new_end = end_ - n;
+            range_destroy(new_end, end_);
+            end_ = new_end;
+        }
+        else if (n > size())
+            insert(end(), n - size(), val);
+    }
+
     /*
      *  ==================================================
      *  |          PRIVATE MEMBERS FUNCTIONS             |
@@ -457,9 +468,18 @@ class vector {
 
         for (size_type i = 0; i != n; ++i) {
             alloc_.construct(end_, val);
-            end_++;
+            ++end_;
         }
     }
+    
+    void fill_construct(pointer pos, value_type& val, size_type n) {
+        
+        for (size_type i = 0; i != n; ++i) {
+            alloc_.construct(pos, val);
+            ++pos;
+        }
+    }
+    
     template <typename InputIterator>
     void vec_init(InputIterator first, InputIterator last, std::input_iterator_tag) {
 
