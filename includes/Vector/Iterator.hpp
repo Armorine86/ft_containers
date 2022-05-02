@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/13 10:16:30 by mmondell          #+#    #+#             */
-/*   Updated: 2022/04/26 09:47:20 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/02 13:32:07 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ class normal_iterator {
     //* ========== Constructors ===========
 
     normal_iterator() : elem(It_Type()) {}
+
     explicit normal_iterator(const iterator_type& iter) : elem(iter) {}
 
     template <typename Iter>
@@ -88,9 +89,9 @@ class normal_iterator {
     reference operator[](difference_type n) { return elem[n]; }
 
     normal_iterator& operator+=(difference_type n)  { elem += n; return *this; }
-    normal_iterator operator+(difference_type n)    { return normal_iterator(elem + n); }
+    normal_iterator operator+(difference_type n) const  { return normal_iterator(elem + n); }
     normal_iterator& operator-=(difference_type n)  { elem -= n; return *this; }
-    normal_iterator operator-(difference_type n)    { return normal_iterator(elem - n); }
+    normal_iterator operator-(difference_type n) const   { return normal_iterator(elem - n); }
 
     const iterator_type& base() const { return elem; }
     // clang-format on
@@ -101,7 +102,7 @@ class normal_iterator {
 //* ============================================
 
 template <typename It_Type>
-class reverse_iterator : public ft::iterator<typename iterator_traits<It_Type>::iterator_category,
+class reverse_iterator : public std::iterator<typename iterator_traits<It_Type>::iterator_category,
                                              typename iterator_traits<It_Type>::value_type,
                                              typename iterator_traits<It_Type>::difference_type,
                                              typename iterator_traits<It_Type>::pointer,
@@ -112,16 +113,19 @@ class reverse_iterator : public ft::iterator<typename iterator_traits<It_Type>::
 
     // clang-format off
   public:
-    typedef It_Type iterator_type;
-    typedef typename trait_type::iterator_categrory iterator_categrory;
-    typedef typename trait_type::value_type         value_type;
-    typedef typename trait_type::difference_type    difference_type;
-    typedef typename trait_type::reference          reference;
-    typedef typename trait_type::pointer            pointer;
+    typedef          It_Type                                      iterator_type;
+    typedef typename iterator_traits<It_Type>::iterator_category  iterator_category;
+    typedef typename iterator_traits<It_Type>::value_type         value_type;
+    typedef typename iterator_traits<It_Type>::difference_type    difference_type;
+    typedef typename iterator_traits<It_Type>::reference          reference;
+    typedef typename iterator_traits<It_Type>::pointer            pointer;
     // clang-format on
 
-    reverse_iterator() : elem(It_Type()) {}
-    explicit reverse_iterator(const iterator_type& iter) : elem(iter) {}
+    reverse_iterator() : elem() {}
+
+    reverse_iterator(const reverse_iterator& it) : elem(it.elem) {}
+
+    explicit reverse_iterator(iterator_type it) : elem(it) {}
 
     template <typename Iter>
     reverse_iterator(const reverse_iterator<Iter>& it) : elem(it.base()) {}
@@ -147,10 +151,11 @@ class reverse_iterator : public ft::iterator<typename iterator_traits<It_Type>::
 
     reverse_iterator& operator+=(difference_type n)     { elem -= n; return *this; }
     reverse_iterator operator+(difference_type n) const { return reverse_iterator(elem - n); }
+    
     reverse_iterator& operator-=(difference_type n)     { elem += n; return *this; }
     reverse_iterator operator-(difference_type n) const { return reverse_iterator(elem + n); }
 
-    const iterator_type& base() const { return elem; }
+    iterator_type base() const { return elem; }
     // clang-format on
 };
 
@@ -343,22 +348,26 @@ inline bool operator>=(const reverse_iterator<Iter>& left, const reverse_iterato
     return left.base() >= right.base();
 }
 
+// clang-format off
 template <typename Left_Iter, typename Right_Iter>
-inline typename reverse_iterator<Left_Iter>::difference_type
-operator-(const reverse_iterator<Left_Iter>& left, const reverse_iterator<Right_Iter>& right) {
-    return left.base() - right.base();
-}
+inline typename reverse_iterator<Left_Iter>::difference_type operator-( const reverse_iterator<Left_Iter>& left,
+                                                                        const reverse_iterator<Right_Iter>& right)
+{ return left.base() - right.base(); }
 
 template <typename Iter>
-inline typename reverse_iterator<Iter>::difference_type
-operator-(const reverse_iterator<Iter>& left, const reverse_iterator<Iter>& right) {
-    return left.base() - right.base();
-}
+inline typename reverse_iterator<Iter>::difference_type operator-(  const reverse_iterator<Iter>& left,
+                                                                    const reverse_iterator<Iter>& right)
+{ return left.base() - right.base(); }
 
 template <typename Iter>
-inline typename reverse_iterator<Iter>::difference_type
-operator+(const reverse_iterator<Iter>& left, const reverse_iterator<Iter>& right) {
-    return left.base() + right.base();
-}
+inline typename reverse_iterator<Iter>::difference_type operator+(  const reverse_iterator<Iter>& left,
+                                                                    const reverse_iterator<Iter>& right)
+{ return left.base() + right.base();}
+
+template <typename Iter>
+inline reverse_iterator<Iter> operator+( typename reverse_iterator<Iter>::difference_type n,
+                                         const reverse_iterator<Iter>& it)
+{ return reverse_iterator<Iter>(it.base() - n); }
+// clang-format on
 
 } // namespace ft

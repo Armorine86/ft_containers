@@ -241,40 +241,40 @@ int main(void) {
     // }
 
     //* INSERT N ELEMENTS
-    {
-        ft::vector<int> vec;
+    // {
+    //     ft::vector<int> vec;
 
-        std::vector<int> vec2;
+    //     std::vector<int> vec2;
 
-        for (size_t i = 1; i < 11; ++i) {
-            vec.push_back(i);
-            vec2.push_back(i);
-        }
+    //     for (size_t i = 1; i < 11; ++i) {
+    //         vec.push_back(i);
+    //         vec2.push_back(i);
+    //     }
 
-        std::cout << "\nSTD_VEC BEFORE Insert ---> Capacity: " << vec2.capacity() << std::endl;
-        for (size_t i = 0; i < vec2.size(); ++i)
-            std::cout << vec2[i] << " " << std::flush;
+    //     std::cout << "\nSTD_VEC BEFORE Insert ---> Capacity: " << vec2.capacity() << std::endl;
+    //     for (size_t i = 0; i < vec2.size(); ++i)
+    //         std::cout << vec2[i] << " " << std::flush;
 
-        std::cout << "\n" << std::endl;
+    //     std::cout << "\n" << std::endl;
 
-        std::cout << "FT_VEC BEFORE Insert ---> Capacity: " << vec.capacity() << std::endl;
-        vec.print_vec();
+    //     std::cout << "FT_VEC BEFORE Insert ---> Capacity: " << vec.capacity() << std::endl;
+    //     vec.print_vec();
 
-        ft::vector<int>::iterator it = vec.begin() + 5;
-        std::vector<int>::iterator it2 = vec2.begin() + 5;
+    //     ft::vector<int>::iterator it = vec.begin() + 5;
+    //     std::vector<int>::iterator it2 = vec2.begin() + 5;
 
-        vec.insert(it, 7, 42);
-        vec2.insert(it2, 7, 42);
+    //     vec.insert(it, 7, 42);
+    //     vec2.insert(it2, 7, 42);
 
-        std::cout << "\nSTD_VEC AFTER Insert ---> Capacity: " << vec2.capacity() << std::endl;
-        for (size_t i = 0; i < vec2.capacity(); ++i)
-            std::cout << vec2[i] << " " << std::flush;
+    //     std::cout << "\nSTD_VEC AFTER Insert ---> Capacity: " << vec2.capacity() << std::endl;
+    //     for (size_t i = 0; i < vec2.capacity(); ++i)
+    //         std::cout << vec2[i] << " " << std::flush;
 
-        std::cout << "\n" << std::endl;
+    //     std::cout << "\n" << std::endl;
 
-        std::cout << "FT_VEC AFTER Insert ---> Capacity: " << vec.capacity() << std::endl;
-        vec.print_vec();
-    }
+    //     std::cout << "FT_VEC AFTER Insert ---> Capacity: " << vec.capacity() << std::endl;
+    //     vec.print_vec();
+    // }
 
     //* INSERT ARRAY
     // {
@@ -323,5 +323,37 @@ int main(void) {
     //     std::cout << "\nFT Capacity: " << vec.capacity() << std::endl;
     // }
 
+    {
+        ft::vector<int> vec;
+        std::vector<int> std_vec;
+
+        ft::vector<int>::reverse_iterator r_it;
+        std::vector<int>::reverse_iterator std_r_it;
+
+        for (size_t i = 1; i < 6; ++i) {
+            vec.push_back(i * 5);
+            std_vec.push_back(i * 5);
+        }
+
+        std::cout << "STD_VEC: ";
+        for (size_t i = 0; i < std_vec.size(); ++i)
+            std::cout << std_vec[i] << " " << std::flush;
+        std::cout << std::endl;
+
+        std::cout << "FT_VEC: " << std::flush;
+        vec.print_vec();
+
+        r_it = vec.rbegin();
+        std_r_it = std_vec.rbegin();
+
+        std::cout << "STD IT: " << *std_r_it << std::endl;
+        std::cout << "FT IT: " << *r_it << std::endl;
+
+        r_it = r_it + 5;
+        std_r_it = std_r_it + 5;
+
+        std::cout << "STD IT + 5: " << *std_r_it << std::endl;
+        std::cout << "FT IT +: " << *r_it << std::endl;
+    }
     return 0;
 }

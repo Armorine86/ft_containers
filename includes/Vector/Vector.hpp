@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/13 10:16:33 by mmondell          #+#    #+#             */
-/*   Updated: 2022/04/29 13:21:04 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/02 12:56:14 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,6 +116,7 @@ class vector {
     ~vector() { deallocate_vec(); };
 
     allocator_type get_allocator() const { return allocator_type(); }
+
     /*
      *  ==================================================
      *  |           PUBLIC MEMBER FUNCTIONS              |
@@ -188,13 +189,13 @@ class vector {
 
     iterator begin() { return iterator(start_); }
     const_iterator begin() const { return const_iterator(start_); }
-    reverse_iterator rbegin() { return reverse_iterator(end_ - 1); }
-    const_reverse_iterator rbegin() const { return const_reverse_iterator(end_ - 1); }
+    reverse_iterator rbegin() { return reverse_iterator(end()); }
+    const_reverse_iterator rbegin() const { return const_reverse_iterator(end()); }
 
     iterator end() { return iterator(end_); }
     const_iterator end() const { return iterator(end_); }
-    reverse_iterator rend() { return reverse_iterator(start_); }
-    const_reverse_iterator rend() const { return const_reverse_iterator(start_); }
+    reverse_iterator rend() { return reverse_iterator(begin()); }
+    const_reverse_iterator rend() const { return const_reverse_iterator(begin()); }
 
     //* =============== CAPACITY FUNCTIONS ===============
 
@@ -480,7 +481,7 @@ class vector {
 
     void print_vec() {
 
-        for (pointer first = start_; first != capacity_; ++first)
+        for (pointer first = start_; first != end_; ++first)
             std::cout << *first << " " << std::flush;
         std::cout << std::endl;
     }
