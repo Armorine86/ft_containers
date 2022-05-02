@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/13 10:16:33 by mmondell          #+#    #+#             */
-/*   Updated: 2022/04/29 13:21:04 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/04/29 16:21:54 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -256,11 +256,17 @@ class vector {
         vec_init(first, last, category());
     }
 
+    /**
+     * Assigns new contents to the vector, replacing its current contents, and modifying its size accordingly.
+     * Any elements held in the container before the call are destroyed and replaced by newly constructed elements (no assignments of elements take place).
+     * This causes an automatic reallocation of the allocated storage space if -and only if- the new vector size surpasses the current vector capacity.
+     */
     void assign(size_type n, const value_type& val) {
 
         clear();
         fill_construct(val, n);
     }
+
     /**
      * Erase element at position pos.
      */
@@ -305,6 +311,14 @@ class vector {
     void clear() { erase(iterator(start_), iterator(end_)); }
 
     /**
+     * Destroys the last element of the vector, reducing size by one.
+     */
+    void pop_back() {
+        --end_;
+        alloc_.destroy(end_);
+    }
+    
+    /**
      * Adds a single element at the end of the vector.
      * If Capacity is reached, reallocate size() * 2,
      * If Vector is empty, allocate 1
@@ -345,6 +359,11 @@ class vector {
         return pos;
     }
 
+    /**
+     * Inserts N elements of value val at position pos.
+     * Capacity will be the highest of either size() + n or capacity * 2
+     * if a reallocation is needed
+     */ 
     void insert(iterator pos, size_type n, const T& val) {
 
         if (size() + n > capacity()) {
@@ -361,6 +380,11 @@ class vector {
         range_construct(pos, pos + n, val);
     }
 
+    /**
+     * Insert a range of element at position pos from [first, last].
+     * Capacity will be the highest of either size() + n or capacity * 2
+     * if a reallocation is needed
+     */
     template <typename InputIterator>
     void insert(iterator pos, InputIterator first,
                 typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type last) {
@@ -515,7 +539,7 @@ class vector {
      */
 
   private:
-    allocator_type alloc_; //* the Allocator type which takes the type to allocate
+    allocator_type alloc_; //* the Allocator type which takes generic type T to allocate the vector
     pointer start_;        //* start pointer to first element
     pointer end_;          //* end pointer (one after last element)
     pointer capacity_;     //* A pointer to the maximum allowed elements
