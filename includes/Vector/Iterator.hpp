@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/13 10:16:30 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/02 14:27:17 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/02 23:23:41 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,10 +103,10 @@ class normal_iterator {
 
 template <typename It_Type>
 class reverse_iterator : public std::iterator<typename iterator_traits<It_Type>::iterator_category,
-                                             typename iterator_traits<It_Type>::value_type,
-                                             typename iterator_traits<It_Type>::difference_type,
-                                             typename iterator_traits<It_Type>::pointer,
-                                             typename iterator_traits<It_Type>::reference> {
+                                              typename iterator_traits<It_Type>::value_type,
+                                              typename iterator_traits<It_Type>::difference_type,
+                                              typename iterator_traits<It_Type>::pointer,
+                                              typename iterator_traits<It_Type>::reference> {
   protected:
     typedef iterator_traits<It_Type> trait_type;
     It_Type elem;
@@ -267,6 +267,13 @@ operator+(const normal_iterator<Iter, Container>& left,
     return left.base() + right.base();
 }
 
+template <typename Iter, typename Container>
+inline normal_iterator<Iter, Container>
+operator+(typename normal_iterator<Iter, Container>::difference_type n,
+          const normal_iterator<Iter, Container>& it) {
+    return normal_iterator<Iter, Container>(it.base() + n);
+}
+
 //* ============================================
 //* |     REVERSE ITERATORS BOOL OPERATORS     |
 //* ============================================
@@ -302,24 +309,24 @@ inline bool operator!=(const reverse_iterator<Iter>& left, const reverse_iterato
 template <typename Left_Iter, typename Right_Iter>
 inline bool operator<(const reverse_iterator<Left_Iter>& left,
                       const reverse_iterator<Right_Iter>& right) {
-    return left.base() < right.base();
+    return left.base() > right.base();
 }
 
 template <typename Iter>
 inline bool operator<(const reverse_iterator<Iter>& left, const reverse_iterator<Iter>& right) {
-    return left.base() < right.base();
+    return left.base() > right.base();
 }
 
 //* ============ GREATER THAN ============
 template <typename Left_Iter, typename Right_Iter>
 inline bool operator>(const reverse_iterator<Left_Iter>& left,
                       const reverse_iterator<Right_Iter>& right) {
-    return left.base() > right.base();
+    return left.base() < right.base();
 }
 
 template <typename Iter>
 inline bool operator>(const reverse_iterator<Iter>& left, const reverse_iterator<Iter>& right) {
-    return left.base() > right.base();
+    return left.base() < right.base();
 }
 
 //* ============ SMALLER OR EQUAL ============
@@ -327,12 +334,12 @@ inline bool operator>(const reverse_iterator<Iter>& left, const reverse_iterator
 template <typename Left_Iter, typename Right_Iter>
 inline bool operator<=(const reverse_iterator<Left_Iter>& left,
                        const reverse_iterator<Right_Iter>& right) {
-    return left.base() <= right.base();
+    return left.base() >= right.base();
 }
 
 template <typename Iter>
 inline bool operator<=(const reverse_iterator<Iter>& left, const reverse_iterator<Iter>& right) {
-    return left.base() <= right.base();
+    return left.base() >= right.base();
 }
 
 //* ============ GREATER OR EQUAL ============
@@ -340,12 +347,12 @@ inline bool operator<=(const reverse_iterator<Iter>& left, const reverse_iterato
 template <typename Left_Iter, typename Right_Iter>
 inline bool operator>=(const reverse_iterator<Left_Iter>& left,
                        const reverse_iterator<Right_Iter>& right) {
-    return left.base() >= right.base();
+    return left.base() <= right.base();
 }
 
 template <typename Iter>
 inline bool operator>=(const reverse_iterator<Iter>& left, const reverse_iterator<Iter>& right) {
-    return left.base() >= right.base();
+    return left.base() <= right.base();
 }
 
 // clang-format off

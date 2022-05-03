@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/19 08:41:30 by mmondell          #+#    #+#             */
-/*   Updated: 2022/04/25 09:41:54 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/02 20:24:36 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,6 @@ struct iterator_traits<T*> {
 };
 
 //* T& Specialization
-
 template <typename T>
 struct iterator_traits<const T*> {
     typedef T value_type;

@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/13 10:16:33 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/02 20:06:05 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/02 23:09:51 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,10 +69,6 @@ class vector {
 
         check_size(n);
 
-        start_ = alloc_.allocate(n);
-        end_ = start_;
-        capacity_ = start_ + n;
-
         fill_construct(val, n);
     }
 
@@ -93,23 +89,23 @@ class vector {
         : alloc_(alloc), start_(), end_(), capacity_() {
 
         typedef typename iterator_traits<vector::iterator>::iterator_category category;
-        vec_init(first, last, category());
+        range_construct(first, last, category());
     }
 
     //* Copy Constructor
     vector(const vector& src) : alloc_(src.alloc_), start_(), end_(), capacity_() {
 
         typedef typename iterator_traits<vector::iterator>::iterator_category category;
-        vec_init(src.start_, src.end_, category());
+        range_construct(src.start_, src.end_, category());
     }
 
     //* Operator= Constructor
     vector& operator=(const vector& rhs) {
         if (this == &rhs)
             return *this;
-        
+
         assign(rhs.begin(), rhs.end());
-        
+
         return *this;
     }
 
@@ -203,7 +199,7 @@ class vector {
     /**
      * @return returns TRUE if the container is empty
      */
-    bool empty() { return size(); }
+    bool empty() const { return (size() == 0) ? true : false; }
 
     /**
      *  @param diffmax the maximum elements of type T
@@ -251,22 +247,26 @@ class vector {
     //* =============== MODIFIERS FUNCTIONS ===============
 
     template <typename InputIterator>
-    void assign(InputIterator first, InputIterator last) {
+    void assign(InputIterator first,
+                typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type last) {
 
         typedef typename iterator_traits<InputIterator>::iterator_category category;
         clear();
-        vec_init(first, last, category());
+        range_construct(first, last, category());
     }
 
     /**
-     * Assigns new contents to the vector, replacing its current contents, and modifying its size accordingly.
-     * Any elements held in the container before the call are destroyed and replaced by newly constructed elements (no assignments of elements take place).
-     * This causes an automatic reallocation of the allocated storage space if -and only if- the new vector size surpasses the current vector capacity.j
+     * Assigns new contents to the vector, replacing its current contents, and modifying its size
+     * accordingly. Any elements held in the container before the call are destroyed and replaced by
+     * newly constructed elements (no assignments of elements take place). This causes an automatic
+     * reallocation of the allocated storage space if -and only if- the new vector size surpasses
+     * the current vector capacity.j
      */
     void assign(size_type n, const value_type& val) {
 
         clear();
-        vec_init(val, n);
+        alloc_.deallocate(start_, capacity());
+        fill_construct(val, n);
     }
 
     /**
@@ -292,7 +292,7 @@ class vector {
      */
     iterator erase(iterator first, iterator last) {
 
-        if (last == end())
+        if (first == end())
             return end();
 
         difference_type diff = std::distance(first, last);
@@ -310,7 +310,7 @@ class vector {
     /**
      * Erases all elements from the container.
      */
-    void clear() { erase(iterator(start_), iterator(end_)); }
+    void clear() { erase(begin(), end()); }
 
     /**
      * Destroys the last element of the vector, reducing size by one.
@@ -319,7 +319,7 @@ class vector {
         --end_;
         alloc_.destroy(end_);
     }
-    
+
     /**
      * Adds a single element at the end of the vector.
      * If Capacity is reached, reallocate size() * 2,
@@ -328,7 +328,7 @@ class vector {
     void push_back(const value_type& value) {
 
         if (end_ == capacity_) {
-            size_type new_cap = (empty()) ? get_newcap(size() + 1) : 1;
+            size_type new_cap = (!empty()) ? get_newcap(size() + 1) : 1;
             reserve(new_cap);
         }
         alloc_.construct(end_, value);
@@ -346,7 +346,7 @@ class vector {
         if (end_ == capacity_) {
 
             difference_type diff = std::distance(begin(), pos);
-            size_type new_cap = (empty()) ? get_newcap(n) : 1;
+            size_type new_cap = (!empty()) ? get_newcap(size() + n) : 1;
             reserve(new_cap);
             pos = begin() + diff;
         }
@@ -365,12 +365,13 @@ class vector {
      * Inserts N elements of value val at position pos.
      * Capacity will be the highest of either size() + n or capacity * 2
      * if a reallocation is needed
-     */ 
+     */
     void insert(iterator pos, size_type n, const T& val) {
 
+        difference_type diff = std::distance(begin(), pos);
+
         if (size() + n > capacity()) {
-            difference_type diff = std::distance(begin(), pos);
-            size_type new_cap = (empty()) ? get_newcap(size() + n) : 1;
+            size_type new_cap = (!empty()) ? get_newcap(size() + n) : capacity() + n;
             reserve(new_cap);
             pos = begin() + diff;
         }
@@ -378,8 +379,10 @@ class vector {
         shift_right(pos, n);
 
         end_ += n;
-
-        range_construct(pos, pos + n, val);
+        for (size_type i = 0; i < n; ++i) {
+            alloc_.construct(pos.base(), val);
+            ++pos;
+        }
     }
 
     /**
@@ -395,39 +398,37 @@ class vector {
         difference_type diff = std::distance(begin(), pos);
 
         if (size() + n > capacity()) {
-            size_type new_cap = (empty()) ? get_newcap(size() + n) : 1;
+            size_type new_cap = (!empty()) ? get_newcap(size() + n) : capacity() + n;
             reserve(new_cap);
             pos = begin() + diff;
         }
 
         shift_right(pos, n);
 
-        end_ += n;
-
-        range_construct(pos, pos + n, first);
+        pointer ptr = start_ + diff;
+        range_construct(ptr, first, last);
     }
 
     /**
      * Resizes the container so that it contains n elements.
-     * 
+     *
      * if n < size(), the container is reduced to its first n elements.
-     * 
+     *
      * if size() > n, the container is expanded to contains a total of n elements
      * The elements are added to the end
-     */ 
+     */
     void resize(size_type n, value_type val = value_type()) {
 
         if (size() > n) {
-            pointer new_end = end_ - n;
+            pointer new_end = start_ + n;
             range_destroy(new_end, end_);
             end_ = new_end;
-        }
-        else if (n > size())
+        } else if (n > size())
             insert(end(), n - size(), val);
     }
 
     void swap(vector& vec) {
-        
+
         pointer tmp_start = vec.start_;
         pointer tmp_end = vec.end_;
         pointer tmp_cap = vec.capacity_;
@@ -439,7 +440,6 @@ class vector {
         this->start_ = tmp_start;
         this->end_ = tmp_end;
         this->capacity_ = tmp_cap;
-        
     }
 
     /*
@@ -491,25 +491,52 @@ class vector {
      */
     void fill_construct(const value_type& val, size_type n) {
 
+        start_ = alloc_.allocate(n);
+        end_ = start_;
+        capacity_ = start_ + n;
+
         for (size_type i = 0; i != n; ++i) {
             alloc_.construct(end_, val);
             ++end_;
         }
     }
-    
+
     void fill_construct(pointer pos, value_type& val, size_type n) {
-        
+
         for (size_type i = 0; i != n; ++i) {
             alloc_.construct(pos, val);
             ++pos;
         }
     }
-    
+
     template <typename InputIterator>
-    void vec_init(InputIterator first, InputIterator last, std::input_iterator_tag) {
+    void range_construct(InputIterator first, InputIterator last, std::input_iterator_tag) {
 
         for (; first != last; ++first)
             push_back(*first);
+    }
+
+    template <typename ForwardIterator>
+    void range_construct(ForwardIterator first, ForwardIterator last, std::forward_iterator_tag) {
+
+        difference_type n = std::distance(first, last);
+
+        start_ = alloc_.allocate(n);
+        end_ = start_;
+        capacity_ = start_ + n;
+
+        for (; first != last; ++first) {
+            alloc_.construct(end_, *first);
+            ++end_;
+        }
+    }
+
+    template <typename ForwardIterator>
+    void range_construct(pointer pos, ForwardIterator first, ForwardIterator last) {
+        for (; first != last; ++first, (void)++pos) {
+            alloc_.construct(pos, *first);
+            ++end_;
+        }
     }
 
     template <typename Iter>
@@ -521,24 +548,6 @@ class vector {
         return new_start;
     }
 
-    void range_construct(iterator& first, iterator last, const value_type& val) {
-
-        for (; first != last; ++first) {
-
-            alloc_.destroy(first.base());
-            alloc_.construct(first.base(), val);
-        }
-    }
-
-    void range_construct(iterator& first, iterator last, iterator& value) {
-
-        for (; first != last; ++first, ++value) {
-
-            alloc_.destroy(first.base());
-            alloc_.construct(first.base(), *value);
-        }
-    }
-
     /**
      * Deallocate elements beginning at start pointer up to capacity()
      */
@@ -546,13 +555,6 @@ class vector {
 
         clear();
         alloc_.deallocate(start_, capacity());
-    }
-
-    void print_vec() {
-
-        for (pointer first = start_; first != end_; ++first)
-            std::cout << *first << " " << std::flush;
-        std::cout << std::endl;
     }
 
     /**
@@ -590,5 +592,12 @@ class vector {
     pointer end_;          //* end pointer (one after last element)
     pointer capacity_;     //* A pointer to the maximum allowed elements
 };                         // class vector
+
+/*
+*  ==================================================
+*  |             NON-MEMBER FUNCTIONS               |
+*  ==================================================
+*/
+
 
 } // namespace ft
