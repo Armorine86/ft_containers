@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/13 10:16:33 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/02 15:52:13 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/02 20:06:05 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,6 @@
 #include <iostream>
 #include <limits>
 #include <memory>
-#include <unistd.h>
-//#include <vector>
 
 namespace ft {
 
@@ -102,14 +100,17 @@ class vector {
     vector(const vector& src) : alloc_(src.alloc_), start_(), end_(), capacity_() {
 
         typedef typename iterator_traits<vector::iterator>::iterator_category category;
-        vec_init(src.first, src.last, category());
+        vec_init(src.start_, src.end_, category());
     }
 
     //* Operator= Constructor
     vector& operator=(const vector& rhs) {
         if (this == &rhs)
             return *this;
+        
         assign(rhs.begin(), rhs.end());
+        
+        return *this;
     }
 
     //* Destructor
@@ -209,7 +210,7 @@ class vector {
      *  @param allocmax the maximum memory allocation
      *  @return The Vector Maximum Size
      */
-    size_type max_size() {
+    size_type max_size() const {
         const size_t diffmax = std::numeric_limits<difference_type>::max();
         const size_t allocmax = alloc_.max_size();
 
@@ -219,7 +220,7 @@ class vector {
     /**
      * @return The number of elements in the Vector
      */
-    size_type size() { return static_cast<size_type>(end_ - start_); }
+    size_type size() const { return static_cast<size_type>(end_ - start_); }
 
     /**
      * Increase the capacity to a value that's greater or equal to new_cap.
@@ -376,7 +377,7 @@ class vector {
 
         shift_right(pos, n);
 
-        end_ = capacity_;
+        end_ += n;
 
         range_construct(pos, pos + n, val);
     }
@@ -406,6 +407,14 @@ class vector {
         range_construct(pos, pos + n, first);
     }
 
+    /**
+     * Resizes the container so that it contains n elements.
+     * 
+     * if n < size(), the container is reduced to its first n elements.
+     * 
+     * if size() > n, the container is expanded to contains a total of n elements
+     * The elements are added to the end
+     */ 
     void resize(size_type n, value_type val = value_type()) {
 
         if (size() > n) {
@@ -415,6 +424,22 @@ class vector {
         }
         else if (n > size())
             insert(end(), n - size(), val);
+    }
+
+    void swap(vector& vec) {
+        
+        pointer tmp_start = vec.start_;
+        pointer tmp_end = vec.end_;
+        pointer tmp_cap = vec.capacity_;
+
+        vec.start_ = this->start_;
+        vec.end_ = this->end_;
+        vec.capacity_ = this->capacity_;
+
+        this->start_ = tmp_start;
+        this->end_ = tmp_end;
+        this->capacity_ = tmp_cap;
+        
     }
 
     /*

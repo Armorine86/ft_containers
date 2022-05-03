@@ -9,7 +9,7 @@ CC 					=	clang++
 CFLAGS				=	-Wall -Werror -Wextra -Wpedantic -std=c++98
 RM					=	rm -rf
 
-INC_FILES 			=	defines.hpp colors.hpp
+COLORS 				=	colors.hpp
 
 SRC_FILES			=	main.cpp
 
@@ -39,13 +39,14 @@ SRCS 				=	$(addprefix $(SRCS_PATH), $(SRC_FILES))
 OBJS_FILES			= 	$(SRC_FILES:.cpp=.o) #$(VECTOR_FILES:.cpp=.o) $(STACK_FILES:.cpp=.o)\
 						$(MAP_FILES:.cpp=.o) $(TESTER_FILES:.cpp=.o)
 
-INCLUDES			=	$(addprefix $(INC_PATH), $(INC_FILES))	
+# INCLUDES			=	$(addprefix $(INC_PATH), $(INC_FILES))	
 OBJS 				=	$(addprefix $(OBJS_PATH), $(OBJS_FILES))
 
 VPATH				=	$(SRCS_PATH) #$(VECTOR_PATH) $(STACK_PATH) $(MAP_PATH) $(TESTER_PATH)
 
 ALL_INCLUDES		= 	$(addprefix $(INC_PATH), $(VECTOR_PATH)) \
 						$(addprefix $(INC_PATH), $(STACK_PATH)) \
+						$(addprefix $(INC_PATH), $(COLORS))		\
 						# $(MAP_PATH) \
 						$(TESTER_PATH) \
 

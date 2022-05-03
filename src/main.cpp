@@ -5,7 +5,9 @@
 #include <ostream>
 #include <string>
 #include <vector>
+#include "colors.hpp"
 
+#define T_SIZE_TYPE typename ft::vector<T>::size_type
 
 template <typename T>
 std::ostream& operator<<(std::ostream& os, ft::vector<T>& vec) {
@@ -27,8 +29,129 @@ std::ostream& operator<<(std::ostream& os, std::vector<T> vec)
     return os;
 }
 
+template <typename T>
+void	printSize(ft::vector<T> const &vct, bool print_content = true)
+{
+	const T_SIZE_TYPE size = vct.size();
+	const T_SIZE_TYPE capacity = vct.capacity();
+	const std::string isCapacityOk = (capacity >= size) ? "OK" : "KO";
+	// Cannot limit capacity's max value because it's implementation dependent
+
+	std::cout << "size: " << size << std::endl;
+	std::cout << "capacity: " << isCapacityOk << std::endl;
+	std::cout << "max_size: " << vct.max_size() << std::endl;
+	if (print_content)
+	{
+		typename ft::vector<T>::const_iterator it = vct.begin();
+		typename ft::vector<T>::const_iterator ite = vct.end();
+		std::cout << std::endl << "Content is:" << std::endl;
+		for (; it != ite; ++it)
+			std::cout << "- " << *it << std::endl;
+	}
+	std::cout << "###############################################" << std::endl;
+}
+
+template <typename T>
+void	printSize(std::vector<T> const &vct, bool print_content = true)
+{
+	const T_SIZE_TYPE size = vct.size();
+	const T_SIZE_TYPE capacity = vct.capacity();
+	const std::string isCapacityOk = (capacity >= size) ? "OK" : "KO";
+	// Cannot limit capacity's max value because it's implementation dependent
+
+	std::cout << "size: " << size << std::endl;
+	std::cout << "capacity: " << isCapacityOk << std::endl;
+	std::cout << "max_size: " << vct.max_size() << std::endl;
+	if (print_content)
+	{
+		typename std::vector<T>::const_iterator it = vct.begin();
+		typename std::vector<T>::const_iterator ite = vct.end();
+		std::cout << std::endl << "Content is:" << std::endl;
+		for (; it != ite; ++it)
+			std::cout << "- " << *it << std::endl;
+	}
+	std::cout << "###############################################" << std::endl;
+}
+
 int main(void) {
 
+    {
+        std::cout << GREEN << "==========================================\n";
+        std::cout << "|             FT_VECTORS             |\n";
+        std::cout << "==========================================\n" << END << std::endl;
+
+        ft::vector<int> vct(5);
+        ft::vector<int>::iterator it = vct.begin(), ite = vct.end();
+
+        std::cout << "len: " << (ite - it) << std::endl;
+        for (; it != ite; ++it)
+            *it = (ite - it);
+
+        it = vct.begin();
+        ft::vector<int> vct_range(it, --(--ite));
+        for (int i = 0; it != ite; ++it)
+            *it = ++i * 5;
+
+        it = vct.begin();
+        ft::vector<int> vct_copy(vct);
+        for (int i = 0; it != ite; ++it)
+            *it = ++i * 7;
+        vct_copy.push_back(42);
+        vct_copy.push_back(21);
+
+        std::cout << "\t-- PART ONE --" << std::endl;
+        printSize(vct);
+        printSize(vct_range);
+        printSize(vct_copy);
+
+        vct = vct_copy;
+        vct_copy = vct_range;
+        vct_range.clear();
+
+        std::cout << "\t-- PART TWO --" << std::endl;
+        printSize(vct);
+        printSize(vct_range);
+        printSize(vct_copy);
+    }
+
+    {
+        std::cout << GREEN << "==========================================\n";
+        std::cout << "|             STD_VECTORS            |\n";
+        std::cout << "==========================================\n" << END << std::endl;
+        std::vector<int> vct(5);
+        std::vector<int>::iterator it = vct.begin(), ite = vct.end();
+
+        std::cout << "len: " << (ite - it) << std::endl;
+        for (; it != ite; ++it)
+            *it = (ite - it);
+
+        it = vct.begin();
+        std::vector<int> vct_range(it, --(--ite));
+        for (int i = 0; it != ite; ++it)
+            *it = ++i * 5;
+
+        it = vct.begin();
+        std::vector<int> vct_copy(vct);
+        for (int i = 0; it != ite; ++it)
+            *it = ++i * 7;
+        vct_copy.push_back(42);
+        vct_copy.push_back(21);
+
+        std::cout << "\t-- PART ONE --" << std::endl;
+        printSize(vct);
+        printSize(vct_range);
+        printSize(vct_copy);
+
+        vct = vct_copy;
+        vct_copy = vct_range;
+        vct_range.clear();
+
+        std::cout << "\t-- PART TWO --" << std::endl;
+        printSize(vct);
+        printSize(vct_range);
+        printSize(vct_copy);
+        return (0);
+    }
     // {
     //     try {
     //         std::vector<int> vec;
@@ -233,7 +356,7 @@ int main(void) {
     //     size_t ft_cap = ft_vec.capacity();
     //     size_t std_cap = std_vec.capacity();
 
-    //     for (size_t i = 1; i < 15; ++i) {
+    //     for (size_t i = 1; i < 16; ++i) {
 
     //         ft_vec.insert(ft_it, 42);
     //         if (ft_vec.capacity() > ft_cap){
@@ -250,15 +373,15 @@ int main(void) {
 
     //     std::cout << "\nSTD_VEC AFTER Insert:\n";
     //     for (size_t i = 0; i < std_vec.size(); ++i)
-    //         std::cout << " " << std_vec[i] << std::flush;
+    //         std::cout << std_vec[i] << " " << std::flush;
 
-    //     std::cout << "\nSTD Capacity: " << std_vec.capacity() << std::endl;
+    //     std::cout << "\nSTD Capacity: " << std_vec.capacity() << "\nSize: " << ft_vec.size() << std::endl;
 
     //     std::cout << "\n" << std::endl;
 
     //     std::cout << "FT_VEC AFTER Insert:" << std::endl;
     //     ft_vec.print_vec();
-    //     std::cout << "\nFT Capacity: " << ft_vec.capacity() << std::endl;
+    //     std::cout << "\nFT Capacity: " << ft_vec.capacity() << "\nSize: " << ft_vec.size() << std::endl;
     // }
 
     //* INSERT N ELEMENTS
@@ -344,6 +467,7 @@ int main(void) {
     //     std::cout << "\nFT Capacity: " << vec.capacity() << std::endl;
     // }
 
+    //* REVERSE ITERATOR
     // {
     //     ft::vector<int> vec;
     //     std::vector<int> std_vec;
@@ -442,26 +566,41 @@ int main(void) {
     //     std::cout << "#####################################" << std::endl;
     // }
 
-    {
-        ft::vector<int> vec;
-        std::vector<int> vec2;
+    // {
+    //     ft::vector<int> vec;
+    //     std::vector<int> vec2;
 
-        for (size_t i = 1; i < 11; ++i) {
-            vec.push_back(i * 5);
-            vec2.push_back(i * 5);
-        }
+    //     for (size_t i = 1; i < 11; ++i) {
+    //         vec.push_back(i * 5);
+    //         vec2.push_back(i * 5);
+    //     }
 
-        std::cout << vec2 << std::endl;
-        std::cout << vec << std::endl;
+    //     std::cout << vec2 << std::endl;
+    //     std::cout << vec << std::endl;
 
-        vec.resize(15);
-        vec2.resize(15);
+    //     vec.resize(15);
+    //     vec2.resize(15);
 
-        std::cout << std::endl;
+    //     std::cout << std::endl;
         
-        std::cout << vec2 << "\nSize: " << vec2.size() << "\nCapacity: " << vec2.capacity() << std::endl;
-        std::cout << std::endl;
-        std::cout << vec << "\nSize: " << vec.size() << "\nCapacity: " << vec2.capacity() << std::endl;
-    }
+    //     std::cout << vec2 << "\nSize: " << vec2.size() << "\nCapacity: " << vec2.capacity() << std::endl;
+    //     std::cout << std::endl;
+    //     std::cout << vec << "\nSize: " << vec.size() << "\nCapacity: " << vec2.capacity() << std::endl;
+    // }
+
+    //* SWAP TEST
+    // {
+    //     ft::vector<int> vec(5, 1);
+    //     ft::vector<int> vec2(5, 2);
+
+    //     std::cout << vec << " Should be 1s" << std::endl;
+    //     std::cout << vec2 << " Should be 2s" << std::endl;
+
+    //     vec.swap(vec2);
+
+    //     std::cout << vec << " Should be 2s" << std::endl;
+    //     std::cout << vec2 << " Should be 1s" << std::endl;
+
+    // }
     return 0;
 }
