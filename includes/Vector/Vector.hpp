@@ -6,13 +6,14 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/13 10:16:33 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/02 23:09:51 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/04 09:30:13 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include "Iterator.hpp"
+#include "type_traits.hpp"
 #include <algorithm>
 #include <cstddef>
 #include <iostream>
@@ -34,8 +35,8 @@ class vector {
     typedef ptrdiff_t                                   difference_type;
     typedef typename allocator_type::pointer            pointer;
     typedef typename allocator_type::const_pointer      const_pointer;
-    typedef ft::normal_iterator<pointer, vector>        iterator; //* normal_iterator<T, Container>
-    typedef ft::normal_iterator<const_pointer, vector>  const_iterator;
+    typedef normal_iterator<pointer, vector>            iterator; //* normal_iterator<T, Container>
+    typedef normal_iterator<const_pointer, vector>      const_iterator;
     typedef ft::reverse_iterator<iterator>              reverse_iterator;
     typedef ft::reverse_iterator<const_iterator>        const_reverse_iterator;
     // clang-format on
@@ -47,10 +48,11 @@ class vector {
      */
 
     //* default constructor
-    vector() : alloc_(), start_(), end_(), capacity_() {}
+    vector() : alloc_(allocator_type()), start_(NULL), end_(NULL), capacity_(NULL) {}
 
     //* Default Constructor: empty container with no elements
-    explicit vector(const allocator_type& alloc) : alloc_(alloc), start_(), end_(), capacity_() {}
+    explicit vector(const allocator_type& alloc)
+        : alloc_(alloc), start_(NULL), end_(NULL), capacity_(NULL) {}
 
     /**
      ** Fill Constructor:
@@ -86,14 +88,14 @@ class vector {
     vector(InputIterator first,
            typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type last,
            const allocator_type& alloc = allocator_type())
-        : alloc_(alloc), start_(), end_(), capacity_() {
+        : alloc_(alloc), start_(NULL), end_(NULL), capacity_(NULL) {
 
         typedef typename iterator_traits<vector::iterator>::iterator_category category;
         range_construct(first, last, category());
     }
 
     //* Copy Constructor
-    vector(const vector& src) : alloc_(src.alloc_), start_(), end_(), capacity_() {
+    vector(const vector& src) : alloc_(src.alloc_), start_(NULL), end_(NULL), capacity_(NULL) {
 
         typedef typename iterator_traits<vector::iterator>::iterator_category category;
         range_construct(src.start_, src.end_, category());
@@ -190,7 +192,7 @@ class vector {
     const_reverse_iterator rbegin() const { return const_reverse_iterator(end()); }
 
     iterator end() { return iterator(end_); }
-    const_iterator end() const { return iterator(end_); }
+    const_iterator end() const { return const_iterator(end_); }
     reverse_iterator rend() { return reverse_iterator(begin()); }
     const_reverse_iterator rend() const { return const_reverse_iterator(begin()); }
 
@@ -594,10 +596,51 @@ class vector {
 };                         // class vector
 
 /*
-*  ==================================================
-*  |             NON-MEMBER FUNCTIONS               |
-*  ==================================================
-*/
+ *  ==================================================
+ *  |             NON-MEMBER FUNCTIONS               |
+ *  ==================================================
+ */
 
+template <typename T, typename Alloc>
+inline void swap(vector<T, Alloc>& left, vector<T, Alloc>& right) {
+
+    left.swap(right);
+}
+
+template <typename T, typename Alloc>
+inline bool operator==(const vector<T, Alloc>& left, const vector<T, Alloc>& right) {
+
+    return (left.size() == right.size()) && std::equal(left.begin(), left.end(), right.begin());
+}
+
+template <typename T, typename Alloc>
+inline bool operator!=(const vector<T, Alloc>& left, const vector<T, Alloc>& right) {
+
+    return !(left == right);
+}
+
+template <typename T, typename Alloc>
+inline bool operator>(const vector<T, Alloc>& left, const vector<T, Alloc>& right) {
+
+    return right < left;
+}
+
+template <typename T, typename Alloc>
+inline bool operator>=(const vector<T, Alloc>& left, const vector<T, Alloc>& right) {
+
+    return !(left < right);
+}
+
+template <typename T, typename Alloc>
+inline bool operator<(const vector<T, Alloc>& left, const vector<T, Alloc>& right) {
+
+    return ft::lexicographical_compare(left.begin(), left.end(), right.begin(), right.end());
+}
+
+template <typename T, typename Alloc>
+inline bool operator<=(const vector<T, Alloc>& left, const vector<T, Alloc>& right) {
+
+    return !(right < left);
+}
 
 } // namespace ft

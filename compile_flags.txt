@@ -1,0 +1,10 @@
+-Wall
+-Wextra
+-Werror
+-Wpedantic
+-stdlib=libc++
+-std=c++98
+-Iincludes/
+-Iincludes/Vector/
+-Iincludes/Map/
+-Iincludes/Stack/

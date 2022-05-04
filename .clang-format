@@ -28,7 +28,7 @@ EmptyLineBeforeAccessModifier: Always
 FixNamespaceComments: true
 IndentCaseLabels: true
 Language: Cpp
-PackConstructorInitializers: NextLine
+# PackConstructorInitializers: NextLine
 PointerAlignment: Left
 ReferenceAlignment: Pointer
 Standard: Cpp03

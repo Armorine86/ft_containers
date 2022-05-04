@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/13 10:16:30 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/02 23:23:41 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/04 09:11:34 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ class normal_iterator {
 
     // clang-format off
   public:
-    typedef It_Type iterator_type;
+    typedef It_Type                                 iterator_type;
     typedef typename trait_type::iterator_category  iterator_category;
     typedef typename trait_type::value_type         value_type;
     typedef typename trait_type::difference_type    difference_type;

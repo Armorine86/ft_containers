@@ -5,7 +5,7 @@
 #include <vector>
 
 #define TESTED_TYPE int
-#define TESTED_NAMESPACE std
+#define TESTED_NAMESPACE ft
 #define T_SIZE_TYPE typename TESTED_NAMESPACE::vector<T>::size_type
 
 template <typename T>
@@ -45,68 +45,38 @@ void printSize(TESTED_NAMESPACE::vector<T> const& vct, bool print_content = true
     std::cout << "###############################################" << std::endl;
 }
 
-template <typename Ite_1, typename Ite_2>
-void ft_eq_ope(const Ite_1 &first, const Ite_2 &second, const bool redo = 1)
-{
-	std::cout << (first < second) << std::endl;
-	std::cout << (first <= second) << std::endl;
-	std::cout << (first > second) << std::endl;
-	std::cout << (first >= second) << std::endl;
-	if (redo)
-		ft_eq_ope(second, first, 0);
+template <class T, class Alloc>
+void cmp(const TESTED_NAMESPACE::vector<T, Alloc>& lhs,
+         const TESTED_NAMESPACE::vector<T, Alloc>& rhs) {
+    static int i = 0;
+
+    std::cout << "############### [" << i++ << "] ###############" << std::endl;
+    std::cout << "eq: " << (lhs == rhs) << " | ne: " << (lhs != rhs) << std::endl;
+    std::cout << "lt: " << (lhs < rhs) << " | le: " << (lhs <= rhs) << std::endl;
+    std::cout << "gt: " << (lhs > rhs) << " | ge: " << (lhs >= rhs) << std::endl;
 }
 
-int		main(void)
-{
-	const int size = 5;
-	TESTED_NAMESPACE::vector<TESTED_TYPE> vct(size);
-	TESTED_NAMESPACE::vector<TESTED_TYPE>::reverse_iterator it_0(vct.rbegin());
-	TESTED_NAMESPACE::vector<TESTED_TYPE>::reverse_iterator it_1(vct.rend());
-	TESTED_NAMESPACE::vector<TESTED_TYPE>::reverse_iterator it_mid;
+int main(void) {
+    TESTED_NAMESPACE::vector<TESTED_TYPE> vct(4);
+    TESTED_NAMESPACE::vector<TESTED_TYPE> vct2(4);
 
-	TESTED_NAMESPACE::vector<TESTED_TYPE>::const_reverse_iterator cit_0 = vct.rbegin();
-	TESTED_NAMESPACE::vector<TESTED_TYPE>::const_reverse_iterator cit_1;
-	TESTED_NAMESPACE::vector<TESTED_TYPE>::const_reverse_iterator cit_mid;
+    cmp(vct, vct);  // 0
+    cmp(vct, vct2); // 1
 
-	for (int i = size; it_0 != it_1; --i)
-		*it_0++ = i;
-	printSize(vct, 1);
-	it_0 = vct.rbegin();
-	cit_1 = vct.rend();
-	it_mid = it_0 + 3;
-	cit_mid = it_0 + 3; cit_mid = cit_0 + 3; cit_mid = it_mid;
+    vct2.resize(10);
 
-	std::cout << std::boolalpha;
-	std::cout << ((it_0 + 3 == cit_0 + 3) && (cit_0 + 3 == it_mid)) << std::endl;
+    cmp(vct, vct2); // 2
+    cmp(vct2, vct); // 3
 
-	std::cout << "\t\tft_eq_ope:" << std::endl;
-	// regular it
-	std::cout << GREEN << "----1---" << END << std::endl;
-	ft_eq_ope(it_0 + 3, it_mid);
-	std::cout << GREEN << "----2---" << END << std::endl;
-	ft_eq_ope(it_0, it_1);
-	std::cout << GREEN << "----3---" << END << std::endl;
-	ft_eq_ope(it_1 - 3, it_mid);
-	// const it
-	std::cout << GREEN << "----4---" << END << std::endl;
-	ft_eq_ope(cit_0 + 3, cit_mid);
-	std::cout << GREEN << "----5---" << END << std::endl;
-	ft_eq_ope(cit_0, cit_1);
-	std::cout << GREEN << "----6---" << END << std::endl;
-	ft_eq_ope(cit_1 - 3, cit_mid);
-	// both it
-	std::cout << GREEN << "----7---" << END << std::endl;
-	ft_eq_ope(it_0 + 3, cit_mid);
-	std::cout << GREEN << "----8---" << END << std::endl;
-	ft_eq_ope(it_mid, cit_0 + 3);
-	std::cout << GREEN << "----9---" << END << std::endl;
-	ft_eq_ope(it_0, cit_1);
-	std::cout << GREEN << "----10---" << END << std::endl;
-	ft_eq_ope(it_1, cit_0);
-	std::cout << GREEN << "----11--" << END << std::endl;
-	ft_eq_ope(it_1 - 3, cit_mid);
-	std::cout << GREEN << "----12---" << END << std::endl;
-	ft_eq_ope(it_mid, cit_1 - 3);
+    vct[2] = 42;
 
-	return (0);
+    cmp(vct, vct2); // 4
+    cmp(vct2, vct); // 5
+
+    swap(vct, vct2);
+
+    cmp(vct, vct2); // 6
+    cmp(vct2, vct); // 7
+
+    return (0);
 }
