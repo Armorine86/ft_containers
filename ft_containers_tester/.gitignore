@@ -1,0 +1,6 @@
+bin_tests
+*.o
+a.out
+*.dSYM
+*.txt
+*.code-workspace

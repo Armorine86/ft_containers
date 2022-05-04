@@ -6,7 +6,7 @@ INC_PATH			=	includes/
 OBJS_PATH 			=	obj/
 SRCS_PATH 			=	src/
 CC 					=	clang++
-CFLAGS				=	-Wall -Werror -Wextra -Wpedantic -std=c++98
+CFLAGS				=	-Wall -Wextra -Wpedantic -std=c++98
 RM					=	rm -rf
 
 COLORS 				=	colors.hpp

@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/13 10:16:33 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/04 09:30:13 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/04 15:47:11 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,10 @@
 #include <algorithm>
 #include <cstddef>
 #include <iostream>
+#include <iterator>
 #include <limits>
 #include <memory>
+#include <vector>
 
 namespace ft {
 
@@ -64,7 +66,7 @@ class vector {
      */
     explicit vector(size_type n, const value_type& val = value_type(),
                     const Allocator& alloc = allocator_type())
-        : alloc_(alloc) {
+        : alloc_(alloc), start_(NULL), end_(NULL), capacity_(NULL) {
 
         if (n == 0)
             return;
@@ -90,7 +92,7 @@ class vector {
            const allocator_type& alloc = allocator_type())
         : alloc_(alloc), start_(NULL), end_(NULL), capacity_(NULL) {
 
-        typedef typename iterator_traits<vector::iterator>::iterator_category category;
+        typedef typename iterator_traits<InputIterator>::iterator_category category;
         range_construct(first, last, category());
     }
 
@@ -106,7 +108,21 @@ class vector {
         if (this == &rhs)
             return *this;
 
-        assign(rhs.begin(), rhs.end());
+        size_type n = std::distance(rhs.start_, rhs.end_);
+
+        if (n > capacity()) {
+            pointer old_start = start_;
+            size_type old_cap = capacity();
+            assign(rhs.begin(), rhs.end());
+            alloc_.deallocate(old_start, old_cap);
+        } else if (size() > n) {
+            iterator new_end = std::copy(rhs.begin(), rhs.end(), begin());
+            range_destroy(new_end.base(), end_);
+            end_ = new_end.base();
+        } else {
+            std::copy(rhs.start_, rhs.start_ + size(), start_);
+            range_construct(end_, rhs.start_ + size(), rhs.end_);
+        }
 
         return *this;
     }
@@ -128,7 +144,7 @@ class vector {
      * @return Returns a reference at specified location pos
      */
     reference at(size_type pos) {
-        if (pos > size())
+        if (pos >= size())
             throw std::out_of_range("Accessed Index is Out Of Range");
 
         return (*this)[pos];
@@ -138,7 +154,7 @@ class vector {
      * @return Returns a const reference at specified location pos
      */
     const_reference at(size_type pos) const {
-        if (pos > size())
+        if (pos >= size())
             throw std::out_of_range("Accessed Index is Out Of Range");
 
         return (*this)[pos];
@@ -393,8 +409,8 @@ class vector {
      * if a reallocation is needed
      */
     template <typename InputIterator>
-    void insert(iterator pos, InputIterator first,
-                typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type last) {
+    void range_insert(iterator pos, InputIterator first, InputIterator last,
+                      std::forward_iterator_tag) {
 
         difference_type n = std::distance(first, last);
         difference_type diff = std::distance(begin(), pos);
@@ -409,6 +425,23 @@ class vector {
 
         pointer ptr = start_ + diff;
         range_construct(ptr, first, last);
+    }
+
+    template <typename InputIterator>
+    void range_insert(iterator pos, InputIterator first, InputIterator last,
+                      std::input_iterator_tag) {
+        if (pos == end()) {
+            for (; first != last; ++first)
+                push_back(*first);
+        }
+    }
+
+    template <typename InputIterator>
+    void insert(iterator pos, InputIterator first,
+                typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type last) {
+
+        typedef typename iterator_traits<InputIterator>::iterator_category category;
+        range_insert(pos, first, last, category());
     }
 
     /**
@@ -465,9 +498,11 @@ class vector {
     void shift_right(iterator& pos, size_type n) {
 
         iterator cpy = end() - 1;
+
         if (end_ == capacity_)
             cpy = end();
-
+        for (size_type i = n; i > 0; --i, --cpy)
+            alloc_.construct(cpy.base() + n, *cpy);
         for (; cpy >= pos; --cpy) {
             *(cpy + n) = *cpy;
         }
@@ -523,13 +558,15 @@ class vector {
 
         difference_type n = std::distance(first, last);
 
-        start_ = alloc_.allocate(n);
-        end_ = start_;
-        capacity_ = start_ + n;
+        if (n > 0) {
+            start_ = alloc_.allocate(n);
+            end_ = start_;
+            capacity_ = start_ + n;
 
-        for (; first != last; ++first) {
-            alloc_.construct(end_, *first);
-            ++end_;
+            for (; first != last; ++first) {
+                alloc_.construct(end_, *first);
+                ++end_;
+            }
         }
     }
 
@@ -566,6 +603,15 @@ class vector {
 
         for (; first != last; ++first)
             alloc_.destroy(first);
+    }
+
+    /**
+     * Deallocates vector from [first] to [last]
+     */
+    void range_deallocate(pointer first, pointer last) {
+
+        for (; first != last; ++first)
+            alloc_.deallocate(first);
     }
 
     /**
