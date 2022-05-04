@@ -2,8 +2,8 @@
 -Wextra
 -Werror
 -Wpedantic
--stdlib=libc++
 -std=c++98
+-libc++
 -Iincludes/
 -Iincludes/Vector/
 -Iincludes/Map/

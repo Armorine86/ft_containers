@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Vector.hpp                                         :+:      :+:    :+:   */
+/*   vector.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/13 10:16:33 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/04 15:47:11 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/04 18:56:00 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -270,7 +270,13 @@ class vector {
 
         typedef typename iterator_traits<InputIterator>::iterator_category category;
         clear();
+        
+        pointer old_start = start_;
+        size_type old_cap = capacity();
+        
         range_construct(first, last, category());
+
+        alloc_.deallocate(old_start, old_cap);
     }
 
     /**
