@@ -58,40 +58,106 @@ void printSize(TESTED_NAMESPACE::vector<T> const& vct, bool print_content = true
 
 int		main(void)
 {
-	TESTED_NAMESPACE::vector<TESTED_TYPE> vct(7);
-	TESTED_NAMESPACE::vector<TESTED_TYPE> vct_two(4);
-	TESTED_NAMESPACE::vector<TESTED_TYPE> vct_three;
-	TESTED_NAMESPACE::vector<TESTED_TYPE> vct_four;
+    {
+        typedef TESTED_NAMESPACE::vector<std::size_t> vec;
 
-	for (unsigned long int i = 0; i < vct.size(); ++i)
-		vct[i] = (vct.size() - i) * 3;
-	for (unsigned long int i = 0; i < vct_two.size(); ++i)
-		vct_two[i] = (vct_two.size() - i) * 5;
-	printSize(vct);
-	printSize(vct_two);
+        vec v;
 
-	vct_three.assign(vct.begin(), vct.end());
-	vct.assign(vct_two.begin(), vct_two.end());
-	vct_two.assign(2, 42);
-	vct_four.assign(4, 21);
 
-	std::cout << "\t### After assign(): ###" << std::endl;
+        v.insert(v.begin(), 64, 1);
+        std::cout << "VEC: " << v << "\n" << std::endl;
+        std::cout << "SIZE: " << v.size() << "\n" << std::endl;
 
-	printSize(vct);
-	printSize(vct_two);
-	printSize(vct_three);
-	printSize(vct_four);
 
-	vct_four.assign(6, 84);
-	printSize(vct_four);
 
-	std::cout << "\t### assign() on enough capacity and low size: ###" << std::endl;
+        v.insert(v.begin() + 10, 64, 2);
+        std::cout << "VEC: " << v << "\n" << std::endl;
+        std::cout << "SIZE: " << v.size() << "  CAPACITY: " << v.capacity() << std::endl;
 
-	vct.assign(5, 53);
-	vct_two.assign(vct_three.begin(), vct_three.begin() + 3);
 
-	printSize(vct);
-	printSize(vct_two);
+        // v.insert(v.end(), 512, 3);
+        // std::cout << "VEC: " << v << "\n" << std::endl;
+        // std::cout << "SIZE: " << v.size() << "  CAPACITY: " << v.capacity() << std::endl;
 
-	return (0);
+
+        // v.insert(v.end(), 23);
+        // v.insert(v.end() - 2, 10, 4);
+        // std::cout << "VEC: " << v << "\n" << std::endl;
+        // std::cout << "SIZE: " << v.size() << "  CAPACITY: " << v.capacity() << std::endl;
+
+
+        // v.insert(v.end(), 0, 10);
+        // std::cout << "VEC: " << v << "\n" << std::endl;
+        // std::cout << "SIZE: " << v.size() << "  CAPACITY: " << v.capacity() << std::endl;
+
+
+    //     v.insert(v.begin(), 0, 10);
+    //     std::cout << "VEC: " << v << "\n" << std::endl;
+
+
+    //     v.insert(v.begin() + 50, 1, 5);
+    //     std::cout << "VEC: " << v << "\n" << std::endl;
+
+    // }
+    // {
+    //     typedef ft::vector<double> vec;
+
+    //     vec v;
+
+
+    //     v.insert(v.end(), 0, 23.0);
+
+
+    //     v.insert(v.begin(), 0, 1.0);
+
+
+    //     v.insert(v.begin(), 1, 64.0);
+
+    //     std::cout << "VEC size: " << v.size() << std::endl;
+    //     std::cout << "VEC capacity: " << v.capacity() << std::endl;
+    //     std::cout << "VEC: " << v << std::endl;
+    //     v.insert(v.begin(), 24000, 64.0);
+
+    // }
+    // {
+    //     typedef ft::vector<int> vec;
+
+    //     vec v;
+
+
+    //     v.insert(v.end(), 40, 42);
+    // }
+    // {
+    //     typedef ft::vector<int> vec;
+
+    //     vec v(64);
+
+
+
+    //     v.push_back(42);
+
+    //     v.insert(v.end(), 2, 42);
+    // }
+    // {
+    //     typedef ft::vector<int> vec;
+
+    //     vec v(64);
+
+
+
+    //     v.push_back(42);
+
+    //     v.insert(v.end(), 222, 42);
+
+    // }
+    // {
+    //     ft::vector<int> v(5000);
+
+
+    //     try {
+    //         v.insert(v.begin() + 115, std::numeric_limits<std::ptrdiff_t>::max(), 5);
+    //     } catch (std::length_error& e) {
+    //         std::cout << e.what() << std::endl;
+    //     }
+    }
 }
