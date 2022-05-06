@@ -6,16 +6,15 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/13 10:16:30 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/04 09:11:34 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/05 16:23:17 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include <cstddef>
-
 #include "Iterator_traits.hpp"
 #include "type_traits.hpp"
+#include <cstddef>
 
 namespace ft {
 

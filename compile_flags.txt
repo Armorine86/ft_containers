@@ -3,7 +3,6 @@
 -Werror
 -Wpedantic
 -std=c++98
--stdlib=libc++
 -Iincludes/
 -Iincludes/Vector/
 -Iincludes/Map/
