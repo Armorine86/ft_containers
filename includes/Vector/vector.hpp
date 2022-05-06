@@ -360,9 +360,9 @@ class vector {
     iterator insert(iterator pos, const T& val) {
 
         size_type diff = std::distance(begin(), pos); // if realloc happens
-        
+
         insert(pos, 1, val);
-        
+
         return iterator(start_ + diff);
     }
 
@@ -433,30 +433,31 @@ class vector {
     }
 
     template <typename InputIter>
-    void insert(iterator pos, InputIter first, typename enable_if<!is_integral<InputIter>::value, InputIter>::type last) {
-        
+    void insert(iterator pos, InputIter first,
+                typename enable_if<!is_integral<InputIter>::value, InputIter>::type last) {
+
         typedef typename iterator_traits<InputIter>::iterator_category category;
         range_insert(pos, first, last, category());
     }
-    
+
     template <typename InputIter>
     void range_insert(iterator pos, InputIter first, InputIter last, std::input_iterator_tag) {
-        
+
         if (pos == end()) {
             for (; first != last; ++first)
                 push_back(*first);
         }
     }
-    
+
     template <typename InputIter>
     void range_insert(iterator pos, InputIter first, InputIter last, std::forward_iterator_tag) {
 
         if (first == last)
             return;
-        
-        size_type n = std::distance(first, last);        
+
+        size_type n = std::distance(first, last);
         bool need_realloc = (capacity() - size() < n) ? true : false;
-        
+
         if (need_realloc) {
             size_type new_cap = (!empty()) ? get_newcap(size() + n) : capacity() + n;
             pointer new_start = alloc_.allocate(new_cap);

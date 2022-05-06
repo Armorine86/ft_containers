@@ -56,7 +56,6 @@ void printSize(TESTED_NAMESPACE::vector<T> const& vct, bool print_content = true
     std::cout << "###############################################" << std::endl;
 }
 
-
 int main(void) {
     // {
     //     typedef TESTED_NAMESPACE::vector<int> vec;
@@ -73,13 +72,11 @@ int main(void) {
     //     std::cout << "VEC capacity: " << v.capacity() << std::endl;
     //     std::cout << std::endl;
 
-
     //     it = v.erase(v.begin());
     //     std::cout << "VEC: " << v << std::endl;
     //     std::cout << "VEC size    : " << v.size() << std::endl;
     //     std::cout << "VEC capacity: " << v.capacity() << std::endl;
     //     std::cout << std::endl;
-
 
     //     it = v.erase(v.end() - 1);
     //     std::cout << "VEC: " << v << std::endl;
@@ -106,7 +103,6 @@ int main(void) {
         std::cout << "VEC capacity: " << v.capacity() << std::endl;
         std::cout << std::endl;
 
-
         it = v.erase(v.begin());
         (void)it;
         std::cout << "VEC: " << v << std::endl;
@@ -114,13 +110,11 @@ int main(void) {
         std::cout << "VEC capacity: " << v.capacity() << std::endl;
         std::cout << std::endl;
 
-
         it = v.erase(v.end() - 1);
         std::cout << "VEC: " << v << std::endl;
         std::cout << "VEC size    : " << v.size() << std::endl;
         std::cout << "VEC capacity: " << v.capacity() << std::endl;
         std::cout << std::endl;
-
     }
 }
 /* INSERT SIZE
