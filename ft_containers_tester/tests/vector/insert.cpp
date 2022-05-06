@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   insert.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mleblanc <mleblanc@student.42quebec.com    +#+  +:+       +#+        */
+/*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/07 20:30:01 by mleblanc          #+#    #+#             */
-/*   Updated: 2022/05/04 13:50:40 by mleblanc         ###   ########.fr       */
+/*   Updated: 2022/05/06 11:20:31 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "prelude.hpp"
+#include <iostream>
 
 void vec_test_insert()
 {
@@ -52,6 +53,7 @@ void vec_test_insert()
         PRINT_LINE("It:", *it);
         PRINT_ALL(v);
     }
+    
     {
         typedef ft::vector<long, leak_allocator<long> >::iterator iter;
 
@@ -69,6 +71,7 @@ void vec_test_insert()
         PRINT_LINE("It:", *it);
         PRINT_ALL(v);
     }
+    
     {
         typedef ft::vector<ctor_dtor_checker<int>, leak_allocator<ctor_dtor_checker<int> > > vec;
 
@@ -77,8 +80,10 @@ void vec_test_insert()
         ctor_dtor_checker<int> c;
 
         v.insert(v.begin(), c);
+        std::cout << "===== STEP 1 =====" << std::endl;
         CHECK_DTOR(int);
     }
+    
     {
         typedef ft::vector<ctor_dtor_checker<int>, leak_allocator<ctor_dtor_checker<int> > > vec;
 
@@ -87,12 +92,15 @@ void vec_test_insert()
         ctor_dtor_checker<int> c;
 
         v.insert(v.end(), c);
+        std::cout << "===== STEP 2 =====" << std::endl;
         CHECK_DTOR(int);
     }
+    
     {
         typedef ft::vector<ctor_dtor_checker<int>, leak_allocator<ctor_dtor_checker<int> > > vec;
 
         vec v(64);
+        std::cout << "===== STEP 3 =====" << std::endl;
         CHECK_DTOR(int);
 
         ctor_dtor_checker<int> c;
@@ -100,9 +108,11 @@ void vec_test_insert()
         PRINT_SIZE_CAP(v);
 
         v.push_back(c);
+        std::cout << "===== STEP 4 =====" << std::endl;
         CHECK_DTOR(int);
 
         v.insert(v.end(), c);
+        std::cout << "===== STEP 5 =====" << std::endl;
         CHECK_DTOR(int);
     }
 }
@@ -114,6 +124,7 @@ int main()
     CHECK_LEAKS(int);
     CHECK_LEAKS(long);
     CHECK_LEAKS(ctor_dtor_checker<int>);
+    std::cout << "===== STEP 6 =====" << std::endl;
     CHECK_DTOR(int);
 }
 #endif

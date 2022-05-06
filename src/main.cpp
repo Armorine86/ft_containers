@@ -56,28 +56,219 @@ void printSize(TESTED_NAMESPACE::vector<T> const& vct, bool print_content = true
     std::cout << "###############################################" << std::endl;
 }
 
+
 int main(void) {
+    // {
+    //     typedef TESTED_NAMESPACE::vector<int> vec;
+
+    //     vec v(32);
+    //     std::cout << "VEC: " << v << std::endl;
+    //     std::cout << "VEC size    : " << v.size() << std::endl;
+    //     std::cout << "VEC capacity: " << v.capacity() << std::endl;
+    //     std::cout << std::endl;
+
+    //     vec::iterator it = v.erase(v.begin() + 25);
+    //     std::cout << "VEC: " << v << std::endl;
+    //     std::cout << "VEC size    : " << v.size() << std::endl;
+    //     std::cout << "VEC capacity: " << v.capacity() << std::endl;
+    //     std::cout << std::endl;
+
+
+    //     it = v.erase(v.begin());
+    //     std::cout << "VEC: " << v << std::endl;
+    //     std::cout << "VEC size    : " << v.size() << std::endl;
+    //     std::cout << "VEC capacity: " << v.capacity() << std::endl;
+    //     std::cout << std::endl;
+
+
+    //     it = v.erase(v.end() - 1);
+    //     std::cout << "VEC: " << v << std::endl;
+    //     std::cout << "VEC size    : " << v.size() << std::endl;
+    //     std::cout << "VEC capacity: " << v.capacity() << std::endl;
+    //     std::cout << std::endl;
+
+    // }
     {
-        typedef TESTED_NAMESPACE::vector<std::size_t> vec;
+        typedef TESTED_NAMESPACE::vector<int> vec;
+
+        vec v;
+        for (size_t i = 1; i < 17; ++i)
+            v.push_back(i);
+        std::cout << "VEC: " << v << std::endl;
+        std::cout << "VEC size    : " << v.size() << std::endl;
+        std::cout << "VEC capacity: " << v.capacity() << std::endl;
+        std::cout << std::endl;
+
+        vec::iterator it = v.erase(v.begin() + 10);
+        (void)it;
+        std::cout << "VEC: " << v << std::endl;
+        std::cout << "VEC size    : " << v.size() << std::endl;
+        std::cout << "VEC capacity: " << v.capacity() << std::endl;
+        std::cout << std::endl;
+
+
+        it = v.erase(v.begin());
+        (void)it;
+        std::cout << "VEC: " << v << std::endl;
+        std::cout << "VEC size    : " << v.size() << std::endl;
+        std::cout << "VEC capacity: " << v.capacity() << std::endl;
+        std::cout << std::endl;
+
+
+        it = v.erase(v.end() - 1);
+        std::cout << "VEC: " << v << std::endl;
+        std::cout << "VEC size    : " << v.size() << std::endl;
+        std::cout << "VEC capacity: " << v.capacity() << std::endl;
+        std::cout << std::endl;
+
+    }
+}
+/* INSERT SIZE
+int main(void) {
+
+    {
+        typedef TESTED_NAMESPACE::vector<int>::iterator iter;
+
+        TESTED_NAMESPACE::vector<int> v;
+
+        iter it = v.insert(v.begin(), 64);
+        std::cout << "VEC: " << v << std::endl;
+        std::cout << "VEC size    : " << v.size() << std::endl;
+        std::cout << "VEC capacity: " << v.capacity() << std::endl;
+        std::cout << std::endl;
+
+        v.insert(v.begin(), 34);
+        std::cout << "VEC: " << v << std::endl;
+        std::cout << "VEC size    : " << v.size() << std::endl;
+        std::cout << "VEC capacity: " << v.capacity() << std::endl;
+        std::cout << std::endl;
+
+        v.insert(v.begin(), 21);
+        std::cout << "VEC: " << v << std::endl;
+        std::cout << "VEC size    : " << v.size() << std::endl;
+        std::cout << "VEC capacity: " << v.capacity() << std::endl;
+        std::cout << std::endl;
+
+        v.insert(v.begin(), 6);
+        std::cout << "VEC: " << v << std::endl;
+        std::cout << "VEC size    : " << v.size() << std::endl;
+        std::cout << "VEC capacity: " << v.capacity() << std::endl;
+        std::cout << std::endl;
+
+        it = v.insert(v.begin(), 45);
+        std::cout << "VEC: " << v << std::endl;
+        std::cout << "VEC size    : " << v.size() << std::endl;
+        std::cout << "VEC capacity: " << v.capacity() << std::endl;
+        std::cout << std::endl;
+    }
+    {
+        typedef TESTED_NAMESPACE::vector<int>::iterator iter;
+
+        TESTED_NAMESPACE::vector<int> v;
+
+        iter it = v.insert(v.end(), 64);
+        std::cout << "VEC: " << v << std::endl;
+        std::cout << "VEC size    : " << v.size() << std::endl;
+        std::cout << "VEC capacity: " << v.capacity() << std::endl;
+        std::cout << std::endl;
+
+        it = v.insert(v.end(), 63);
+        std::cout << "VEC: " << v << std::endl;
+        std::cout << "VEC size    : " << v.size() << std::endl;
+        std::cout << "VEC capacity: " << v.capacity() << std::endl;
+        std::cout << std::endl;
+
+        it = v.insert(v.end(), 62);
+        std::cout << "VEC: " << v << std::endl;
+        std::cout << "VEC size    : " << v.size() << std::endl;
+        std::cout << "VEC capacity: " << v.capacity() << std::endl;
+        std::cout << std::endl;
+    }
+    {
+        typedef TESTED_NAMESPACE::vector<long>::iterator iter;
+
+        TESTED_NAMESPACE::vector<long> v(128, -5);
+
+        iter it = v.insert(v.end(), 64);
+        std::cout << "VEC: " << v << std::endl;
+        std::cout << "VEC size    : " << v.size() << std::endl;
+        std::cout << "VEC capacity: " << v.capacity() << std::endl;
+        std::cout << std::endl;
+
+        it = v.insert(v.end(), -64);
+        std::cout << "VEC: " << v << std::endl;
+        std::cout << "VEC size    : " << v.size() << std::endl;
+        std::cout << "VEC capacity: " << v.capacity() << std::endl;
+        std::cout << std::endl;
+    }
+    {
+        typedef TESTED_NAMESPACE::vector<int> vec;
 
         vec v;
 
-        v.insert(v.begin(), 64, 1);
-        std::cout << "VEC: " << v << "\n" << std::endl;
-        std::cout << "SIZE: " << v.size() << "\n" << std::endl;
+        v.insert(v.begin(), 42);
+        std::cout << "VEC: " << v << std::endl;
+        std::cout << "VEC size    : " << v.size() << std::endl;
+        std::cout << "VEC capacity: " << v.capacity() << std::endl;
+        std::cout << std::endl;
+    }
+    {
+        typedef TESTED_NAMESPACE::vector<int> vec;
 
-        v.insert(v.begin() + 10, 64, 2);
-        std::cout << "VEC: " << v << "\n" << std::endl;
-        std::cout << "SIZE: " << v.size() << "  CAPACITY: " << v.capacity() << std::endl;
+        vec v;
 
-        v.insert(v.end(), 512, 3);
-        std::cout << "VEC: " << v << "\n" << std::endl;
-        std::cout << "SIZE: " << v.size() << "  CAPACITY: " << v.capacity() << std::endl;
+        v.insert(v.end(), 42);
+        std::cout << "VEC: " << v << std::endl;
+        std::cout << "VEC size    : " << v.size() << std::endl;
+        std::cout << "VEC capacity: " << v.capacity() << std::endl;
+        std::cout << std::endl;
+    }
+    {
+        typedef TESTED_NAMESPACE::vector<int> vec;
 
-        v.insert(v.end(), 23);
-        v.insert(v.end() - 2, 10, 4);
-        std::cout << "VEC: " << v << "\n" << std::endl;
-        std::cout << "SIZE: " << v.size() << "  CAPACITY: " << v.capacity() << std::endl;
+        vec v(64);
+        std::cout << "VEC: " << v << std::endl;
+        std::cout << "VEC size    : " << v.size() << std::endl;
+        std::cout << "VEC capacity: " << v.capacity() << std::endl;
+        std::cout << std::endl;
+
+        v.push_back(42);
+        std::cout << "VEC: " << v << std::endl;
+        std::cout << "VEC size    : " << v.size() << std::endl;
+        std::cout << "VEC capacity: " << v.capacity() << std::endl;
+        std::cout << std::endl;
+
+        v.insert(v.end(), 69);
+        std::cout << "VEC: " << v << std::endl;
+        std::cout << "VEC size    : " << v.size() << std::endl;
+        std::cout << "VEC capacity: " << v.capacity() << std::endl;
+        std::cout << std::endl;
+    }
+}*/
+
+//* INSERT_SIZE
+/*int main(void) {
+    {
+        // typedef TESTED_NAMESPACE::vector<std::size_t> vec;
+
+        // vec v;
+
+        // v.insert(v.begin(), 64, 1);
+        // std::cout << "VEC: " << v << "\n" << std::endl;
+        // std::cout << "SIZE: " << v.size() << "\n" << std::endl;
+
+        // v.insert(v.begin() + 10, 64, 2);
+        // std::cout << "VEC: " << v << "\n" << std::endl;
+        // std::cout << "SIZE: " << v.size() << "  CAPACITY: " << v.capacity() << std::endl;
+
+        // v.insert(v.end(), 512, 3);
+        // std::cout << "VEC: " << v << "\n" << std::endl;
+        // std::cout << "SIZE: " << v.size() << "  CAPACITY: " << v.capacity() << std::endl;
+
+        // v.insert(v.end(), 23);
+        // v.insert(v.end() - 2, 10, 4);
+        // std::cout << "VEC: " << v << "\n" << std::endl;
+        // std::cout << "SIZE: " << v.size() << "  CAPACITY: " << v.capacity() << std::endl;
 
         // v.insert(v.end(), 0, 10);
         // std::cout << "VEC: " << v << "\n" << std::endl;
@@ -91,7 +282,7 @@ int main(void) {
 
         // }
         // {
-        //     typedef ft::vector<double> vec;
+        //     typedef TESTED_NAMESPACE::vector<double> vec;
 
         //     vec v;
 
@@ -108,14 +299,14 @@ int main(void) {
 
         // }
         // {
-        //     typedef ft::vector<int> vec;
+        //     typedef TESTED_NAMESPACE::vector<int> vec;
 
         //     vec v;
 
         //     v.insert(v.end(), 40, 42);
         // }
         // {
-        //     typedef ft::vector<int> vec;
+        //     typedef TESTED_NAMESPACE::vector<int> vec;
 
         //     vec v(64);
 
@@ -124,7 +315,7 @@ int main(void) {
         //     v.insert(v.end(), 2, 42);
         // }
         // {
-        //     typedef ft::vector<int> vec;
+        //     typedef TESTED_NAMESPACE::vector<int> vec;
 
         //     vec v(64);
 
@@ -134,7 +325,7 @@ int main(void) {
 
         // }
         // {
-        //     ft::vector<int> v(5000);
+        //     TESTED_NAMESPACE::vector<int> v(5000);
 
         //     try {
         //         v.insert(v.begin() + 115, std::numeric_limits<std::ptrdiff_t>::max(), 5);
@@ -142,4 +333,4 @@ int main(void) {
         //         std::cout << e.what() << std::endl;
         //     }
     }
-}
+}*/

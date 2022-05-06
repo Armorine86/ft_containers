@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/13 10:16:33 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/05 21:41:41 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/06 12:24:08 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,19 +93,19 @@ class vector {
         : alloc_(alloc), start_(NULL), end_(NULL), capacity_(NULL) {
 
         typedef typename iterator_traits<InputIterator>::iterator_category category;
-        range_construct(first, last, category());
+        range_vec_init(first, last, category());
     }
 
     //* Copy Constructor
     vector(const vector& src) : alloc_(src.alloc_), start_(NULL), end_(NULL), capacity_(NULL) {
 
         typedef typename iterator_traits<vector::iterator>::iterator_category category;
-        range_construct(src.start_, src.end_, category());
+        range_vec_init(src.start_, src.end_, category());
     }
 
     //* Operator= Constructor
     vector& operator=(const vector& rhs) {
-        
+
         if (this == &rhs)
             return *this;
 
@@ -118,7 +118,7 @@ class vector {
             range_destroy(new_end.base(), end_);
         } else {
             std::copy(rhs.start_, rhs.start_ + size(), start_);
-            range_construct(end_, rhs.start_ + size(), rhs.end_);
+            range_vec_init(end_, rhs.start_ + size(), rhs.end_);
         }
 
         end_ = start_ + n;
@@ -268,7 +268,7 @@ class vector {
 
         typedef typename iterator_traits<InputIterator>::iterator_category category;
         clear();
-        
+
         range_assign(first, last, category());
     }
 
@@ -293,7 +293,7 @@ class vector {
 
         if (pos == end() - 1) {
             --end_;
-            alloc_.destroy(end_);
+            alloc_.destroy(pos.base());
             return end();
         }
 
@@ -359,25 +359,11 @@ class vector {
      */
     iterator insert(iterator pos, const T& val) {
 
-            insert(pos, 1, val);
-            return pos;
-        // size_type n = 1; // Single Element
-        // if (end_ == capacity_) {
-
-        //     difference_type diff = std::distance(begin(), pos);
-        //     size_type new_cap = (!empty()) ? get_newcap(size() + n) : 1;
-        //     reserve(new_cap);
-        //     pos = begin() + diff;
-        // }
-
-        // end_ += n;
-
-        // shift_right(pos, n);
-
-        // alloc_.destroy(pos.base());
-        // alloc_.construct(pos.base(), val);
-
-        // return pos;
+        size_type diff = std::distance(begin(), pos); // if realloc happens
+        
+        insert(pos, 1, val);
+        
+        return iterator(start_ + diff);
     }
 
     /**
@@ -390,7 +376,6 @@ class vector {
         if (n <= 0)
             return;
 
-        size_type space_left = capacity_ - end_;
         bool need_realloc = (capacity() - size() < n) ? true : false;
 
         if (need_realloc) {
@@ -400,43 +385,25 @@ class vector {
             pointer new_end = construct_range(new_start, start_, pos.base());
             new_end = construct_range(new_end, new_end + n, val);
             new_end = construct_range(new_end, pos.base(), end_);
-            
+
             deallocate_vec();
 
             start_ = new_start;
             end_ = new_end;
             capacity_ = start_ + new_cap;
-            
+
         } else { // no realloc needed
-            if (space_left > n) {
-                iterator cpy_end = shift_right(pos, n);
-                for (; pos != cpy_end; ++pos) {
-                    if (pos.base() < end_)
-                        *pos = val;
-                    else
-                        alloc_.construct(pos.base(), val);
-                }
-                    
-                end_ += n;
+            iterator cpy_end = shift_right(pos, n);
+            for (; pos != cpy_end; ++pos) {
+                if (pos.base() < end_) {
+                    alloc_.destroy(pos.base());
+                    *pos = val;
+                } else
+                    alloc_.construct(pos.base(), val);
             }
+
+            end_ += n;
         }
-
-        
-        // if (capacity() - size() < n) {
-        //     size_type new_cap = (!empty()) ? get_newcap(size() + n) : capacity() + n;
-        //     reserve(new_cap);
-        //     pos = begin() + diff;
-        // }
-
-        // if (diff > size())
-        //     shift_right(pos, n);
-
-        // end_ += n;
-        
-        // for (size_type i = 0; i < n; ++i) {
-        //     alloc_.construct(pos.base(), val);
-        //     ++pos;
-        // }
     }
 
     /**
@@ -445,8 +412,7 @@ class vector {
      * if a reallocation is needed
      */
     template <typename InputIterator>
-    void insert(iterator pos, InputIterator first, InputIterator last,
-                      std::forward_iterator_tag) {
+    void insert(iterator pos, InputIterator first, InputIterator last, std::forward_iterator_tag) {
 
         size_type n = std::distance(first, last);
         difference_type diff = std::distance(begin(), pos);
@@ -462,8 +428,59 @@ class vector {
         pointer ptr = start_ + diff;
         pointer old_start = start_;
         size_type old_cap = capacity();
-        range_construct(ptr, first, last);
+        range_vec_init(ptr, first, last);
         range_deallocate(old_start, old_cap);
+    }
+
+    template <typename InputIter>
+    void insert(iterator pos, InputIter first, typename enable_if<!is_integral<InputIter>::value, InputIter>::type last) {
+        
+        typedef typename iterator_traits<InputIter>::iterator_category category;
+        range_insert(pos, first, last, category());
+    }
+    
+    template <typename InputIter>
+    void range_insert(iterator pos, InputIter first, InputIter last, std::input_iterator_tag) {
+        
+        if (pos == end()) {
+            for (; first != last; ++first)
+                push_back(*first);
+        }
+    }
+    
+    template <typename InputIter>
+    void range_insert(iterator pos, InputIter first, InputIter last, std::forward_iterator_tag) {
+
+        if (first == last)
+            return;
+        
+        size_type n = std::distance(first, last);        
+        bool need_realloc = (capacity() - size() < n) ? true : false;
+        
+        if (need_realloc) {
+            size_type new_cap = (!empty()) ? get_newcap(size() + n) : capacity() + n;
+            pointer new_start = alloc_.allocate(new_cap);
+
+            pointer new_end = construct_range(new_start, start_, pos.base());
+            new_end = construct_range(new_end, first, last);
+            new_end = construct_range(new_end, pos.base(), end_);
+
+            deallocate_vec();
+
+            start_ = new_start;
+            end_ = new_end;
+            capacity_ = start_ + new_cap;
+
+        } else { // no realloc needed
+            iterator cpy_end = shift_right(pos, n);
+            for (; first != last; ++first, ++pos) {
+                if (pos < end()) {
+                    *pos = *first;
+                } else
+                    alloc_.construct(pos.base(), *first);
+            }
+            end_ += n;
+        }
     }
 
     /**
@@ -477,11 +494,11 @@ class vector {
     void resize(size_type n, value_type val = value_type()) {
 
         if (size() > n) {
-            for(; size() > n; )
+            for (; size() > n;)
                 pop_back();
         } else if (n > size()) {
             check_size(n);
-            for (;size() < n;)
+            for (; size() < n;)
                 push_back(val);
         }
     }
@@ -507,38 +524,20 @@ class vector {
      *  ==================================================
      */
 
-    template <typename Iter>
-    pointer construct_range(pointer dest, Iter start, Iter end) {
-
-        for (; start != end; ++dest, (void)++start)
-            alloc_.construct(dest, *start);
-
-        return dest;
-    }
-
-    pointer construct_range(pointer dest, const_pointer end, const_reference value)
-    {
-        for (; dest != end; ++dest) {
-            alloc_.construct(dest, value);
-        }
-        return dest;
-    }
-    
     template <typename InputIterator>
-    void range_assign(InputIterator first, InputIterator last, std::input_iterator_tag)
-    {
+    void range_assign(InputIterator first, InputIterator last, std::input_iterator_tag) {
         clear();
         for (; first != last; ++first) {
             push_back(*first);
         }
     }
-    
+
     /**
      * @return THROWS if max_size() is equal or bigger than
      * maximum allowed vector size
      */
     void check_size(size_type n) {
-        
+
         size_type max = max_size();
         if (n >= max)
             throw std::length_error("Vector Max Size Exceeded");
@@ -551,11 +550,11 @@ class vector {
 
         iterator cpy = end() - 1;
         iterator dest = cpy + n;
-                
-        if (start_ != end_) {    
+
+        if (start_ != end_) {
             if (end_ == capacity_)
                 cpy = end();
-            
+
             for (; dest != pos && cpy >= pos; --cpy, --dest) {
                 if (dest < end())
                     *dest = *cpy;
@@ -563,7 +562,7 @@ class vector {
                     alloc_.construct(dest.base(), *cpy);
             }
         }
-        
+
         return ++dest;
     }
 
@@ -574,7 +573,6 @@ class vector {
     void shift_left(iterator& first, iterator& last) {
 
         for (iterator it = last; it != end(); ++it) {
-            alloc_.destroy(first.base());
             *first = *it;
             ++first;
         }
@@ -604,16 +602,16 @@ class vector {
             ++pos;
         }
     }
-    
+
     /**
-    *   Allocates a new vector and constructs it, then deallocates the old vector
-    */
-    template<typename Iter>
+     *   Allocates a new vector and constructs it, then deallocates the old vector
+     */
+    template <typename Iter>
     void copy_construct(Iter srcFirst, Iter srcLast, size_type size) {
-        
+
         pointer old_start = start_;
         size_type old_cap = capacity(); //* old vector
-        
+
         start_ = alloc_.allocate(size); //* new vector pointer
         end_ = start_;
         capacity_ = start_ + size;
@@ -626,8 +624,14 @@ class vector {
         range_deallocate(old_start, old_cap);
     }
 
+    template <typename InputIter>
+    void range_vec_init(InputIter first, InputIter last, std::input_iterator_tag) {
+        for (; first != last; ++first)
+            push_back(*first);
+    }
+
     template <typename ForwardIterator>
-    void range_construct(ForwardIterator first, ForwardIterator last, std::forward_iterator_tag) {
+    void range_vec_init(ForwardIterator first, ForwardIterator last, std::forward_iterator_tag) {
 
         difference_type n = std::distance(first, last);
 
@@ -644,12 +648,28 @@ class vector {
     }
 
     template <typename ForwardIterator>
-    void range_construct(pointer pos, ForwardIterator first, ForwardIterator last) {
-        
+    void range_vec_init(pointer pos, ForwardIterator first, ForwardIterator last) {
+
         for (; first != last; ++first, (void)++pos) {
             alloc_.construct(pos, *first);
             ++end_;
         }
+    }
+
+    template <typename Iter>
+    pointer construct_range(pointer dest, Iter start, Iter end) {
+
+        for (; start != end; ++dest, (void)++start)
+            alloc_.construct(dest, *start);
+
+        return dest;
+    }
+
+    pointer construct_range(pointer dest, const_pointer end, const_reference value) {
+        for (; dest != end; ++dest) {
+            alloc_.construct(dest, value);
+        }
+        return dest;
     }
 
     /**

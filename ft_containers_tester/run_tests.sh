@@ -123,6 +123,7 @@ test_typedefs() {
 test_vector() {
     test_typedefs "vector"
     test_suite "vector" "types ctor ctor_copy ctor_size ctor_range assignment assign assign_range at index_op front back push_back reserve resize swap pop_back max_size empty get_allocator data iterator insert insert_size insert_range clear erase erase_range comparisons"
+     
 }
 
 test_stack() {
