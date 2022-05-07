@@ -1,3 +1,6 @@
 [submodule "containers_test"]
 	path = containers_test
 	url = https://github.com/mli42/containers_test.git
+[submodule "ft_containers_tester"]
+	path = ft_containers_tester
+	url = https://github.com/Mikastiv/ft_containers_tester.git
