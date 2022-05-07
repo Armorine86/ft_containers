@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/13 10:16:33 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/06 12:24:08 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/07 09:13:42 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,9 +60,9 @@ class vector {
      ** Fill Constructor:
      *  Container with n elements. Each element is a copy of val
      *
-     *  @param n Number of Elements
-     *  @param val Type of Element
-     *  @param alloc Allocator_type
+     *  n Number of Elements
+     *  val Type of Element
+     *  alloc Allocator_type
      */
     explicit vector(size_type n, const value_type& val = value_type(),
                     const Allocator& alloc = allocator_type())
@@ -82,9 +82,9 @@ class vector {
     * with each elements constructed from its corresponding element in that range
     * in the same order
     *
-    * @tparam InputIterator
-    * @param first start of range
-    * @param last end of range
+    * InputIterator
+    * first start of range
+    * last end of range
     */
     template <typename InputIterator>
     vector(InputIterator first,
@@ -139,7 +139,7 @@ class vector {
     //* =============== ELEMENT ACCESS FUNCTIONS ===============
 
     /**
-     * @return Returns a reference at specified location pos
+     * Returns a reference at specified location pos
      */
     reference at(size_type pos) {
         if (pos >= size())
@@ -149,7 +149,7 @@ class vector {
     }
 
     /**
-     * @return Returns a const reference at specified location pos
+     * Returns a const reference at specified location pos
      */
     const_reference at(size_type pos) const {
         if (pos >= size())
@@ -159,42 +159,42 @@ class vector {
     }
 
     /**
-     * @return Returns a reference to the the element at index pos
+     * Returns a reference to the the element at index pos
      */
     reference operator[](size_type pos) { return *(start_ + pos); }
 
     /**
-     * @return Returns a const reference to the the element at index pos
+     * Returns a const reference to the the element at index pos
      */
     const_reference operator[](size_type pos) const { return *(start_ + pos); }
 
     /**
-     * @return Returns a reference to the first element of the vector
+     * Returns a reference to the first element of the vector
      */
     reference front() { return *start_; }
 
     /**
-     * @return Returns a const reference to the first element of the vector
+     * Returns a const reference to the first element of the vector
      */
     const_reference front() const { return *start_; }
 
     /**
-     * @return Returns a reference to the last element of the vector
+     * Returns a reference to the last element of the vector
      */
     reference back() { return *(end_ - 1); }
 
     /**
-     * @return Returns a const reference to the last element of the vector
+     * Returns a const reference to the last element of the vector
      */
     const_reference back() const { return *(end_ - 1); }
 
     /**
-     * @return Returns a pointer to the underling array serving as element storage
+     * Returns a pointer to the underling array serving as element storage
      */
     value_type* data() { return start_; }
 
     /**
-     * @return Returns a const pointer to the underling array serving as element storage
+     * Returns a const pointer to the underling array serving as element storage
      */
     const value_type* data() const { return start_; }
 
@@ -213,14 +213,14 @@ class vector {
     //* =============== CAPACITY FUNCTIONS ===============
 
     /**
-     * @return returns TRUE if the container is empty
+     * returns TRUE if the container is empty
      */
     bool empty() const { return (size() == 0) ? true : false; }
 
     /**
-     *  @param diffmax the maximum elements of type T
-     *  @param allocmax the maximum memory allocation
-     *  @return The Vector Maximum Size
+     *  diffmax the maximum elements of type T
+     *  allocmax the maximum memory allocation
+     *  The Vector Maximum Size
      */
     size_type max_size() const {
         const size_t diffmax = std::numeric_limits<difference_type>::max();
@@ -230,7 +230,7 @@ class vector {
     }
 
     /**
-     * @return The number of elements in the Vector
+     * The number of elements in the Vector
      */
     size_type size() const { return static_cast<size_type>(end_ - start_); }
 
@@ -256,7 +256,7 @@ class vector {
     }
 
     /**
-     * @return Returns the number of elements that the container has currently allocated space for.
+     * Returns the number of elements that the container has currently allocated space for.
      */
     size_type capacity() const { return static_cast<size_type>(capacity_ - start_); }
 
@@ -304,7 +304,7 @@ class vector {
      * Erases all elements in range [first, last].
      * Shifts all elements to the left.
      *
-     * @return Returns a pointer on the element first + 1.
+     * Returns a pointer on the element first + 1.
      * If last == end(), returns an Iterator to end_
      */
     iterator erase(iterator first, iterator last) {
@@ -355,7 +355,7 @@ class vector {
     /**
      * Insert a single element before pos.
      * Reallocates the vector if size() surpasses capacity()
-     * @return An Iterator that points to the first of the newly inserted elements
+     * An Iterator that points to the first of the newly inserted elements
      */
     iterator insert(iterator pos, const T& val) {
 
@@ -411,27 +411,6 @@ class vector {
      * Capacity will be the highest of either size() + n or capacity * 2
      * if a reallocation is needed
      */
-    template <typename InputIterator>
-    void insert(iterator pos, InputIterator first, InputIterator last, std::forward_iterator_tag) {
-
-        size_type n = std::distance(first, last);
-        difference_type diff = std::distance(begin(), pos);
-
-        if (size() + n > capacity()) {
-            size_type new_cap = (!empty()) ? get_newcap(size() + n) : capacity() + n;
-            reserve(new_cap);
-            pos = begin() + diff;
-        }
-
-        shift_right(pos, n);
-
-        pointer ptr = start_ + diff;
-        pointer old_start = start_;
-        size_type old_cap = capacity();
-        range_vec_init(ptr, first, last);
-        range_deallocate(old_start, old_cap);
-    }
-
     template <typename InputIter>
     void insert(iterator pos, InputIter first,
                 typename enable_if<!is_integral<InputIter>::value, InputIter>::type last) {
@@ -534,7 +513,7 @@ class vector {
     }
 
     /**
-     * @return THROWS if max_size() is equal or bigger than
+     * THROWS if max_size() is equal or bigger than
      * maximum allowed vector size
      */
     void check_size(size_type n) {
@@ -581,8 +560,8 @@ class vector {
 
     /**
      * Fills Vector with N elements of type val
-     * @param val Type of Element
-     * @param n Number of elements
+     * val Type of Element
+     * n Number of elements
      */
     void fill_construct(const value_type& val, size_type n) {
 
@@ -710,8 +689,8 @@ class vector {
     }
 
     /**
-     * @param Total_elems size() + N new elements
-     * @return Returns new capacity based on final total elements of the vector
+     * Total_elems size() + N new elements
+     * Returns new capacity based on final total elements of the vector
      */
     size_type get_newcap(const size_type& total_elems) {
 
