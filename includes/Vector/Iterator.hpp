@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/13 10:16:30 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/05 16:23:17 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/07 09:59:42 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,29 +18,13 @@
 
 namespace ft {
 
-/**
- *  Common iterator class.
- *
- *  This class does nothing but define nested typedefs.  %Iterator classes
- *  can inherit from this class to save some work.  The typedefs are THAN
- *  used in specializations and overloading.
- **/
-template <typename T, typename Category, typename Distance = std::ptrdiff_t, typename Pointer = T*,
-          typename Reference = T&>
-struct iterator {
-    typedef Category iterator_category;
-    typedef T value_type;
-    typedef Distance difference_type;
-    typedef Pointer pointer;
-    typedef Reference reference;
-};
-
 //* ============================================
 //* |       normal_iterator Class              |
 //* ============================================
 
 template <typename It_Type, typename Container>
 class normal_iterator {
+
   protected:
     typedef iterator_traits<It_Type> trait_type;
     It_Type elem;
@@ -76,6 +60,7 @@ class normal_iterator {
 
     // clang-format off
   //* ========== Operators ==========
+  
   public:
     normal_iterator& operator++()   { ++elem; return *this; }
     normal_iterator operator++(int) { return normal_iterator(elem++); }
@@ -92,6 +77,7 @@ class normal_iterator {
     normal_iterator& operator-=(difference_type n)  { elem -= n; return *this; }
     normal_iterator operator-(difference_type n) const   { return normal_iterator(elem - n); }
 
+    /// Returns the underlying base operator
     const iterator_type& base() const { return elem; }
     // clang-format on
 };
@@ -106,6 +92,7 @@ class reverse_iterator : public std::iterator<typename iterator_traits<It_Type>:
                                               typename iterator_traits<It_Type>::difference_type,
                                               typename iterator_traits<It_Type>::pointer,
                                               typename iterator_traits<It_Type>::reference> {
+
   protected:
     typedef iterator_traits<It_Type> trait_type;
     It_Type elem;
@@ -154,6 +141,7 @@ class reverse_iterator : public std::iterator<typename iterator_traits<It_Type>:
     reverse_iterator& operator-=(difference_type n)     { elem += n; return *this; }
     reverse_iterator operator-(difference_type n) const { return reverse_iterator(elem + n); }
 
+    /// Returns the underlying base iterator
     iterator_type base() const { return elem; }
     // clang-format on
 };
@@ -317,6 +305,7 @@ inline bool operator<(const reverse_iterator<Iter>& left, const reverse_iterator
 }
 
 //* ============ GREATER THAN ============
+
 template <typename Left_Iter, typename Right_Iter>
 inline bool operator>(const reverse_iterator<Left_Iter>& left,
                       const reverse_iterator<Right_Iter>& right) {

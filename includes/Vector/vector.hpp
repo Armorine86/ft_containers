@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/13 10:16:33 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/07 09:13:42 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/07 10:38:19 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ class vector {
     // clang-format off
   public:
     //* ========== Member Types ==========
-    typedef T                                           value_type; // Common types (int, long, etc)
+    typedef T                                           value_type;
     typedef value_type&                                 reference;
     typedef const value_type&                           const_reference;
     typedef Allocator                                   allocator_type;
@@ -37,9 +37,9 @@ class vector {
     typedef ptrdiff_t                                   difference_type;
     typedef typename allocator_type::pointer            pointer;
     typedef typename allocator_type::const_pointer      const_pointer;
-    typedef normal_iterator<pointer, vector>            iterator; //* normal_iterator<T, Container>
+    typedef normal_iterator<pointer, vector>            iterator; // ft::vector<T>::iterator
     typedef normal_iterator<const_pointer, vector>      const_iterator;
-    typedef ft::reverse_iterator<iterator>              reverse_iterator;
+    typedef ft::reverse_iterator<iterator>              reverse_iterator; // ft::vector<T>::reverse_iterator
     typedef ft::reverse_iterator<const_iterator>        const_reverse_iterator;
     // clang-format on
 
@@ -57,7 +57,7 @@ class vector {
         : alloc_(alloc), start_(NULL), end_(NULL), capacity_(NULL) {}
 
     /**
-     ** Fill Constructor:
+     *  Fill Constructor:
      *  Container with n elements. Each element is a copy of val
      *
      *  n Number of Elements
@@ -77,15 +77,14 @@ class vector {
     }
 
     /**
-    ** Range Constructor:
-    * Container with as many elements as the range [first, last]
-    * with each elements constructed from its corresponding element in that range
-    * in the same order
-    *
-    * InputIterator
-    * first start of range
-    * last end of range
-    */
+     * Container with as many elements as the range [first, last]
+     * with each elements constructed from its corresponding element in that range
+     * in the same order
+     *
+     * InputIterator
+     * first start of range
+     * last end of range
+     */
     template <typename InputIterator>
     vector(InputIterator first,
            typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type last,
@@ -93,14 +92,14 @@ class vector {
         : alloc_(alloc), start_(NULL), end_(NULL), capacity_(NULL) {
 
         typedef typename iterator_traits<InputIterator>::iterator_category category;
-        range_vec_init(first, last, category());
+        fill_construct(first, last, category());
     }
 
     //* Copy Constructor
     vector(const vector& src) : alloc_(src.alloc_), start_(NULL), end_(NULL), capacity_(NULL) {
 
         typedef typename iterator_traits<vector::iterator>::iterator_category category;
-        range_vec_init(src.start_, src.end_, category());
+        fill_construct(src.start_, src.end_, category());
     }
 
     //* Operator= Constructor
@@ -118,7 +117,7 @@ class vector {
             range_destroy(new_end.base(), end_);
         } else {
             std::copy(rhs.start_, rhs.start_ + size(), start_);
-            range_vec_init(end_, rhs.start_ + size(), rhs.end_);
+            fill_construct(end_, rhs.start_ + size(), rhs.end_);
         }
 
         end_ = start_ + n;
@@ -246,7 +245,7 @@ class vector {
             check_size(new_cap); // if Realloc needed, check if smaller than Max Size
 
         pointer new_start = alloc_.allocate(new_cap);
-        pointer new_end = construct_range(new_start, start_, end_);
+        pointer new_end = range_construct(new_start, start_, end_);
 
         deallocate_vec();
 
@@ -382,9 +381,9 @@ class vector {
             size_type new_cap = (!empty()) ? get_newcap(size() + n) : capacity() + n;
             pointer new_start = alloc_.allocate(new_cap);
 
-            pointer new_end = construct_range(new_start, start_, pos.base());
-            new_end = construct_range(new_end, new_end + n, val);
-            new_end = construct_range(new_end, pos.base(), end_);
+            pointer new_end = range_construct(new_start, start_, pos.base());
+            new_end = range_construct(new_end, new_end + n, val);
+            new_end = range_construct(new_end, pos.base(), end_);
 
             deallocate_vec();
 
@@ -441,9 +440,9 @@ class vector {
             size_type new_cap = (!empty()) ? get_newcap(size() + n) : capacity() + n;
             pointer new_start = alloc_.allocate(new_cap);
 
-            pointer new_end = construct_range(new_start, start_, pos.base());
-            new_end = construct_range(new_end, first, last);
-            new_end = construct_range(new_end, pos.base(), end_);
+            pointer new_end = range_construct(new_start, start_, pos.base());
+            new_end = range_construct(new_end, first, last);
+            new_end = range_construct(new_end, pos.base(), end_);
 
             deallocate_vec();
 
@@ -559,31 +558,6 @@ class vector {
     }
 
     /**
-     * Fills Vector with N elements of type val
-     * val Type of Element
-     * n Number of elements
-     */
-    void fill_construct(const value_type& val, size_type n) {
-
-        start_ = alloc_.allocate(n);
-        end_ = start_;
-        capacity_ = start_ + n;
-
-        for (size_type i = 0; i != n; ++i) {
-            alloc_.construct(end_, val);
-            ++end_;
-        }
-    }
-
-    void fill_construct(pointer pos, value_type& val, size_type n) {
-
-        for (size_type i = 0; i != n; ++i) {
-            alloc_.construct(pos, val);
-            ++pos;
-        }
-    }
-
-    /**
      *   Allocates a new vector and constructs it, then deallocates the old vector
      */
     template <typename Iter>
@@ -604,14 +578,26 @@ class vector {
         range_deallocate(old_start, old_cap);
     }
 
+    void fill_construct(const value_type& val, size_type n) {
+
+        start_ = alloc_.allocate(n);
+        end_ = start_;
+        capacity_ = start_ + n;
+
+        for (size_type i = 0; i != n; ++i) {
+            alloc_.construct(end_, val);
+            ++end_;
+        }
+    }
+
     template <typename InputIter>
-    void range_vec_init(InputIter first, InputIter last, std::input_iterator_tag) {
+    void fill_construct(InputIter first, InputIter last, std::input_iterator_tag) {
         for (; first != last; ++first)
             push_back(*first);
     }
 
     template <typename ForwardIterator>
-    void range_vec_init(ForwardIterator first, ForwardIterator last, std::forward_iterator_tag) {
+    void fill_construct(ForwardIterator first, ForwardIterator last, std::forward_iterator_tag) {
 
         difference_type n = std::distance(first, last);
 
@@ -628,7 +614,7 @@ class vector {
     }
 
     template <typename ForwardIterator>
-    void range_vec_init(pointer pos, ForwardIterator first, ForwardIterator last) {
+    void fill_construct(pointer pos, ForwardIterator first, ForwardIterator last) {
 
         for (; first != last; ++first, (void)++pos) {
             alloc_.construct(pos, *first);
@@ -637,7 +623,7 @@ class vector {
     }
 
     template <typename Iter>
-    pointer construct_range(pointer dest, Iter start, Iter end) {
+    pointer range_construct(pointer dest, Iter start, Iter end) {
 
         for (; start != end; ++dest, (void)++start)
             alloc_.construct(dest, *start);
@@ -645,7 +631,7 @@ class vector {
         return dest;
     }
 
-    pointer construct_range(pointer dest, const_pointer end, const_reference value) {
+    pointer range_construct(pointer dest, const_pointer end, const_reference value) {
         for (; dest != end; ++dest) {
             alloc_.construct(dest, value);
         }
@@ -664,7 +650,7 @@ class vector {
     }
 
     /**
-     * Calls Allocator::destroy() on each elements from first to last
+     * Calls Allocator::destroy() on each elements from [first] to [last]
      */
     void range_destroy(pointer first, pointer last) {
 

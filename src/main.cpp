@@ -57,24 +57,364 @@ void printSize(TESTED_NAMESPACE::vector<T> const& vct, bool print_content = true
 }
 
 struct abc {
-    abc()
-        : data(4),
-          num(1000)
-    {
-    }
+    abc() : data(4), num(1000) {}
 
-    abc(int d, long n)
-        : data(d),
-          num(n)
-    {
-    }
+    abc(int d, long n) : data(d), num(n) {}
 
     int data;
     long num;
 };
 
+struct big_struct {
+    double n;
+    long n1;
+    long n2;
+    long n3;
+    std::string str;
+    abc a;
+    void* p1;
+    void* p2;
+    void* p3;
+    void* p4;
+};
 
 int main(void) {
+    //* ASSIGN
+    {
+        ft::vector<int> v(1);
+
+        v.assign(64, 10);
+    }
+    {
+        ft::vector<int> v(128);
+
+        v.assign(32, -1);
+    }
+    {
+        ft::vector<int> v(512);
+
+        v.push_back(7);
+
+        v.assign(564, 101010);
+    }
+    {
+        ft::vector<int> v(512, 123);
+
+        v.assign(0, 1);
+    }
+    {
+        ft::vector<int> v(512);
+
+        v.push_back(42);
+
+        v.assign(564, 42);
+    }
+    {
+        ft::vector<int> v(5);
+
+        v.push_back(42);
+
+        v.assign(8, 42);
+    }
+    {
+        ft::vector<int> v(65);
+
+        v.assign(8, 42);
+    }
+    {
+        ft::vector<int> v;
+
+        v.assign(0, 101010);
+    }
+
+    //* Assign_Range
+    {
+        long arr[12];
+        long arr1[24];
+
+        iota(arr, &arr[12], 0);
+        iota(arr1, &arr1[24], 64);
+
+        ft::vector<long> v(arr, &arr[12]);
+
+        v.assign(arr1, &arr1[24]);
+    }
+    {
+        short arr[24];
+        short arr1[12];
+
+        iota(arr, &arr[24], 1024);
+        iota(arr1, &arr1[12], -567);
+
+        ft::vector<short> v(arr, &arr[24]);
+
+        v.assign(arr1, &arr1[12]);
+    }
+    {
+        short arr[24];
+
+        iota(arr, &arr[24], 2048);
+
+        ft::vector<short> v(48, -1);
+        ft::vector<short> v1(arr, &arr[24]);
+
+        v.push_back(34);
+        v.assign(v1.begin(), v1.end());
+    }
+    {
+        typedef ft::vector<int> vec;
+
+        vec data(5);
+
+        vec v(data.begin(), data.end());
+
+        v.push_back(42);
+
+        vec data2(64);
+        v.assign(data2.begin(), data2.end());
+    }
+    {
+        typedef ft::vector<int> vec;
+
+        vec data(64);
+
+        vec v(data.begin(), data.end());
+
+        vec data2(15);
+        v.assign(data2.begin(), data2.end());
+    }
+    {
+        typedef ft::vector<char> vec;
+
+        std::istringstream str("1 2 3 4 5 6 7");
+        std::istreambuf_iterator<char> it(str), end;
+        vec v;
+
+        v.assign(it, end);
+    }
+    {
+        typedef ft::vector<char> vec;
+
+        std::istringstream str("1 2 3 4 5 6 7");
+        std::istreambuf_iterator<char> it(str), end;
+        vec v(45, 'A');
+
+        v.assign(it, end);
+    }
+    {
+        typedef ft::vector<char> vec;
+
+        std::istringstream str("1 2 3 4 5 6 7");
+        std::istreambuf_iterator<char> it(str), end;
+        vec v(3, 'A');
+
+        v.assign(it, end);
+    }
+
+    //* Assignement
+
+    {
+        ft::vector<double> v(128, -345783);
+        ft::vector<double> v_copy;
+
+        v_copy = v;
+
+        if (v.data() == v_copy.data()) {
+            std::cout << "Copy ctor doesn't do a deep copy!.";
+        }
+
+        if (!std::equal(v.begin(), v.end(), v_copy.begin())) {
+            std::cout << "Copy ctor error..";
+        }
+
+        ft::vector<double> v1;
+        ft::vector<double> v_copy1;
+
+        v_copy1 = v1;
+
+        if (v1.data() != v_copy1.data()) {
+            std::cout << "Non-null pointer in vector of size 0.";
+        }
+
+        if (!std::equal(v1.begin(), v1.end(), v_copy1.begin())) {
+            std::cout << "Copy ctor error...";
+        }
+
+        ft::vector<double> v2(256, -1);
+        ft::vector<double> v_copy2(255, 56);
+
+        v_copy2.push_back(1);
+        v_copy2 = v2;
+
+        if (!std::equal(v2.begin(), v2.end(), v_copy2.begin())) {
+            std::cout << "Copy ctor error....";
+        }
+
+        ft::vector<double> v3(64);
+        ft::vector<double> v_copy3(128, -1234);
+
+        v_copy3 = v3;
+        ft::vector<double>& x = v_copy3;
+
+        if (!std::equal(v3.begin(), v3.end(), v_copy3.begin())) {
+            std::cout << "Copy ctor error.....";
+        }
+
+        v_copy3 = x;
+
+        if (!std::equal(v3.begin(), v3.end(), v_copy3.begin())) {
+            std::cout << "Copy ctor error.....";
+        }
+    }
+    {
+        ft::vector<int> v1(64);
+        ft::vector<int> v2(5);
+
+        v2 = v1;
+    }
+    {
+        ft::vector<int> v1(64);
+        ft::vector<int> v2(5);
+
+        v1 = v2;
+
+        ft::vector<int>& x = v1;
+
+        v1 = x;
+    }
+
+    //* CTOR
+
+    // Default
+    { ft::vector<int> v; }
+    // Allocator ctor
+    {
+        std::allocator<double> alloc;
+        ft::vector<double> v(alloc);
+    }
+
+    //* CTOR COPY
+
+    {
+        ft::vector<double> v(128, -345783);
+        ft::vector<double> v_copy(v);
+
+        if (v.data() == v_copy.data()) {
+            std::cout << "Copy ctor doesn't do a deep copy!";
+        }
+
+        if (!std::equal(v.begin(), v.end(), v_copy.begin())) {
+            std::cout << "Copy ctor error";
+        }
+
+        ft::vector<double> v1;
+        ft::vector<double> v_copy1(v1);
+
+        if (v1.data() != v_copy1.data()) {
+            std::cout << "Non-null pointer in vector of size 0";
+        }
+
+        if (!std::equal(v1.begin(), v1.end(), v_copy1.begin())) {
+            std::cout << "Copy ctor error.";
+        }
+    }
+    {
+        ft::vector<int> v1(512);
+        ft::vector<int> v2(v1);
+    }
+
+    //* CTOR RANGE
+
+    {
+        float arr[10] = { 0, 1, 2, 3, 4, 5, 6, 7 };
+        ft::vector<float> v(arr, &arr[10]);
+
+        if (!std::equal(arr, &arr[10], v.begin())) {
+            std::cout << "Iterator ctor error";
+        }
+
+        ft::vector<int> v1(arr, arr);
+
+        if (!std::equal(v1.begin(), v1.end(), arr)) {
+            std::cout << "Iterator ctor error.";
+        }
+
+        ft::vector<float> v2(v.begin(), v.end());
+
+        if (!std::equal(v2.begin(), v2.end(), v.begin())) {
+            std::cout << "Iterator ctor error..";
+        }
+
+        std::string str = "Hello World!";
+        ft::vector<char> v3(str.begin(), str.end());
+
+        if (!std::equal(str.begin(), str.end(), v3.begin())) {
+            std::cout << "Iterator ctor error...";
+        }
+    }
+    {
+        typedef ft::vector<int> vec;
+
+        vec data(64);
+        vec v(data.begin(), data.end());
+    }
+    {
+        typedef ft::vector<char> vec;
+
+        std::istringstream str("1 2 3 4 5 6 7");
+        std::istreambuf_iterator<char> it(str), end;
+        vec v(it, end);
+    }
+    {
+        typedef ft::vector<char> vec;
+
+        std::istringstream str("");
+        std::istreambuf_iterator<char> it(str), end;
+        vec v(it, end);
+    }
+
+    //* CTOR SIZE
+
+    {
+        ft::vector<int> v(64);
+
+        ft::vector<int> v1(10, 32);
+        int arr[10] = { 32, 32, 32, 32, 32, 32, 32, 32, 32, 32 };
+
+        if (!std::equal(arr, &arr[10], v1.begin())) {
+            std::cout << "Size ctor error";
+        }
+
+        ft::vector<int> v2(0, 1234);
+
+        try {
+            ft::vector<big_struct> v3(ft::vector<big_struct>().max_size() + 1);
+        } catch (std::length_error& e) {
+            std::cerr << e.what() << std::endl;
+        }
+    }
+    {
+        typedef ft::vector<long> vec;
+
+        vec v(64);
+
+        vec v1(4);
+
+        v1 = v;
+    }
+    {
+        typedef ft::vector<long> vec;
+
+        vec v(4);
+
+        vec v1(64);
+
+        v1 = v;
+    }
+    { ft::vector<abc> v(100); }
+}
+
+/*int main(void) {
 
     {
         typedef TESTED_NAMESPACE::vector<int>::iterator iter;
@@ -195,7 +535,6 @@ int main(void) {
         std::cout << std::endl;
     }
 
-    //* INSERT
     {
         typedef ft::vector<int>::iterator iter;
 
@@ -203,12 +542,10 @@ int main(void) {
 
         iter it = v.insert(v.begin(), 64);
 
-
         v.insert(v.begin(), 34);
         v.insert(v.begin(), 21);
         v.insert(v.begin(), 6);
         it = v.insert(v.begin(), 45);
-
     }
     {
         typedef ft::vector<int>::iterator iter;
@@ -217,54 +554,44 @@ int main(void) {
 
         iter it = v.insert(v.end(), 64);
 
-
         it = v.insert(v.end(), 63);
 
-
         it = v.insert(v.end(), 62);
-
     }
-    
+
     {
         typedef ft::vector<long>::iterator iter;
 
         ft::vector<long> v(128, -5);
 
-
         iter it = v.insert(v.end(), 64);
 
-
         it = v.insert(v.end(), -64);
-
     }
-    
+
     {
         typedef ft::vector<int> vec;
 
         vec v;
-
 
         v.insert(v.begin(), 42);
         std::cout << "===== STEP 1 =====" << std::endl;
     }
-    
+
     {
         typedef ft::vector<int> vec;
 
         vec v;
 
-
         v.insert(v.end(), 42);
         std::cout << "===== STEP 2 =====" << std::endl;
     }
-    
+
     {
         typedef ft::vector<int> vec;
 
         vec v(64);
         std::cout << "===== STEP 3 =====" << std::endl;
-
-
 
         v.push_back(42);
         std::cout << "===== STEP 4 =====" << std::endl;
@@ -273,9 +600,6 @@ int main(void) {
         std::cout << "===== STEP 5 =====" << std::endl;
     }
 
-
-    //* INSERT RANGE
-
     {
         typedef ft::vector<abc> vec;
 
@@ -283,21 +607,16 @@ int main(void) {
 
         v.insert(v.begin(), v.begin(), v.begin());
 
-
         v.insert(v.begin(), v.begin(), v.end());
 
-
         v.insert(v.end(), v.end(), v.end());
-
 
         abc a(1234, -9786523495);
         v.insert(v.begin(), a);
 
-
         abc a1(7643, -3453);
         vec v1(5178, a1);
         v.insert(v.begin(), v1.begin(), v1.end());
-
     }
     {
         typedef ft::vector<abc> vec;
@@ -306,11 +625,9 @@ int main(void) {
 
         abc a(1234, -9786523495);
         v.insert(v.begin() + 7, a);
-
 
         std::list<abc> li(63);
         v.insert(v.end(), li.begin(), li.end());
-
     }
     {
         typedef ft::vector<abc> vec;
@@ -319,11 +636,9 @@ int main(void) {
 
         abc a(1234, -9786523495);
         v.insert(v.begin() + 7, a);
-
 
         std::list<abc> li(63);
         v.insert(v.begin(), li.begin(), li.end());
-
     }
     {
         typedef ft::vector<abc> vec;
@@ -333,10 +648,8 @@ int main(void) {
         abc a(1234, -9786523495);
         v.insert(v.begin() + 7, a);
 
-
         std::list<abc> li(64);
         v.insert(v.end(), li.begin(), li.end());
-
     }
     {
         typedef ft::vector<abc> vec;
@@ -348,7 +661,6 @@ int main(void) {
 
         std::list<abc> li(64);
         v.insert(v.begin(), li.begin(), li.end());
-
     }
     {
         typedef ft::vector<int> vec;
@@ -357,19 +669,14 @@ int main(void) {
 
         v.insert(v.begin(), v.begin(), v.begin());
 
-
         v.insert(v.begin(), v.begin(), v.end());
-
 
         v.insert(v.end(), v.end(), v.end());
 
-
         v.insert(v.begin(), 42);
-
 
         vec v1(5178, 42);
         v.insert(v.begin(), v1.begin(), v1.end());
-
     }
     {
         typedef ft::vector<int> vec;
@@ -377,11 +684,9 @@ int main(void) {
         vec v(64);
 
         v.insert(v.begin() + 7, 42);
-
 
         std::list<int> li(63);
         v.insert(v.end(), li.begin(), li.end());
-
     }
     {
         typedef ft::vector<int> vec;
@@ -389,7 +694,6 @@ int main(void) {
         vec v(64);
 
         v.insert(v.begin() + 7, 42);
-
 
         std::list<int> li(63);
         v.insert(v.begin(), li.begin(), li.end());
@@ -400,10 +704,8 @@ int main(void) {
         vec v(64);
         v.insert(v.begin() + 7, 42);
 
-
-        std::list<int > li(64);
+        std::list<int> li(64);
         v.insert(v.end(), li.begin(), li.end());
-
     }
     {
         typedef ft::vector<int> vec;
@@ -411,11 +713,9 @@ int main(void) {
         vec v(64);
 
         v.insert(v.begin() + 7, 42);
-
 
         std::list<int> li(64);
         v.insert(v.begin(), li.begin(), li.end());
-
     }
     {
         typedef ft::vector<char> vec;
@@ -423,7 +723,6 @@ int main(void) {
         std::istringstream str("1 2 3 4 5 6 7");
         std::istreambuf_iterator<char> it(str), end;
         vec v;
-
 
         v.insert(v.begin(), it, end);
     }
@@ -434,7 +733,6 @@ int main(void) {
         std::istreambuf_iterator<char> it(str), end;
         vec v(45, 'A');
 
-
         v.insert(v.begin() + 20, it, end);
     }
     {
@@ -444,7 +742,6 @@ int main(void) {
         std::istreambuf_iterator<char> it(str), end;
         vec v(3, 'A');
 
-
         v.insert(v.end(), it, end);
     }
-}
+}*/

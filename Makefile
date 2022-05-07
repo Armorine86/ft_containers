@@ -46,7 +46,6 @@ VPATH				=	$(SRCS_PATH) #$(VECTOR_PATH) $(STACK_PATH) $(MAP_PATH) $(TESTER_PATH)
 
 ALL_INCLUDES		= 	$(addprefix $(INC_PATH), $(VECTOR_PATH)) \
 						$(addprefix $(INC_PATH), $(STACK_PATH)) \
-						$(addprefix $(INC_PATH), $(COLORS))		\
 						# $(MAP_PATH) \
 						$(TESTER_PATH) \
 
