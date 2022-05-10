@@ -6,4 +6,5 @@
 -Iincludes/
 -Iincludes/Vector/
 -Iincludes/Map/
+-Iincludes/Map/RBTree/
 -Iincludes/Stack/

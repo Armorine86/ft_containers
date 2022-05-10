@@ -12,14 +12,14 @@
 
 #pragma once
 
-namespace ft {	
-	/*
-	*  ==================================================
-	*  |           LEXICO_GRAPHICAL COMPARE             |
-	*  ==================================================
-	*/
+namespace ft {
+/*
+ *  ==================================================
+ *  |           LEXICO_GRAPHICAL COMPARE             |
+ *  ==================================================
+ */
 
-	// clang-format off
+// clang-format off
 	template <typename InputIter1, typename InputIter2>
 	bool lexicographical_compare(InputIter1 first1, InputIter1 last1, InputIter2 first2,
 								InputIter2 last2) {
@@ -60,5 +60,5 @@ namespace ft {
 		}
 		return false;
 	}
-	// clang-format on
-}
+// clang-format on
+} // namespace ft

@@ -6,15 +6,15 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 08:11:20 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/10 09:54:38 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/10 15:39:16 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "Iterator.hpp"
+#include "RBtree.hpp"
 #include "pair.hpp"
-#include "tree.hpp"
+#include "tree_iterator.hpp"
 #include <cstddef>
 #include <memory>
 
@@ -29,26 +29,28 @@ class map {
     //* ========== Member Types ==========
     typedef Key 									                key_type;
     typedef T 									            	    mapped_type;
+    typedef Compare 								              key_compare;
 	  typedef Allocator								              allocator_type;
-    typedef ft::pair<const Key, T> 					      value_type;
     typedef size_t 									              size_type;
     typedef std::ptrdiff_t 							          difference_type;
-    typedef Compare 								              key_compare;
+    typedef ft::pair<const Key, T> 					      value_type;
     typedef value_type& 							            reference;
     typedef const value_type& 						        const_reference;
 	// typedef typename Allocator::reference			  reference;
 	// typedef typename Allocator::const_reference	const_reference;
     typedef typename Allocator::pointer 			    pointer;
     typedef typename Allocator::const_pointer 		const_pointer;
-    typedef normal_iterator<pointer, map> 			  iterator;
-    typedef normal_iterator<const_pointer, map> 	const_iterator;
-    typedef ft::reverse_iterator<iterator> 			  reverse_iterator;
-    typedef ft::reverse_iterator<const_iterator> 	const_reverse_iterator;
+
+    //! Change to tree_iterator
+    // typedef tree_iterator<pointer, map> 			  iterator;
+    // typedef tree_iterator<const_pointer, map> 	const_iterator;
+    // typedef ft::tree_reverse_iterator<iterator> 			  reverse_iterator;
+    // typedef ft::tree_reverse_iterator<const_iterator> 	const_reverse_iterator;
     // clang-format on
 
   public:
     //* ============== NESTED MAP ==============
-    class value_compare : std::binary_function<value_type, value_type, bool> {
+    class value_compare : public std::binary_function<value_type, value_type, bool> {
         friend class map<Key, T, Compare, Allocator>;
 
       protected:
@@ -88,15 +90,16 @@ class map {
     // ~map() {}
 
     //* =============== ITERATORS FUNCTIONS ===============
-    iterator begin() {}
-    const_iterator begin() const {}
-    reverse_iterator rbegin() {}
-    const_reverse_iterator rbegin() const {}
+    
+    //~ iterator begin() {}
+    //~ const_iterator begin() const {}
+    //~ reverse_iterator rbegin() {}
+    //~ const_reverse_iterator rbegin() const {}
 
-    iterator end() {}
-    const_iterator end() const {}
-    reverse_iterator rend() {}
-    const_reverse_iterator rend() const {}
+    //~ iterator end() {}
+    //~ const_iterator end() const {}
+    //~ reverse_iterator rend() {}
+    //~ const_reverse_iterator rend() const {}
 
     //* =============== ELEMENT ACCESS FUNCTIONS ===============
 
@@ -156,7 +159,7 @@ class map {
      */
 
   private:
-    RBT<value_type, Compare> rbt_;
+    RBTree<T, Compare, Allocator> rbt_;
 
 }; // class map
 } // namespace ft

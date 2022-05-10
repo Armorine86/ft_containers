@@ -103,6 +103,7 @@ int main(void) {
 
         std::cout << str << std::endl;
     }
+
     {
         std::cout << GREEN << "========== TEST 1 ==========" << END << std::endl;
         int x = 10;

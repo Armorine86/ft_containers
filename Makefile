@@ -12,12 +12,14 @@ RM					=	rm -rf
 COLORS 				=	colors.hpp
 
 SRC_FILES			=	main.cpp
+GEN_HDRS			=	utilities.hpp colors.hpp
 
 VECTOR_FILES		=	
 VECTOR_HDRS			=	Vector.hpp Iterator.hpp Iterator_traits.hpp
 
 MAP_FILES			=	
 MAP_HDRS			=	map.hpp pair.hpp
+RBTREE_HDRS			=	RBtree.hpp tree_iterator.hpp tree_node_types.hpp
 				
 STACK_FILES			= 	
 STACK_HDRS			= 	Stack.hpp
@@ -27,6 +29,8 @@ TESTER_HDRS			=
 
 VECTOR_PATH			= 	Vector/
 MAP_PATH			=	Map/
+TREE_PATH			=	Map/RBTree/
+
 STACK_PATH			=	Stack/
 # TESTER_PATH			=	testers/
 
@@ -44,9 +48,11 @@ OBJS 				=	$(addprefix $(OBJS_PATH), $(OBJS_FILES))
 
 VPATH				=	$(SRCS_PATH) #$(VECTOR_PATH) $(STACK_PATH) $(MAP_PATH) $(TESTER_PATH)
 
-ALL_INCLUDES		= 	$(addprefix $(INC_PATH), $(VECTOR_PATH)) \
+ALL_INCLUDES		= 	$(INC_PATH) \
+						$(addprefix $(INC_PATH), $(VECTOR_PATH)) \
 						$(addprefix $(INC_PATH), $(STACK_PATH)) \
 						$(addprefix $(INC_PATH), $(MAP_PATH)) \
+						$(addprefix $(INC_PATH), $(TREE_PATH)) \
 						#$(TESTER_PATH)
 
 USAGE				=	#Program Usage Message
@@ -84,7 +90,7 @@ debug:	$(NAME)
 redebug : fclean debug
 
 fmt		:
-	clang-format -i $(SRCS) $(addsuffix *, $(ALL_INCLUDES))
+	clang-format -i $(SRCS) $(addsuffix *.hpp, $(ALL_INCLUDES))
 
 clean:
 	@$(RM) $(OBJS_FILES) $(OBJS_PATH) 
