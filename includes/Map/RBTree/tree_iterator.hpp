@@ -6,8 +6,14 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 13:34:32 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/10 14:11:02 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/10 15:59:08 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
+
+#include "node_types.hpp"
+
+namespace ft {
+	
+}

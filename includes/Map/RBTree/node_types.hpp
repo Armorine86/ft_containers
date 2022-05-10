@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 13:30:15 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/10 15:37:42 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/10 15:46:30 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ struct node_types {
     typedef end_node_type* end_node_pointer;
     typedef tree_node<T> tree_node_type;
     typedef tree_node_type* tree_pointer;
-};
+	
+}; // struct node_types
 
 // End_node is a node that lives above the root node (standard node)
 // that marks the end of the tree. Only contains a pointer to left child.
@@ -40,13 +41,13 @@ class end_node {
 
   public:
     end_node() : left(NULL) {}
-};
+	
+}; // class end_node
 
 // clang-format off
 
-// Tree_node is the standard node that will populator your Red Black Tree.
+// Tree_node is the standard node that will populate your Red Black Tree.
 // Inherits from end_node to be able to cast from one to the other.
-// (Unsafe according to LLVM but they did it anyway!)
 template <typename T>
 class tree_node {
   public:
@@ -56,7 +57,9 @@ class tree_node {
   public:
     tree_node() : right(), parent(), color() {}
 	
+	// Unsafe if parent is the actual end node
 	tree_pointer get_parent() { return static_cast<tree_pointer>(parent); }
+	
 	void set_parent(tree_pointer ptr) { parent = static_cast<end_node_pointer>(ptr); }
 
   public:
@@ -65,5 +68,6 @@ class tree_node {
     tree_pointer 		right;
     end_node_pointer 	parent;
     // clang-format on
-};
+	
+}; // class tree_node
 } // namespace ft
