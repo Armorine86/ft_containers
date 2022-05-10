@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 08:11:20 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/10 15:39:16 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/10 17:23:10 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ class map {
 
     // clang-format off
   public:
-    //* ========== Member Types ==========
+    //* ============== Member Types ==============
     typedef Key 									                key_type;
     typedef T 									            	    mapped_type;
     typedef Compare 								              key_compare;

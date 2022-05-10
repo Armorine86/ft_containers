@@ -1,0 +1,3 @@
+[submodule "ft_containers_tester_v2"]
+	path = ft_containers_tester_v2
+	url = https://github.com/Mikastiv/ft_containers_tester_v2.git
