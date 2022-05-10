@@ -6,7 +6,7 @@ INC_PATH			=	includes/
 OBJS_PATH 			=	obj/
 SRCS_PATH 			=	src/
 CC 					=	clang++
-CFLAGS				=	-Wall -Wextra -Wpedantic -std=c++98
+CFLAGS				=	-Wall -Werror -Wextra -Wpedantic -std=c++98
 RM					=	rm -rf
 
 COLORS 				=	colors.hpp
@@ -17,16 +17,16 @@ VECTOR_FILES		=
 VECTOR_HDRS			=	Vector.hpp Iterator.hpp Iterator_traits.hpp
 
 MAP_FILES			=	
-MAP_HDRS			=	
+MAP_HDRS			=	map.hpp pair.hpp
 				
 STACK_FILES			= 	
-STACK_HDRS			= 	
+STACK_HDRS			= 	Stack.hpp
 
 TESTER_FILES		=	
 TESTER_HDRS			=	
 
 VECTOR_PATH			= 	Vector/
-# MAP_PATH			=	$(SRCS_PATH)Map
+MAP_PATH			=	Map/
 STACK_PATH			=	Stack/
 # TESTER_PATH			=	testers/
 
@@ -46,8 +46,8 @@ VPATH				=	$(SRCS_PATH) #$(VECTOR_PATH) $(STACK_PATH) $(MAP_PATH) $(TESTER_PATH)
 
 ALL_INCLUDES		= 	$(addprefix $(INC_PATH), $(VECTOR_PATH)) \
 						$(addprefix $(INC_PATH), $(STACK_PATH)) \
-						# $(MAP_PATH) \
-						$(TESTER_PATH) \
+						$(addprefix $(INC_PATH), $(MAP_PATH)) \
+						#$(TESTER_PATH)
 
 USAGE				=	#Program Usage Message
 

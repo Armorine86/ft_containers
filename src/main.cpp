@@ -1,8 +1,12 @@
 #include "colors.hpp"
+#include "map.hpp"
+#include "pair.hpp"
 #include "vector.hpp"
+#include <ios>
 #include <iostream>
 #include <list>
 #include <sstream>
+#include <utility>
 #include <vector>
 
 #define TESTED_TYPE int
@@ -56,6 +60,18 @@ void printSize(TESTED_NAMESPACE::vector<T> const& vct, bool print_content = true
     std::cout << "###############################################" << std::endl;
 }
 
+template <typename T1, typename T2>
+void pair_ops_test(TESTED_NAMESPACE::pair<T1, T2>& left, TESTED_NAMESPACE::pair<T1, T2>& right) {
+
+    std::cout << std::boolalpha;
+    std::cout << "Left < Right : " << (left < right) << std::endl;
+    std::cout << "Left > Right : " << (left > right) << std::endl;
+    std::cout << "Left <= Right: " << (left <= right) << std::endl;
+    std::cout << "Left >= Right: " << (left >= right) << std::endl;
+    std::cout << "Left == Right: " << (left == right) << std::endl;
+    std::cout << "Left != Right: " << (left != right) << std::endl;
+}
+
 struct abc {
     abc() : data(4), num(1000) {}
 
@@ -79,55 +95,132 @@ struct big_struct {
 };
 
 int main(void) {
-    //* ASSIGN
     {
-        ft::vector<int> v(1);
+        std::string c_str = "Hello, World!";
+        char* str;
+
+        str = const_cast<char*>(c_str.c_str());
+
+        std::cout << str << std::endl;
+    }
+    {
+        std::cout << GREEN << "========== TEST 1 ==========" << END << std::endl;
+        int x = 10;
+        std::string str = "Hello";
+        TESTED_NAMESPACE::pair<int, std::string> p1 = TESTED_NAMESPACE::make_pair(x, str);
+
+        std::cout << "First : " << p1.first << std::endl;
+        std::cout << "Second: " << p1.second << std::endl;
+        std::cout << std::endl;
+
+        TESTED_NAMESPACE::pair<int, std::string> p2;
+
+        p2 = p1;
+
+        std::cout << "First P2 : " << p2.first << std::endl;
+        std::cout << "Second P2: " << p2.second << std::endl;
+        std::cout << std::endl;
+
+        pair_ops_test(p1, p2);
+
+        TESTED_NAMESPACE::pair<abc, big_struct> p3;
+    }
+
+    {
+        std::cout << GREEN << "\n========== TEST 2 ==========" << END << std::endl;
+
+        int x = 10;
+        std::string str = "Hello";
+        TESTED_NAMESPACE::pair<int, std::string> p1 = TESTED_NAMESPACE::make_pair(x, str);
+
+        std::string str2 = "World";
+        TESTED_NAMESPACE::pair<int, std::string> p2 = TESTED_NAMESPACE::make_pair(x, str2);
+
+        std::cout << "First : " << p1.first << std::endl;
+        std::cout << "Second: " << p1.second << std::endl;
+        std::cout << std::endl;
+
+        std::cout << "First P2 : " << p2.first << std::endl;
+        std::cout << "Second P2: " << p2.second << std::endl;
+        std::cout << std::endl;
+
+        pair_ops_test(p1, p2);
+    }
+
+    {
+        std::cout << GREEN << "\n========== TEST 3 ==========" << END << std::endl;
+
+        int x = 10;
+        std::string str = "Hello";
+        TESTED_NAMESPACE::pair<int, std::string> p1 = TESTED_NAMESPACE::make_pair(x, str);
+
+        std::string str2 = "World";
+        int y = 5;
+        TESTED_NAMESPACE::pair<int, std::string> p2 = TESTED_NAMESPACE::make_pair(y, str2);
+
+        std::cout << "First : " << p1.first << std::endl;
+        std::cout << "Second: " << p1.second << std::endl;
+        std::cout << std::endl;
+
+        std::cout << "First P2 : " << p2.first << std::endl;
+        std::cout << "Second P2: " << p2.second << std::endl;
+        std::cout << std::endl;
+
+        pair_ops_test(p1, p2);
+    }
+}
+
+/*int main(void) {
+
+    // ASSIGN
+    {
+        TESTED_NAMESPACE::vector<int> v(1);
 
         v.assign(64, 10);
     }
     {
-        ft::vector<int> v(128);
+        TESTED_NAMESPACE::vector<int> v(128);
 
         v.assign(32, -1);
     }
     {
-        ft::vector<int> v(512);
+        TESTED_NAMESPACE::vector<int> v(512);
 
         v.push_back(7);
 
         v.assign(564, 101010);
     }
     {
-        ft::vector<int> v(512, 123);
+        TESTED_NAMESPACE::vector<int> v(512, 123);
 
         v.assign(0, 1);
     }
     {
-        ft::vector<int> v(512);
+        TESTED_NAMESPACE::vector<int> v(512);
 
         v.push_back(42);
 
         v.assign(564, 42);
     }
     {
-        ft::vector<int> v(5);
+        TESTED_NAMESPACE::vector<int> v(5);
 
         v.push_back(42);
 
         v.assign(8, 42);
     }
     {
-        ft::vector<int> v(65);
+        TESTED_NAMESPACE::vector<int> v(65);
 
         v.assign(8, 42);
     }
     {
-        ft::vector<int> v;
+        TESTED_NAMESPACE::vector<int> v;
 
         v.assign(0, 101010);
     }
 
-    //* Assign_Range
+    // Assign_Range
     {
         long arr[12];
         long arr1[24];
@@ -135,7 +228,7 @@ int main(void) {
         iota(arr, &arr[12], 0);
         iota(arr1, &arr1[24], 64);
 
-        ft::vector<long> v(arr, &arr[12]);
+        TESTED_NAMESPACE::vector<long> v(arr, &arr[12]);
 
         v.assign(arr1, &arr1[24]);
     }
@@ -146,7 +239,7 @@ int main(void) {
         iota(arr, &arr[24], 1024);
         iota(arr1, &arr1[12], -567);
 
-        ft::vector<short> v(arr, &arr[24]);
+        TESTED_NAMESPACE::vector<short> v(arr, &arr[24]);
 
         v.assign(arr1, &arr1[12]);
     }
@@ -155,14 +248,14 @@ int main(void) {
 
         iota(arr, &arr[24], 2048);
 
-        ft::vector<short> v(48, -1);
-        ft::vector<short> v1(arr, &arr[24]);
+        TESTED_NAMESPACE::vector<short> v(48, -1);
+        TESTED_NAMESPACE::vector<short> v1(arr, &arr[24]);
 
         v.push_back(34);
         v.assign(v1.begin(), v1.end());
     }
     {
-        typedef ft::vector<int> vec;
+        typedef TESTED_NAMESPACE::vector<int> vec;
 
         vec data(5);
 
@@ -174,7 +267,7 @@ int main(void) {
         v.assign(data2.begin(), data2.end());
     }
     {
-        typedef ft::vector<int> vec;
+        typedef TESTED_NAMESPACE::vector<int> vec;
 
         vec data(64);
 
@@ -184,7 +277,7 @@ int main(void) {
         v.assign(data2.begin(), data2.end());
     }
     {
-        typedef ft::vector<char> vec;
+        typedef TESTED_NAMESPACE::vector<char> vec;
 
         std::istringstream str("1 2 3 4 5 6 7");
         std::istreambuf_iterator<char> it(str), end;
@@ -193,7 +286,7 @@ int main(void) {
         v.assign(it, end);
     }
     {
-        typedef ft::vector<char> vec;
+        typedef TESTED_NAMESPACE::vector<char> vec;
 
         std::istringstream str("1 2 3 4 5 6 7");
         std::istreambuf_iterator<char> it(str), end;
@@ -202,7 +295,7 @@ int main(void) {
         v.assign(it, end);
     }
     {
-        typedef ft::vector<char> vec;
+        typedef TESTED_NAMESPACE::vector<char> vec;
 
         std::istringstream str("1 2 3 4 5 6 7");
         std::istreambuf_iterator<char> it(str), end;
@@ -211,11 +304,11 @@ int main(void) {
         v.assign(it, end);
     }
 
-    //* Assignement
+    // Assignement
 
     {
-        ft::vector<double> v(128, -345783);
-        ft::vector<double> v_copy;
+        TESTED_NAMESPACE::vector<double> v(128, -345783);
+        TESTED_NAMESPACE::vector<double> v_copy;
 
         v_copy = v;
 
@@ -227,8 +320,8 @@ int main(void) {
             std::cout << "Copy ctor error..";
         }
 
-        ft::vector<double> v1;
-        ft::vector<double> v_copy1;
+        TESTED_NAMESPACE::vector<double> v1;
+        TESTED_NAMESPACE::vector<double> v_copy1;
 
         v_copy1 = v1;
 
@@ -240,8 +333,8 @@ int main(void) {
             std::cout << "Copy ctor error...";
         }
 
-        ft::vector<double> v2(256, -1);
-        ft::vector<double> v_copy2(255, 56);
+        TESTED_NAMESPACE::vector<double> v2(256, -1);
+        TESTED_NAMESPACE::vector<double> v_copy2(255, 56);
 
         v_copy2.push_back(1);
         v_copy2 = v2;
@@ -250,11 +343,11 @@ int main(void) {
             std::cout << "Copy ctor error....";
         }
 
-        ft::vector<double> v3(64);
-        ft::vector<double> v_copy3(128, -1234);
+        TESTED_NAMESPACE::vector<double> v3(64);
+        TESTED_NAMESPACE::vector<double> v_copy3(128, -1234);
 
         v_copy3 = v3;
-        ft::vector<double>& x = v_copy3;
+        TESTED_NAMESPACE::vector<double>& x = v_copy3;
 
         if (!std::equal(v3.begin(), v3.end(), v_copy3.begin())) {
             std::cout << "Copy ctor error.....";
@@ -267,37 +360,37 @@ int main(void) {
         }
     }
     {
-        ft::vector<int> v1(64);
-        ft::vector<int> v2(5);
+        TESTED_NAMESPACE::vector<int> v1(64);
+        TESTED_NAMESPACE::vector<int> v2(5);
 
         v2 = v1;
     }
     {
-        ft::vector<int> v1(64);
-        ft::vector<int> v2(5);
+        TESTED_NAMESPACE::vector<int> v1(64);
+        TESTED_NAMESPACE::vector<int> v2(5);
 
         v1 = v2;
 
-        ft::vector<int>& x = v1;
+        TESTED_NAMESPACE::vector<int>& x = v1;
 
         v1 = x;
     }
 
-    //* CTOR
+    // CTOR
 
     // Default
-    { ft::vector<int> v; }
+    { TESTED_NAMESPACE::vector<int> v; }
     // Allocator ctor
     {
         std::allocator<double> alloc;
-        ft::vector<double> v(alloc);
+        TESTED_NAMESPACE::vector<double> v(alloc);
     }
 
-    //* CTOR COPY
+    // CTOR COPY
 
     {
-        ft::vector<double> v(128, -345783);
-        ft::vector<double> v_copy(v);
+        TESTED_NAMESPACE::vector<double> v(128, -345783);
+        TESTED_NAMESPACE::vector<double> v_copy(v);
 
         if (v.data() == v_copy.data()) {
             std::cout << "Copy ctor doesn't do a deep copy!";
@@ -307,8 +400,8 @@ int main(void) {
             std::cout << "Copy ctor error";
         }
 
-        ft::vector<double> v1;
-        ft::vector<double> v_copy1(v1);
+        TESTED_NAMESPACE::vector<double> v1;
+        TESTED_NAMESPACE::vector<double> v_copy1(v1);
 
         if (v1.data() != v_copy1.data()) {
             std::cout << "Non-null pointer in vector of size 0";
@@ -319,82 +412,84 @@ int main(void) {
         }
     }
     {
-        ft::vector<int> v1(512);
-        ft::vector<int> v2(v1);
+        TESTED_NAMESPACE::vector<int> v1(512);
+        TESTED_NAMESPACE::vector<int> v2(v1);
     }
 
-    //* CTOR RANGE
+    // CTOR RANGE
 
     {
         float arr[10] = { 0, 1, 2, 3, 4, 5, 6, 7 };
-        ft::vector<float> v(arr, &arr[10]);
+        TESTED_NAMESPACE::vector<float> v(arr, &arr[10]);
 
         if (!std::equal(arr, &arr[10], v.begin())) {
             std::cout << "Iterator ctor error";
         }
 
-        ft::vector<int> v1(arr, arr);
+        TESTED_NAMESPACE::vector<int> v1(arr, arr);
 
         if (!std::equal(v1.begin(), v1.end(), arr)) {
             std::cout << "Iterator ctor error.";
         }
 
-        ft::vector<float> v2(v.begin(), v.end());
+        TESTED_NAMESPACE::vector<float> v2(v.begin(), v.end());
 
         if (!std::equal(v2.begin(), v2.end(), v.begin())) {
             std::cout << "Iterator ctor error..";
         }
 
         std::string str = "Hello World!";
-        ft::vector<char> v3(str.begin(), str.end());
+        TESTED_NAMESPACE::vector<char> v3(str.begin(), str.end());
 
         if (!std::equal(str.begin(), str.end(), v3.begin())) {
             std::cout << "Iterator ctor error...";
         }
     }
     {
-        typedef ft::vector<int> vec;
+        typedef TESTED_NAMESPACE::vector<int> vec;
 
         vec data(64);
         vec v(data.begin(), data.end());
     }
     {
-        typedef ft::vector<char> vec;
+        typedef TESTED_NAMESPACE::vector<char> vec;
 
         std::istringstream str("1 2 3 4 5 6 7");
         std::istreambuf_iterator<char> it(str), end;
         vec v(it, end);
     }
     {
-        typedef ft::vector<char> vec;
+        typedef TESTED_NAMESPACE::vector<char> vec;
 
         std::istringstream str("");
         std::istreambuf_iterator<char> it(str), end;
         vec v(it, end);
     }
 
-    //* CTOR SIZE
+    // CTOR SIZE
 
     {
-        ft::vector<int> v(64);
+        TESTED_NAMESPACE::vector<int> v(64);
 
-        ft::vector<int> v1(10, 32);
+        TESTED_NAMESPACE::vector<int> v1(10, 32);
         int arr[10] = { 32, 32, 32, 32, 32, 32, 32, 32, 32, 32 };
 
         if (!std::equal(arr, &arr[10], v1.begin())) {
             std::cout << "Size ctor error";
         }
 
-        ft::vector<int> v2(0, 1234);
+        TESTED_NAMESPACE::vector<int> v2(0, 1234);
 
         try {
-            ft::vector<big_struct> v3(ft::vector<big_struct>().max_size() + 1);
+            TESTED_NAMESPACE::vector<big_struct>
+            v3(TESTED_NAMESPACE::vector<big_struct>().max_size() + 1);
         } catch (std::length_error& e) {
             std::cerr << e.what() << std::endl;
         }
     }
+
     {
-        typedef ft::vector<long> vec;
+        typedef TESTED_NAMESPACE::vector<long> vec;
 
         vec v(64);
 
@@ -403,7 +498,7 @@ int main(void) {
         v1 = v;
     }
     {
-        typedef ft::vector<long> vec;
+        typedef TESTED_NAMESPACE::vector<long> vec;
 
         vec v(4);
 
@@ -411,8 +506,8 @@ int main(void) {
 
         v1 = v;
     }
-    { ft::vector<abc> v(100); }
-}
+    { TESTED_NAMESPACE::vector<abc> v(100); }
+}*/
 
 /*int main(void) {
 
@@ -536,9 +631,9 @@ int main(void) {
     }
 
     {
-        typedef ft::vector<int>::iterator iter;
+        typedef TESTED_NAMESPACE::vector<int>::iterator iter;
 
-        ft::vector<int> v;
+        TESTED_NAMESPACE::vector<int> v;
 
         iter it = v.insert(v.begin(), 64);
 
@@ -548,9 +643,9 @@ int main(void) {
         it = v.insert(v.begin(), 45);
     }
     {
-        typedef ft::vector<int>::iterator iter;
+        typedef TESTED_NAMESPACE::vector<int>::iterator iter;
 
-        ft::vector<int> v;
+        TESTED_NAMESPACE::vector<int> v;
 
         iter it = v.insert(v.end(), 64);
 
@@ -560,9 +655,9 @@ int main(void) {
     }
 
     {
-        typedef ft::vector<long>::iterator iter;
+        typedef TESTED_NAMESPACE::vector<long>::iterator iter;
 
-        ft::vector<long> v(128, -5);
+        TESTED_NAMESPACE::vector<long> v(128, -5);
 
         iter it = v.insert(v.end(), 64);
 
@@ -570,7 +665,7 @@ int main(void) {
     }
 
     {
-        typedef ft::vector<int> vec;
+        typedef TESTED_NAMESPACE::vector<int> vec;
 
         vec v;
 
@@ -579,7 +674,7 @@ int main(void) {
     }
 
     {
-        typedef ft::vector<int> vec;
+        typedef TESTED_NAMESPACE::vector<int> vec;
 
         vec v;
 
@@ -588,7 +683,7 @@ int main(void) {
     }
 
     {
-        typedef ft::vector<int> vec;
+        typedef TESTED_NAMESPACE::vector<int> vec;
 
         vec v(64);
         std::cout << "===== STEP 3 =====" << std::endl;
@@ -601,7 +696,7 @@ int main(void) {
     }
 
     {
-        typedef ft::vector<abc> vec;
+        typedef TESTED_NAMESPACE::vector<abc> vec;
 
         vec v;
 
@@ -619,7 +714,7 @@ int main(void) {
         v.insert(v.begin(), v1.begin(), v1.end());
     }
     {
-        typedef ft::vector<abc> vec;
+        typedef TESTED_NAMESPACE::vector<abc> vec;
 
         vec v(64);
 
@@ -630,7 +725,7 @@ int main(void) {
         v.insert(v.end(), li.begin(), li.end());
     }
     {
-        typedef ft::vector<abc> vec;
+        typedef TESTED_NAMESPACE::vector<abc> vec;
 
         vec v(64);
 
@@ -641,7 +736,7 @@ int main(void) {
         v.insert(v.begin(), li.begin(), li.end());
     }
     {
-        typedef ft::vector<abc> vec;
+        typedef TESTED_NAMESPACE::vector<abc> vec;
 
         vec v(64);
 
@@ -652,7 +747,7 @@ int main(void) {
         v.insert(v.end(), li.begin(), li.end());
     }
     {
-        typedef ft::vector<abc> vec;
+        typedef TESTED_NAMESPACE::vector<abc> vec;
 
         vec v(64);
 
@@ -663,7 +758,7 @@ int main(void) {
         v.insert(v.begin(), li.begin(), li.end());
     }
     {
-        typedef ft::vector<int> vec;
+        typedef TESTED_NAMESPACE::vector<int> vec;
 
         vec v;
 
@@ -679,7 +774,7 @@ int main(void) {
         v.insert(v.begin(), v1.begin(), v1.end());
     }
     {
-        typedef ft::vector<int> vec;
+        typedef TESTED_NAMESPACE::vector<int> vec;
 
         vec v(64);
 
@@ -689,7 +784,7 @@ int main(void) {
         v.insert(v.end(), li.begin(), li.end());
     }
     {
-        typedef ft::vector<int> vec;
+        typedef TESTED_NAMESPACE::vector<int> vec;
 
         vec v(64);
 
@@ -699,7 +794,7 @@ int main(void) {
         v.insert(v.begin(), li.begin(), li.end());
     }
     {
-        typedef ft::vector<int> vec;
+        typedef TESTED_NAMESPACE::vector<int> vec;
 
         vec v(64);
         v.insert(v.begin() + 7, 42);
@@ -708,7 +803,7 @@ int main(void) {
         v.insert(v.end(), li.begin(), li.end());
     }
     {
-        typedef ft::vector<int> vec;
+        typedef TESTED_NAMESPACE::vector<int> vec;
 
         vec v(64);
 
@@ -718,7 +813,7 @@ int main(void) {
         v.insert(v.begin(), li.begin(), li.end());
     }
     {
-        typedef ft::vector<char> vec;
+        typedef TESTED_NAMESPACE::vector<char> vec;
 
         std::istringstream str("1 2 3 4 5 6 7");
         std::istreambuf_iterator<char> it(str), end;
@@ -727,7 +822,7 @@ int main(void) {
         v.insert(v.begin(), it, end);
     }
     {
-        typedef ft::vector<char> vec;
+        typedef TESTED_NAMESPACE::vector<char> vec;
 
         std::istringstream str("1 2 3 4 5 6 7");
         std::istreambuf_iterator<char> it(str), end;
