@@ -6,7 +6,7 @@ INC_PATH			=	includes/
 OBJS_PATH 			=	obj/
 SRCS_PATH 			=	src/
 CC 					=	clang++
-CFLAGS				=	-Wall -Werror -Wextra -Wpedantic -std=c++98 -O3
+CFLAGS				=	-Wall -Werror -Wextra -Wpedantic -std=c++98
 RM					=	rm -rf
 
 COLORS 				=	colors.hpp
@@ -51,9 +51,8 @@ VPATH				=	$(SRCS_PATH) #$(VECTOR_PATH) $(STACK_PATH) $(MAP_PATH) $(TESTER_PATH)
 ALL_INCLUDES		= 	$(INC_PATH) \
 						$(addprefix $(INC_PATH), $(VECTOR_PATH)) \
 						$(addprefix $(INC_PATH), $(STACK_PATH)) \
-						$(addprefix $(INC_PATH), $(MAP_PATH)) \
-						$(addprefix $(INC_PATH), $(TREE_PATH)) \
-						#$(TESTER_PATH)
+						# $(addprefix $(INC_PATH), $(MAP_PATH)) \
+						# $(addprefix $(INC_PATH), $(TREE_PATH)) \
 
 USAGE				=	#Program Usage Message
 
@@ -83,6 +82,9 @@ $(OBJS_PATH):
 # linux_debug: linux
 
 # linux_redebug : fclean linux_debug
+
+release: CFLGAS += -O3
+release: all
 
 debug:	CFLAGS += -g -fstandalone-debug -fno-limit-debug-info
 debug:	$(NAME)

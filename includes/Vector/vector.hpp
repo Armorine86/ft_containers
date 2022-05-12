@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Vector.hpp                                         :+:      :+:    :+:   */
+/*   vector.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/13 10:16:33 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/10 09:37:44 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/12 09:10:31 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,9 @@
 
 #include "Iterator.hpp"
 #include "type_traits.hpp"
-#include "utilities.hpp"
+#include "../utilities.hpp"
 #include <algorithm>
 #include <cstddef>
-#include <iostream>
 #include <iterator>
 #include <limits>
 #include <memory>
@@ -281,9 +280,11 @@ class vector {
      */
     void assign(size_type n, const value_type& val) {
 
-        clear();
-        alloc_.deallocate(start_, capacity());
-        fill_construct(val, n);
+        if (size() > 0) {    
+            clear();
+            alloc_.deallocate(start_, capacity());
+            fill_construct(val, n);
+        }
     }
 
     /**
