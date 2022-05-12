@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/13 10:16:33 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/12 09:10:31 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/12 11:27:17 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 #include <limits>
 #include <memory>
 #include <vector>
+#include <iostream>
 
 namespace ft {
 
@@ -108,19 +109,8 @@ class vector {
         if (this == &rhs)
             return *this;
 
-        size_type n = rhs.size();
-
-        if (n > capacity()) {
-            copy_construct(rhs.begin(), rhs.end(), n);
-        } else if (size() > n) {
-            iterator new_end = std::copy(rhs.begin(), rhs.end(), begin());
-            range_destroy(new_end.base(), end_);
-        } else {
-            std::copy(rhs.start_, rhs.start_ + size(), start_);
-            fill_construct(end_, rhs.start_ + size(), rhs.end_);
-        }
-
-        end_ = start_ + n;
+        assign(rhs.begin(), rhs.end());
+        
         return *this;
     }
 
@@ -266,8 +256,9 @@ class vector {
                 typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type last) {
 
         typedef typename iterator_traits<InputIterator>::iterator_category category;
+        
         clear();
-
+        
         range_assign(first, last, category());
     }
 
@@ -276,14 +267,27 @@ class vector {
      * accordingly. Any elements held in the container before the call are destroyed and replaced by
      * newly constructed elements (no assignments of elements take place). This causes an automatic
      * reallocation of the allocated storage space if -and only if- the new vector size surpasses
-     * the current vector capacity.j
+     * the current vector capacity.
      */
     void assign(size_type n, const value_type& val) {
 
-        if (size() > 0) {    
-            clear();
-            alloc_.deallocate(start_, capacity());
-            fill_construct(val, n);
+        if (n > capacity()) {
+            vector tmp(n, val);
+            tmp.swap(*this);
+        } else if (n > size()) {
+            for (pointer cpy = start_; cpy != end_; ++cpy) {
+                alloc_.destroy(cpy);
+                alloc_.construct(cpy, val);
+            }
+            size_type rest = n - size();
+            end_ = range_construct(end_, end_ + rest, val);
+        } else {
+            iterator it = begin();
+            for (; n > 0; ++it, --n) {
+                alloc_.destroy(it.base());
+                alloc_.construct(it.base(), val);
+            }
+            erase(it, end());
         }
     }
 
@@ -362,6 +366,9 @@ class vector {
 
         size_type diff = std::distance(begin(), pos); // if realloc happens
 
+        // if (pos == end())
+        //     push_back(val);
+        // else
         insert(pos, 1, val);
 
         return iterator(start_ + diff);
@@ -397,12 +404,10 @@ class vector {
             iterator cpy_end = shift_right(pos, n);
             for (; pos != cpy_end; ++pos) {
                 if (pos.base() < end_) {
-                    alloc_.destroy(pos.base());
                     *pos = val;
                 } else
                     alloc_.construct(pos.base(), val);
             }
-
             end_ += n;
         }
     }
@@ -539,8 +544,9 @@ class vector {
             for (; dest != pos && cpy >= pos; --cpy, --dest) {
                 if (dest < end())
                     *dest = *cpy;
-                else
+                else {
                     alloc_.construct(dest.base(), *cpy);
+                }
             }
         }
 
@@ -688,6 +694,14 @@ class vector {
             return max_size();
 
         return std::max(total_elems, new_cap * 2);
+    }
+
+    void print_vec() {
+        for (iterator it = begin(); it != end(); ++it) {
+            
+            std::cout << *it << " " << std::flush;
+        }
+        std::cout << std::endl;
     }
 
     /*

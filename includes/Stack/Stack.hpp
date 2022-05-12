@@ -6,14 +6,14 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/13 10:16:22 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/06 13:44:14 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/12 11:25:04 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "Iterator.hpp"
-#include "vector.hpp"
+#include "../Vector/Iterator.hpp"
+#include "../Vector/vector.hpp"
 #include <stack>
 
 namespace ft {
