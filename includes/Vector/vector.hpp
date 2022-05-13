@@ -12,16 +12,16 @@
 
 #pragma once
 
+#include "../utilities.hpp"
 #include "Iterator.hpp"
 #include "type_traits.hpp"
-#include "../utilities.hpp"
 #include <algorithm>
 #include <cstddef>
+#include <iostream>
 #include <iterator>
 #include <limits>
 #include <memory>
 #include <vector>
-#include <iostream>
 
 namespace ft {
 
@@ -110,7 +110,7 @@ class vector {
             return *this;
 
         assign(rhs.begin(), rhs.end());
-        
+
         return *this;
     }
 
@@ -256,9 +256,9 @@ class vector {
                 typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type last) {
 
         typedef typename iterator_traits<InputIterator>::iterator_category category;
-        
+
         clear();
-        
+
         range_assign(first, last, category());
     }
 
@@ -698,7 +698,7 @@ class vector {
 
     void print_vec() {
         for (iterator it = begin(); it != end(); ++it) {
-            
+
             std::cout << *it << " " << std::flush;
         }
         std::cout << std::endl;

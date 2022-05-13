@@ -54,6 +54,4 @@ int main(void) {
     //     std::cout << v << std::endl;
     //     std::cout << std::endl;
     // }
-
-    
 }

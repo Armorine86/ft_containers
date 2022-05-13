@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/13 10:16:30 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/09 11:46:26 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/12 11:35:29 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ class normal_iterator {
     normal_iterator& operator--()   { --elem; return *this; }
     normal_iterator operator--(int) { return normal_iterator(elem--); }
 
+    // obtains container's value_type
     reference operator*() const { return *elem; }
     pointer operator->()  const { return elem; }
 

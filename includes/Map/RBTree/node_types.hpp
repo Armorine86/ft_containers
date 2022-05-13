@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 13:30:15 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/10 15:46:30 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/12 11:33:17 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,14 @@ class end_node;
 template <typename T>
 class tree_node;
 
+// clang-format off
 template <typename T>
 struct node_types {
-    typedef end_node<T> end_node_type;
-    typedef end_node_type* end_node_pointer;
-    typedef tree_node<T> tree_node_type;
+    typedef end_node<T>     end_node_type;
+    typedef end_node_type*  end_node_pointer;
+    typedef tree_node<T>    tree_node_type;
     typedef tree_node_type* tree_pointer;
-	
+// clang-format on
 }; // struct node_types
 
 // End_node is a node that lives above the root node (standard node)
@@ -49,13 +50,13 @@ class end_node {
 // Tree_node is the standard node that will populate your Red Black Tree.
 // Inherits from end_node to be able to cast from one to the other.
 template <typename T>
-class tree_node {
+class tree_node : public node_types<T>::end_node_type {
   public:
-    typedef typename node_types<T>::end_node 	end_node_pointer;
+    typedef typename node_types<T>::end_node 	  end_node_pointer;
     typedef typename node_types<T>::tree_node 	tree_pointer;
 
   public:
-    tree_node() : right(), parent(), color() {}
+    tree_node() : right(), parent(), is_black() {}
 	
 	// Unsafe if parent is the actual end node
 	tree_pointer get_parent() { return static_cast<tree_pointer>(parent); }
@@ -63,9 +64,9 @@ class tree_node {
 	void set_parent(tree_pointer ptr) { parent = static_cast<end_node_pointer>(ptr); }
 
   public:
-    T 					value;
-    bool 				color;
-    tree_pointer 		right;
+    T 					      value;
+    bool 			    	  is_black;
+    tree_pointer 		  right;
     end_node_pointer 	parent;
     // clang-format on
 	

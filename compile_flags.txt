@@ -5,3 +5,5 @@
 -std=c++98
 -Iincludes/
 -Iincludes/Vector/
+-Iioncludes/Stack/
+-Iioncludes/Map/
