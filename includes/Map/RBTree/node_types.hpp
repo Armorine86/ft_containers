@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 13:30:15 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/13 10:02:58 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/13 13:20:15 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,8 @@ template <typename T>
 struct node_types {
     typedef end_node<T>     end_node_type;
     typedef end_node_type*  end_node_pointer;
-    typedef tree_node<T>    tree_node_type;
-    typedef tree_node_type* node_pointer;
+    typedef tree_node<T>    node_type;
+    typedef node_type*      node_pointer;
     // clang-format on
 }; // struct node_types
 

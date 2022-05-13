@@ -1,5 +1,7 @@
 #include "vector.hpp"
+#include "map.hpp"
 #include <iostream>
+#include <map>
 #include <string>
 #include <vector>
 
@@ -26,6 +28,8 @@ std::ostream& operator<<(std::ostream& os, std::vector<T> vec) {
 
 int main(void) {
 
+    std::map<char, int> m;
+    TESTED_NAMESPACE::map<int, char> m2;
     // {
     //     TESTED_NAMESPACE::vector<char> v;
 

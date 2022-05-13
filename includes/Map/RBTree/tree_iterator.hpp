@@ -6,14 +6,14 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 13:34:32 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/13 12:55:21 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/13 13:07:52 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include "node_types.hpp"
-#include "RBtree_algorithm.hpp"
+#include "algorithm.hpp"
 
 #include <iterator>
 
