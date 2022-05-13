@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/18 13:59:36 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/10 09:37:30 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/13 09:31:34 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,14 @@ struct false_type {
     static const bool value = false;
     typedef false_type type;
 };
+
+/*
+ *   Checks if the type passed in is a primitive Type such as char, int, long, etc...
+ *   (is_same for the same type(Can be classes or structs, or anything))
+ *
+ *   If it is, returns true_type, and if it is true, returns the actual type to match calling
+ * template
+ */
 
 template <typename T, typename U>
 struct is_same : public false_type {};

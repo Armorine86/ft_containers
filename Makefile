@@ -51,8 +51,8 @@ VPATH				=	$(SRCS_PATH) #$(VECTOR_PATH) $(STACK_PATH) $(MAP_PATH) $(TESTER_PATH)
 ALL_INCLUDES		= 	$(INC_PATH) \
 						$(addprefix $(INC_PATH), $(VECTOR_PATH)) \
 						$(addprefix $(INC_PATH), $(STACK_PATH)) \
-						# $(addprefix $(INC_PATH), $(MAP_PATH)) \
-						# $(addprefix $(INC_PATH), $(TREE_PATH)) \
+						$(addprefix $(INC_PATH), $(MAP_PATH)) \
+						$(addprefix $(INC_PATH), $(TREE_PATH)) 
 
 USAGE				=	#Program Usage Message
 

@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/13 10:16:33 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/12 11:27:17 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/13 10:46:05 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ template <typename T, typename Allocator = std::allocator<T> >
 class vector {
     // clang-format off
   public:
-    //* ========== Member Types ==========
+    //* ============== Member Types ==============
     typedef T                                           value_type;
     typedef value_type&                                 reference;
     typedef const value_type&                           const_reference;
@@ -125,7 +125,7 @@ class vector {
      *  ==================================================
      */
 
-    //* =============== ELEMENT ACCESS FUNCTIONS ===============
+    //* ============== ELEMENT ACCESS FUNCTIONS ==============
 
     /**
      * Returns a reference at specified location pos
@@ -187,7 +187,7 @@ class vector {
      */
     const value_type* data() const { return start_; }
 
-    //* =============== ITERATORS FUNCTIONS ===============
+    //* ============== ITERATORS FUNCTIONS ==============
 
     iterator begin() { return iterator(start_); }
     const_iterator begin() const { return const_iterator(start_); }
@@ -199,7 +199,7 @@ class vector {
     reverse_iterator rend() { return reverse_iterator(begin()); }
     const_reverse_iterator rend() const { return const_reverse_iterator(begin()); }
 
-    //* =============== CAPACITY FUNCTIONS ===============
+    //* ============== CAPACITY FUNCTIONS ==============
 
     /**
      * returns TRUE if the container is empty
@@ -249,7 +249,7 @@ class vector {
      */
     size_type capacity() const { return static_cast<size_type>(capacity_ - start_); }
 
-    //* =============== MODIFIERS FUNCTIONS ===============
+    //* ============== MODIFIERS FUNCTIONS ==============
 
     template <typename InputIterator>
     void assign(InputIterator first,

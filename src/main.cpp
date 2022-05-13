@@ -18,7 +18,7 @@ std::ostream& operator<<(std::ostream& os, ft::vector<T>& vec) {
 
 template <typename T>
 std::ostream& operator<<(std::ostream& os, std::vector<T> vec) {
-    for (size_t i = 0; i < vec.size(); ++i)
+    for (size_t i = 0; i < vec.capacity(); ++i)
         os << vec[i] << " ";
 
     return os;
