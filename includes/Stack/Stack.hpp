@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Stack.hpp                                          :+:      :+:    :+:   */
+/*   stack.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/13 10:16:22 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/12 11:25:04 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/16 10:20:35 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ class stack {
     /**
      * @return Returns the number of elements in the stack
      */
-    size_type size() { return c.size(); }
+    size_type size() const { return c.size(); }
 
     //* ========== Modifiers ==========
 

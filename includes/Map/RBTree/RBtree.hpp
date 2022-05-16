@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 09:38:08 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/13 13:21:44 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/16 11:39:29 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,24 +25,24 @@ template <typename T, typename Compare, typename Allocator>
 class RBTree {
     // clang-format off
   public:
-    typedef T 												                        value_type;
-    typedef Compare 										                      value_compare;
-    typedef Allocator 										                    allocator_type;
-    typedef value_type& 									                    reference;
-    typedef size_t 											                      size_type;
-    typedef std::ptrdiff_t 									                  difference_type;
-    typedef const value_type& 								                const_reference;
-    typedef typename Allocator::pointer 					            pointer;
-    typedef typename Allocator::const_pointer 				        const_pointer;
-	  typedef tree_iterator<size_type, difference_type> 		    iterator;
-	  typedef const_tree_iterator<size_type, difference_type>   const_iterator;
+    typedef T 												                                  value_type;
+    typedef Compare 										                                value_compare;
+    typedef Allocator 										                              allocator_type;
+    typedef value_type& 									                              reference;
+    typedef size_t 											                                size_type;
+    typedef std::ptrdiff_t 									                            difference_type;
+    typedef const value_type& 								                          const_reference;
+    typedef typename Allocator::pointer 					                      pointer;
+    typedef typename Allocator::const_pointer 				                  const_pointer;
+	  typedef tree_iterator<size_type, difference_type> 		              iterator;
+	  typedef const_tree_iterator<size_type, difference_type>             const_iterator;
   
   private:
-    typedef typename node_types<T>::end_node_type                 end_node_type;
-    typedef typename node_types<T>::end_node_pointer              end_node_pointer;
-    typedef typename node_types<T>::node_type                     node_type;
-    typedef typename node_types<T>::node_pointer                  node_pointer;
-    typedef typename allocator_type::template rebind<node_type>::other node_allocator;
+    typedef typename node_types<T>::end_node_type                       end_node_type;
+    typedef typename node_types<T>::end_node_pointer                    end_node_pointer;
+    typedef typename node_types<T>::node_type                           node_type;
+    typedef typename node_types<T>::node_pointer                        node_pointer;
+    typedef typename allocator_type::template rebind<node_type>::other  node_allocator;
     
     
   private:

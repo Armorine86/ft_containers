@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 08:11:20 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/10 17:23:10 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/16 11:42:42 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,16 +42,18 @@ class map {
     typedef typename Allocator::const_pointer 		const_pointer;
 
     //! Change to tree_iterator
-    // typedef tree_iterator<pointer, map> 			  iterator;
-    // typedef tree_iterator<const_pointer, map> 	const_iterator;
+    typedef tree_iterator<pointer, map> 			  iterator;
+    typedef tree_iterator<const_pointer, map> 	const_iterator;
     // typedef ft::tree_reverse_iterator<iterator> 			  reverse_iterator;
     // typedef ft::tree_reverse_iterator<const_iterator> 	const_reverse_iterator;
     // clang-format on
 
   public:
-    //* ============== NESTED MAP ==============
+  
+    //* ============== NESTED CLASS ==============
     class value_compare : public std::binary_function<value_type, value_type, bool> {
-        friend class map<Key, T, Compare, Allocator>;
+      
+      friend class map<Key, T, Compare, Allocator>;
 
       protected:
         key_compare comp;
@@ -64,6 +66,7 @@ class map {
         bool operator()(const value_type& x, const value_type& y) const {
             return comp(x.first, y.first);
         }
+        
     }; // class value_compare
 
     /**
@@ -80,8 +83,8 @@ class map {
 
     //~ template <typename InputIter>
     //~ map(InputIter first, InputIter last,
-    //~ 	const Compare& comp = Compare(),
-    //~ 	const Allocator& alloc_ = Allocator()) {}
+    //~ const Compare& comp = Compare(),
+    //~ const Allocator& alloc_ = Allocator()) {}
 
     //~ map(const map& src) {}
 
