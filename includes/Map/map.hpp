@@ -6,19 +6,47 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 08:11:20 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/16 11:42:42 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/17 12:01:46 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
+#include "Iterator.hpp"
 #include "RBtree.hpp"
 #include "pair.hpp"
-#include "tree_iterator.hpp"
+#include <__functional/binary_function.h>
 #include <cstddef>
 #include <memory>
 
 namespace ft {
+
+template <typename Key, typename T, typename Compare>
+class map_value_type_compare : public std::binary_function<Key, Key, bool> {
+
+  public:
+    // Constructors
+
+    map_value_type_compare() : comp_() {}
+    map_value_type_compare(const Compare& cmp) : comp_(cmp) {}
+
+  public:
+    // Member Functions
+
+    const Compare& key_comp() const { return comp_; }
+
+    bool operator()(const T& x, const T& y) const { return key_comp()(x.first, y.first); }
+
+    bool operator()(const Key& x, const T& y) const { return key_comp()(x, y.first); }
+
+    bool operator()(const T& x, const Key& y) const { return key_comp()(x.first, y); }
+
+    void swap(map_value_type_compare& src) { std::swap(comp_, src.comp_); }
+
+  private:
+    Compare comp_;
+
+}; // class map_value_type_compare
 
 template <typename Key, typename T, typename Compare = std::less<Key>,
           typename Allocator = std::allocator<ft::pair<const Key, T> > >
@@ -36,37 +64,41 @@ class map {
     typedef ft::pair<const Key, T> 					      value_type;
     typedef value_type& 							            reference;
     typedef const value_type& 						        const_reference;
-	// typedef typename Allocator::reference			  reference;
-	// typedef typename Allocator::const_reference	const_reference;
     typedef typename Allocator::pointer 			    pointer;
     typedef typename Allocator::const_pointer 		const_pointer;
 
-    //! Change to tree_iterator
-    typedef tree_iterator<pointer, map> 			  iterator;
-    typedef tree_iterator<const_pointer, map> 	const_iterator;
-    // typedef ft::tree_reverse_iterator<iterator> 			  reverse_iterator;
-    // typedef ft::tree_reverse_iterator<const_iterator> 	const_reverse_iterator;
+    private:
+      
+
+    typedef tree_iterator<pointer, map> 			    iterator;
+    typedef tree_iterator<const_pointer, map> 	  const_iterator;
+    typedef ft::reverse_iterator<iterator>        reverse_iterator;
+    typedef ft::reverse_iterator<const_iterator>  const_reverse_iterator;
     // clang-format on
 
-  public:
-  
     //* ============== NESTED CLASS ==============
-    class value_compare : public std::binary_function<value_type, value_type, bool> {
-      
-      friend class map<Key, T, Compare, Allocator>;
 
-      protected:
-        key_compare comp;
-        value_compare(key_compare c);
+  public:
+    //  Provides a function object that can compare the elements of a map
+    //  by comparing the values of their keys to determine their relative order in the map.
+    class value_compare : public std::binary_function<value_type, value_type, bool> {
 
       public:
+        friend class map<Key, T, Compare, Allocator>;
+
         typedef bool result_type;
-        typedef value_type first_arg_type;
-        typedef value_type second_arg_type;
+        typedef value_type first_argument_type;
+        typedef value_type second_argument_type;
+
+      protected:
+        key_compare comp_;
+        value_compare(const key_compare& comp) : comp_(comp) {}
+
+      public:
         bool operator()(const value_type& x, const value_type& y) const {
-            return comp(x.first, y.first);
+            return comp_(x.first, y.first);
         }
-        
+
     }; // class value_compare
 
     /**
@@ -162,7 +194,7 @@ class map {
      */
 
   private:
-    RBTree<T, Compare, Allocator> rbt_;
+    RBTree<T, Compare, Allocator> rbtree_;
 
 }; // class map
 } // namespace ft

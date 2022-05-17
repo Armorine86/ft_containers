@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 13:30:15 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/13 13:20:15 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/17 09:23:41 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ struct node_types {
     typedef tree_node<T>    node_type;
     typedef node_type*      node_pointer;
     // clang-format on
+
 }; // struct node_types
 
 // End_node is a node that lives above the root node (standard node)
@@ -63,7 +64,7 @@ class tree_node : public node_types<T>::end_node_type {
     typedef typename node_types<T>::tree_node 	node_pointer;
 
   public:
-    tree_node() : right(), parent(), color() {}
+    tree_node() : right(), parent(), is_black() {}
 	
 	// Unsafe if parent is the actual end node
 	node_pointer get_parent() { return static_cast<node_pointer>(parent); }
@@ -72,7 +73,7 @@ class tree_node : public node_types<T>::end_node_type {
 
   public:
     T 					      value;
-    bool 			    	  color;
+    bool 			    	  is_black;
     node_pointer 		  right;
     end_node_pointer 	parent;
     // clang-format on

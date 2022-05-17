@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 09:38:08 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/16 11:39:29 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/17 11:33:39 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,7 @@ class RBTree {
     typedef const value_type& 								                          const_reference;
     typedef typename Allocator::pointer 					                      pointer;
     typedef typename Allocator::const_pointer 				                  const_pointer;
-	  typedef tree_iterator<size_type, difference_type> 		              iterator;
-	  typedef const_tree_iterator<size_type, difference_type>             const_iterator;
   
-  private:
     typedef typename node_types<T>::end_node_type                       end_node_type;
     typedef typename node_types<T>::end_node_pointer                    end_node_pointer;
     typedef typename node_types<T>::node_type                           node_type;

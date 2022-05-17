@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/13 12:47:23 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/16 14:04:12 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/17 09:54:13 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,120 +17,174 @@
 
 namespace ft {
 /*
- * Returns the left_most node in the sub-tree
- * X is considered the root node
+ * Returns the left most node in the sub-tree.
+ * current_node is considered the root node
  */
 template <typename NodePtr>
-inline NodePtr tree_min(NodePtr x) {
+inline NodePtr tree_min(NodePtr current_node) {
 
-    assert(x != NULL);
+    assert(current_node != NULL);
 
-    while (x->left != NULL)
-        x = x->left;
+    while (current_node->left != NULL)
+        current_node = current_node->left;
 
-    return x;
+    return current_node;
 }
 
 /*
- * Returns the right-most node in the sub-tree
- * X is considered the root node
+ * Returns the right most node in the sub-tree
+ * current_node is considered the root node
  */
 template <typename NodePtr>
-inline NodePtr tree_max(NodePtr x) {
+inline NodePtr tree_max(NodePtr current_node) {
 
-    assert(x != NULL);
+    assert(current_node != NULL);
 
-    while (x->right != NULL)
-        x = x->right;
+    while (current_node->right != NULL)
+        current_node = current_node->right;
 
-    return x;
+    return current_node;
 }
 
 /*
-*	Returns true if the current node is a left child
-*/
+ *	Returns true if the current node is a left child
+ */
 template <typename NodePtr>
-inline bool node_is_left_child(NodePtr x) {
-	
-    assert(x != NULL);
-	
-	return x == x->parent->left;
+inline bool node_is_left_child(NodePtr current_node) {
+
+    assert(current_node != NULL);
+
+    return current_node == current_node->parent->left;
 }
 
 /*
-* Returns a pointer to the next node
-*/ 
+ * Returns a pointer to the necurrent_nodet node
+ */
 template <typename EndNodePtr, typename NodePtr>
-inline EndNodePtr tree_iter_next(NodePtr x) {
+inline EndNodePtr tree_iter_next(NodePtr current_node) {
 
-    assert(x != NULL);
+    assert(current_node != NULL);
 
-    if (x->right != NULL)
-        return tree_min(x->right);
+    if (current_node->right != NULL)
+        return tree_min(current_node->right);
 
-    while (node_is_left_child(x)) {
-        x = x->get_parent();
+    while (node_is_left_child(current_node)) {
+        current_node = current_node->get_parent();
     }
 
-    return x->parent;
+    return current_node->parent;
 }
 
 /*
-* Returns a pointer to the previous node
-*/ 
+ *   Returns a pointer to the previous node
+ */
 template <typename EndNodePtr, typename NodePtr>
-inline EndNodePtr tree_iter_prev(NodePtr x) {
+inline EndNodePtr tree_iter_prev(NodePtr current_node) {
 
-    assert(x != NULL);
+    assert(current_node != NULL);
 
-    if (x->left != NULL)
-        return tree_max(x->left);
+    if (current_node->left != NULL)
+        return tree_max(current_node->left);
 
-    NodePtr new_x = static_cast<NodePtr>(x);
+    NodePtr new_current_node = static_cast<NodePtr>(current_node);
 
-    while (node_is_left_child(new_x)) {
-        new_x = new_x->get_parent();
+    while (node_is_left_child(new_current_node)) {
+        new_current_node = new_current_node->get_parent();
     }
 
-    return new_x->parent;
+    return new_current_node->parent;
 }
 
+/*
+ *   Returns the height of the tree black nodes
+ */
 template <typename NodePtr>
-unsigned int valid_sub_tree(NodePtr x) {
-	
-	if (x == NULL)
-		return true;
-	
-	// Checks if current node left child points to current node
-	if (x->left != NULL && x->left->parent != x)
-		return false;
+unsigned int valid_sub_trees(NodePtr current_node) {
 
-	// Checks if current node right child points to current node
-	if (x->right != NULL && x->right->parent != x)
-		return false;
+    if (current_node == NULL)
+        return true;
 
-	// Checks if current node left and right childs points to same node
-	if (x->left == x->right && x->left != NULL)
-		return false;
+    // Checks if current node left child points to current node
+    if (current_node->left != NULL && current_node->left->parent != current_node)
+        return false;
 
-	// if node is Red, neither child can be Red
-	if (!x->is_black) {
-		if (x->left && !x->left->is_black)
-			return false;
-		
-		if (x->right && !x->right->is_black)
-			return false;
-	}
+    // Checks if current node right child points to current node
+    if (current_node->right != NULL && current_node->right->parent != current_node)
+        return false;
 
-    unsigned int height = valid_sub_tree(x->left);
-    
+    // Checks if current node left and right childs points to same node
+    if (current_node->left == current_node->right && current_node->left != NULL)
+        return false;
+
+    // if node is Red, neither child can be Red
+    if (!current_node->is_black) {
+        if (current_node->left && !current_node->left->is_black)
+            return false;
+
+        if (current_node->right && !current_node->right->is_black)
+            return false;
+    }
+
+    // Recursively checks each left child
+    unsigned int height = valid_sub_tree(current_node->left);
+
     if (height == 0)
         return 0;
 
-    if (height != valid_sub_tree(x->right))
+    // Recursively checks each right child
+    if (height != valid_sub_tree(current_node->right))
         return 0;
-    
-    return height + x->is_black;
+
+    return height + current_node->is_black; // Returns the height of the Tree
+}
+
+/*
+ *   Returns true if the tree is a valid Red-Black Tree
+ */
+template <typename NodePtr>
+inline bool valid_RBtree(NodePtr root) {
+
+    // If there is no tree, returns true
+    if (root == NULL)
+        return true;
+
+    // if Root node has no parent (end_node), Tree is invalid
+    if (root->parent == NULL)
+        return false;
+
+    // if Root is not the left child of the end_node, Tree is invalid
+    if (!node_is_left_child(root))
+        return false;
+
+    // Root node is always Black, otherwise Tree if invalid
+    if (!root->is_black)
+        return false;
+
+    // Returns false if each sub nodes (Sub Trees) are valid
+    return valid_sub_trees(root) != 0;
+}
+
+/*
+ *   A leaf is a node which both left and right childs are NULL.
+ *   They are the extremities of the tree
+ */
+template <typename NodePtr>
+NodePtr tree_leaf(NodePtr x) {
+
+    while (x->right != NULL || x->left != NULL) {
+
+        if (x->left != NULL) {
+            x = x->left;
+            continue;
+        }
+
+        if (x->right != NULL) {
+            x = x->right;
+            continue;
+        }
+    }
+
+    return x;
 }
 
 } // namespace ft
