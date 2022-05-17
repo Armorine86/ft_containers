@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 08:11:20 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/17 12:01:46 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/17 12:08:18 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,9 +67,11 @@ class map {
     typedef typename Allocator::pointer 			    pointer;
     typedef typename Allocator::const_pointer 		const_pointer;
 
-    private:
-      
+  private:
+    typedef map_value_type_compare<key_type, value_type, key_compare> value_type_compare;
+    typedef RBTree<value_type, value_type_compare, allocator_type> base;
 
+  public:
     typedef tree_iterator<pointer, map> 			    iterator;
     typedef tree_iterator<const_pointer, map> 	  const_iterator;
     typedef ft::reverse_iterator<iterator>        reverse_iterator;
@@ -194,7 +196,7 @@ class map {
      */
 
   private:
-    RBTree<T, Compare, Allocator> rbtree_;
+    base rbtree_;
 
 }; // class map
 } // namespace ft
