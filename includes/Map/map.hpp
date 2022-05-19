@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 08:11:20 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/19 11:50:16 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/19 13:13:35 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include "Iterator.hpp"
 #include "RBtree.hpp"
 #include "pair.hpp"
+#include "utilities.hpp"
 #include <cstddef>
 #include <memory>
 #include <stdexcept>
@@ -164,57 +165,96 @@ class map {
     }
 
     T& operator[](const Key& key) {
-      
+
         return (*((this->insert(make_pair(key, mapped_type()))).first)).second;
     }
 
+    // Returns a copy of the allocator associated with the Set
     allocator_type get_allocator() const { return rbtree.get_allocator(); }
 
     //* =============== CAPACITY FUNCTIONS ===============
 
     bool empty() { return size() > 0; }
 
-    size_type size() {}
+    size_type size() const { return rbtree.size(); }
 
-    size_type max_size() {}
+    size_type max_size() const { return rbtree.max_size(); }
 
     //* =============== MODIFIERS FUNCTIONS ===============
 
-    //~ void clear();
+    // Removes all the elements from the container.
+    // Size will be reduced to 0.
+    void clear() { rbtree.clear(); }
 
-    //~ ft::pair<iterator, bool> insert(const value_type& value) {}
-    //~ iterator insert(iterator hint, const value_type& value) {}
+    // Inserts a single value in the map.
+    ft::pair<iterator, bool> insert(const value_type& val) { rbtree.insert(val); }
 
-    //~ void erase(iterator pos) {}
-    //~ void erase(iterator first, iterator last)
-    //~ size_type erase(const Key& key) {}
+    // Inserts an element [in front] of the marked position.
+    iterator insert(iterator pos, const value_type& val) { rbtree.insert(pos, val); }
 
-    //~ void swap(map& src) {}
+    // Inserts a range of element into the set starting with [first] up to [last].
+    // Excluding the element pointed by [last].
+    template <typename InputIter>
+    void insert(InputIter first, InputIter last) {
+        rbtree.insert(first, last);
+    }
+
+    // Removes a single element marked by pos
+    void erase(iterator pos) { rbtree.erase(pos); }
+
+    // Removes all elements between [first] and [last].
+    // Excluding the element pointed by [last].
+    void erase(const_iterator first, const_iterator last) { rbtree.erase(first, last); }
+
+    // Removes the element with the key equivalent to key
+    size_type erase(const Key& key) { rbtree.erase(key); }
+
+    // Swap current container for src container.
+    void swap(map& src) { rbtree.swap(src.rbtree); }
 
     //* =============== LOOKUP FUNCTIONS ===============
 
-    //~ size_type count(const Key& key) const {}
+    // Returns the number of element matching key.
+    // Either 1 or 0 since no duplicates are allowed.
+    size_type count(const Key& key) const { return rbtree.count(key); }
 
-    //~ iterator find(const Key& key) {}
-    //~ const_iterator find(const Key& key) const {}
+    // Returns an iterator on the matching key.
+    // If no element is found, returns an iterator on end().
+    iterator find(const Key& key) { return rbtree.find(key); }
 
-    //~ ft::pair<iterator, iterator> equal_range(const Key& key) {}
-    //~ ft::pair<const_iterator, const_iterator> equal_range(const Key& key) const {}
+    // Returns a const_iterator on the matching key.
+    // If no element is found, returns an iterator on end().
+    const_iterator find(const Key& key) const { return rbtree.find(key); }
 
-    //~ iterator lower_bound(const Key& key) {}
-    //~ const_iterator lower_bound(const Key& key) const {}
+    // Returns a range containing all elements matching with the given key.
+    ft::pair<iterator, iterator> equal_range(const Key& key) { return rbtree.equal_range(key); }
 
-    //~ iterator upper_bound(const Key& key) {}
-    //~ const_iterator upper_bound(const Key& key) const {}
+    // Returns a range containing all elements matching with the given key.
+    ft::pair<const_iterator, const_iterator> equal_range(const Key& key) const {
+        return rbtree.equal_range(key);
+    }
+
+    // Returns an iterator on the first element that is not less (Greater or equal) than given key.
+    iterator lower_bound(const Key& key) { return rbtree.lower_bound(key); }
+
+    // Returns an iterator on the first element that is not less (Greater or equal) than given key.
+    const_iterator lower_bound(const Key& key) const { return rbtree.lower_bound(key); }
+
+    // Returns an iterator on the first element that is greater than given key.
+    iterator upper_bound(const Key& key) { return rbtree.upper_bound(key); }
+
+    // Returns an iterator on the first element that is greater than given key.
+    const_iterator upper_bound(const Key& key) const { return rbtree.upper_bound(key); }
 
     //* =============== OBSERVER FUNCTIONS ===============
 
-    //~ key_compare key_comp() const {}
-    //~ map::value_compare value_comp() const {}
+    key_compare key_comp() const { return rbtree.value_comp().key_comp(); }
+
+    map::value_compare value_comp() const { return value_compare(rbtree.value_comp().key_comp()); }
 
     /**
      **  ==================================================
-     **  |           PRIVATE MEMBER FUNCTIONS             |
+     **  |           PRIVATE MEMBER VARIABLES             |
      **  ==================================================
      */
 
@@ -222,4 +262,45 @@ class map {
     base rbtree;
 
 }; // class map
+
+template <typename Key, typename T, typename Compare, typename Alloc>
+void swap(const ft::map<Key, T, Compare, Alloc>& x, const ft::map<Key, T, Compare, Alloc>& y) {
+    x.swap(y);
+}
+
+template <typename Key, typename T, typename Compare, typename Alloc>
+bool operator==(const ft::map<Key, T, Compare, Alloc>& left,
+                const ft::map<Key, T, Compare, Alloc>& right) {
+    return left.size() == right.size() && std::equal(left.begin(), left.end(), right.begin());
+}
+
+template <typename Key, typename T, typename Compare, typename Alloc>
+bool operator!=(const ft::map<Key, T, Compare, Alloc>& left,
+                const ft::map<Key, T, Compare, Alloc>& right) {
+    return (!left == right);
+}
+
+template <typename Key, typename T, typename Compare, typename Alloc>
+bool operator<(const ft::map<Key, T, Compare, Alloc>& left,
+               const ft::map<Key, T, Compare, Alloc>& right) {
+    return ft::lexicographical_compare(left.begin(), left.end(), right.begin(), right.end());
+}
+
+template <typename Key, typename T, typename Compare, typename Alloc>
+bool operator<=(const ft::map<Key, T, Compare, Alloc>& left,
+                const ft::map<Key, T, Compare, Alloc>& right) {
+    return !(right > left);
+}
+
+template <typename Key, typename T, typename Compare, typename Alloc>
+bool operator>(const ft::map<Key, T, Compare, Alloc>& left,
+               const ft::map<Key, T, Compare, Alloc>& right) {
+    right > left;
+}
+
+template <typename Key, typename T, typename Compare, typename Alloc>
+bool operator>=(const ft::map<Key, T, Compare, Alloc>& left,
+                const ft::map<Key, T, Compare, Alloc>& right) {
+    return !(left < right);
+}
 } // namespace ft

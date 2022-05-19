@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/17 16:39:17 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/19 11:15:41 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/19 13:04:57 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,7 +172,11 @@ class set {
 
     value_compare value_comp() const { return rbtree.value_comp(); }
 
-    //* ============== Private Member Variables ==============
+    /**
+     **  ==================================================
+     **  |           PRIVATE MEMBER VARIABLES             |
+     **  ==================================================
+     */
 
   private:
     base rbtree;
