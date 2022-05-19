@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/13 12:47:23 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/17 09:54:13 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/17 15:10:50 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <cassert>
 
 namespace ft {
+
 /*
  * Returns the left most node in the sub-tree.
  * current_node is considered the root node
@@ -183,7 +184,6 @@ NodePtr tree_leaf(NodePtr x) {
             continue;
         }
     }
-
     return x;
 }
 

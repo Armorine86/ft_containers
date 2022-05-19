@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 08:11:20 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/17 12:08:18 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/17 15:06:52 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 #include "Iterator.hpp"
 #include "RBtree.hpp"
 #include "pair.hpp"
-#include <__functional/binary_function.h>
 #include <cstddef>
 #include <memory>
 
@@ -69,7 +68,7 @@ class map {
 
   private:
     typedef map_value_type_compare<key_type, value_type, key_compare> value_type_compare;
-    typedef RBTree<value_type, value_type_compare, allocator_type> base;
+    typedef RBTree<value_type, value_type_compare, allocator_type>    base;
 
   public:
     typedef tree_iterator<pointer, map> 			    iterator;
@@ -86,11 +85,7 @@ class map {
     class value_compare : public std::binary_function<value_type, value_type, bool> {
 
       public:
-        friend class map<Key, T, Compare, Allocator>;
-
-        typedef bool result_type;
-        typedef value_type first_argument_type;
-        typedef value_type second_argument_type;
+        friend class map;
 
       protected:
         key_compare comp_;
