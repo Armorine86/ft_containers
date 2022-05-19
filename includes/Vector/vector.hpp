@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/13 10:16:33 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/13 10:46:05 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/19 09:57:43 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,10 @@
 #include "../utilities.hpp"
 #include "Iterator.hpp"
 #include "type_traits.hpp"
-#include <algorithm>
 #include <cstddef>
 #include <iostream>
-#include <iterator>
 #include <limits>
 #include <memory>
-#include <vector>
 
 namespace ft {
 
@@ -29,7 +26,7 @@ template <typename T, typename Allocator = std::allocator<T> >
 class vector {
     // clang-format off
   public:
-    //* ============== Member Types ==============
+    //* ============== Member Typedefs ==============
     typedef T                                           value_type;
     typedef value_type&                                 reference;
     typedef const value_type&                           const_reference;
