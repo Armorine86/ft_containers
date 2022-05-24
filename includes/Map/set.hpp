@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/17 16:39:17 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/19 13:04:57 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/20 09:31:35 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 #include "Iterator.hpp"
 #include "RBtree.hpp"
+#include "pair.hpp"
 #include "utilities.hpp"
 
 #include <cstddef>
@@ -148,10 +149,10 @@ class set {
     const_iterator find(const Key& key) const { return rbtree.find(key); }
 
     // Returns a range containing all elements matching with the given key.
-    ft::pair<iterator, iterator> equal_range(const Key& key) { return rbtree.equal_range(key); }
+    pair<iterator, iterator> equal_range(const Key& key) { return rbtree.equal_range(key); }
 
     // Returns a range containing all elements matching with the given key.
-    ft::pair<const_iterator, const_iterator> equal_range(const Key& key) const {
+    pair<const_iterator, const_iterator> equal_range(const Key& key) const {
         return rbtree.equal_range(key);
     }
 
