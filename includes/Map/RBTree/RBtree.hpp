@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 09:38:08 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/24 12:33:21 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/24 14:13:22 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ class RBTree {
     typedef const_tree_iterator<value_type, difference_type>            const_iterator;
     typedef typename Allocator::pointer 					            pointer;
     typedef typename Allocator::const_pointer 				            const_pointer;
-    typedef typename node<T>::node_pointer                              node_pointer;
+    typedef node<T>*                                                    node_pointer;
     
     // Rebinds the pair Allocator to a Node allocator
     typedef typename allocator_type::template rebind<node<T> >::other   node_allocator;
@@ -59,25 +59,22 @@ class RBTree {
     RBTree()
         : node_alloc_(node_allocator()), value_alloc_(allocator_type()), end_(), begin_(), comp_(),
           size_(0) {
-        begin_ = node_pointer();
+              
+        //begin_ = node_pointer();
     }
 
     RBTree(const value_compare& val)
         : node_alloc_(node_allocator()), value_alloc_(allocator_type()), end_(), begin_(),
           comp_(val), size_(0) {
 
-        end_ = node_pointer();
-        begin_ = end_;
-        insert(val);
-        //! Should construct / allocate ?
+        //begin_ = node_pointer();
     }
 
     RBTree(const RBTree& src)
         : node_alloc_(src.node_alloc_), value_alloc_(src.value_alloc_), end_(), begin_(),
           comp_(src.comp_), size_(0) {
-
-        end_ = node_pointer();
-        begin_ = end_;
+        
+        //begin_ = node_pointer();
         insert(src.begin(), src.end());
     }
 
@@ -166,16 +163,16 @@ class RBTree {
         while (true) {
 
             // value_compare checks if left param is less than right param
-            bool is_less_than = value_compare()(current_node.value, key);
+            bool is_less_than = value_compare()(current_node->value, key);
 
             if (is_less_than) {
-                if (!current_node.right)
-                    return current_node.right;
-                current_node = current_node.right;
+                if (!current_node->right)
+                    return current_node->right;
+                current_node = current_node->right;
             } else if (!is_less_than) {
-                if (!current_node.left)
-                    return current_node.left;
-                current_node = current_node.left;
+                if (!current_node->left)
+                    return current_node->left;
+                current_node = current_node->left;
             } else {
                 return current_node;
             }
@@ -187,7 +184,7 @@ class RBTree {
 
         pos = new_node(val);
 
-        pos.parent = parent;
+        pos->parent = parent;
 
         if (begin_.left)
             begin_.left = begin_.left;

@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 13:30:15 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/24 12:29:00 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/24 13:57:27 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ class node {
     typedef node<T>* node_pointer;
 
   public:
-    node() : right(NULL), left(NULL), parent(NULL), is_black(true) {}
+    node() : is_black(true), right(NULL), left(NULL), parent(NULL) {}
 
   public:
   
