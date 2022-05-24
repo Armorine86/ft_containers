@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 08:14:45 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/09 09:49:40 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/24 13:31:16 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,24 +37,19 @@ class pair {
      */
 
   public:
-    // Default Constructor
-    pair() : first(), second() {}
+    pair() : first(first_type()), second(second_type()) {}
 
     pair(const T1& x, const T2& y) : first(x), second(y) {}
 
     template <typename U1, typename U2>
     pair(const pair<U1, U2>& pr) : first(pr.first), second(pr.second) {}
 
-    // Copy Constructor
-    pair(const pair& pr) {
-        first = pr.first;
-        second = pr.second;
-    }
+    pair(const pair& rhs) : first(rhs.first), second(rhs.second) {}
 
-    pair& operator=(const pair& src) {
-        if (this != &src) {
-            first = src.first;
-            second = src.second;
+    pair& operator=(const pair& rhs) {
+        if (this != &rhs) {
+            first = rhs.first;
+            second = rhs.second;
         }
         return *this;
     }
@@ -67,8 +62,8 @@ class pair {
  */
 
 template <typename T1, typename T2>
-inline ft::pair<T1, T2> make_pair(T1 t, T2 u) {
-    return ft::pair<T1, T2>(t, u);
+inline ft::pair<T1, T2> make_pair(T1 x, T2 y) {
+    return ft::pair<T1, T2>(x, y);
 }
 
 template <typename T1, typename T2>

@@ -6,13 +6,12 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/13 12:47:23 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/17 15:10:50 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/24 08:45:32 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "node_types.hpp"
 #include <cassert>
 
 namespace ft {

@@ -28,8 +28,8 @@ std::ostream& operator<<(std::ostream& os, std::vector<T> vec) {
 
 int main(void) {
 
-    std::map<char, int> m;
-    TESTED_NAMESPACE::map<int, char> m2;
+    std::map<int, char*> m;
+    TESTED_NAMESPACE::map<int, char*> m2;
     // {
     //     TESTED_NAMESPACE::vector<char> v;
 

@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/17 16:39:17 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/20 09:31:35 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/24 08:38:39 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include "pair.hpp"
 #include "utilities.hpp"
 
+#include <algorithm>
 #include <cstddef>
 #include <memory>
 

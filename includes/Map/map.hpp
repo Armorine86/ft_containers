@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 08:11:20 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/19 13:13:35 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/24 12:46:54 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 #include "RBtree.hpp"
 #include "pair.hpp"
 #include "utilities.hpp"
+
+#include <algorithm>
 #include <cstddef>
 #include <memory>
 #include <stdexcept>
@@ -56,13 +58,13 @@ class map {
     // clang-format off
   public:
     //* ============== Member Typedefs ==============
-    typedef Key 									                key_type;
-    typedef T 									            	    mapped_type;
+    typedef Key 									                key_type; // ft::pair<[KEY_TYPE], T>  ->first
+    typedef T 									            	    mapped_type; // ft_pair<key, [VALUE]> ->second
     typedef Compare 								              key_compare;
 	  typedef Allocator								              allocator_type;
     typedef size_t 									              size_type;
     typedef std::ptrdiff_t 							          difference_type;
-    typedef ft::pair<const Key, T> 					      value_type;
+    typedef ft::pair<const Key, T>                value_type;
     typedef value_type& 							            reference;
     typedef const value_type& 						        const_reference;
     typedef typename Allocator::pointer 			    pointer;

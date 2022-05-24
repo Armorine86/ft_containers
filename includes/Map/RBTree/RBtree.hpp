@@ -6,13 +6,13 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 09:38:08 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/20 11:09:13 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/24 12:33:21 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "node_types.hpp"
+#include "node.hpp"
 #include "pair.hpp"
 #include "tree_iterator.hpp"
 
@@ -22,27 +22,29 @@
 
 namespace ft {
 
+template <typename T>
+class node;
+
 //* Red Black Tree
 template <typename T, typename Compare, typename Allocator>
 class RBTree {
     // clang-format off
   public:
-    typedef T 												                                  value_type; // pair<Key, T>
-    typedef Compare 										                                value_compare;
-    typedef Allocator 										                              allocator_type;
-    typedef value_type& 									                              reference;
-    typedef size_t 											                                size_type;
-    typedef std::ptrdiff_t 									                            difference_type;
-    typedef const value_type& 								                          const_reference;
+    typedef T 												            value_type; // ft::pair<Key, T>
+    typedef Compare 										            value_compare; // Compares the Keys
+    typedef Allocator 										            allocator_type;
+    typedef value_type& 									            reference;
+    typedef size_t 											            size_type;
+    typedef std::ptrdiff_t 									            difference_type;
+    typedef const value_type& 								            const_reference;
     typedef tree_iterator<value_type, difference_type>                  iterator;
     typedef const_tree_iterator<value_type, difference_type>            const_iterator;
-    typedef typename Allocator::pointer 					                      pointer;
-    typedef typename Allocator::const_pointer 				                  const_pointer;
-    typedef typename node_types<T>::end_node_type                       end_node_type;
-    typedef typename node_types<T>::end_node_pointer                    end_node_pointer;
-    typedef typename node_types<T>::node_type                           node_type;
-    typedef typename node_types<T>::node_pointer                        node_pointer;
-    typedef typename allocator_type::template rebind<node_type>::other  node_allocator;
+    typedef typename Allocator::pointer 					            pointer;
+    typedef typename Allocator::const_pointer 				            const_pointer;
+    typedef typename node<T>::node_pointer                              node_pointer;
+    
+    // Rebinds the pair Allocator to a Node allocator
+    typedef typename allocator_type::template rebind<node<T> >::other   node_allocator;
     // clang-format on
 
     /**
@@ -54,25 +56,37 @@ class RBTree {
     //* ============== CTORS / DTOR ==============
 
   public:
-    RBTree(const value_compare& val)
-        : node_alloc_(node_allocator()), value_alloc_(allocator_type()), end_(), comp_(val),
+    RBTree()
+        : node_alloc_(node_allocator()), value_alloc_(allocator_type()), end_(), begin_(), comp_(),
           size_(0) {
+        begin_ = node_pointer();
+    }
 
-        begin_ = end_node_pointer();
+    RBTree(const value_compare& val)
+        : node_alloc_(node_allocator()), value_alloc_(allocator_type()), end_(), begin_(),
+          comp_(val), size_(0) {
+
+        end_ = node_pointer();
+        begin_ = end_;
+        insert(val);
+        //! Should construct / allocate ?
     }
 
     RBTree(const RBTree& src)
-        : node_alloc_(src.node_alloc_), value_alloc_(src.value_alloc_), end_(), comp_(src.comp_),
-          size_(0) {
+        : node_alloc_(src.node_alloc_), value_alloc_(src.value_alloc_), end_(), begin_(),
+          comp_(src.comp_), size_(0) {
 
-        begin_ = end_node_pointer();
+        end_ = node_pointer();
+        begin_ = end_;
         insert(src.begin(), src.end());
     }
 
     RBTree(const value_compare& val, const allocator_type& val_alloc_)
-        : node_alloc_(node_allocator()), value_alloc_(val_alloc_), end_(), comp_(val), size_(0) {
+        : node_alloc_(node_allocator()), value_alloc_(val_alloc_), end_(), begin_(), comp_(val),
+          size_(0) {
 
-        begin_ = end_node_pointer();
+        end_ = node_pointer();
+        begin_ = end_;
     }
 
     RBTree& operator=(const RBTree& rhs) {
@@ -85,6 +99,9 @@ class RBTree {
         return *this;
     }
 
+    //! Needs to Destroy / Deallocate all nodes
+    ~RBTree() {}
+
   public:
     // Returns a copy of the allocator associated with the Set
     allocator_type get_allocator() { return value_alloc_; }
@@ -96,16 +113,25 @@ class RBTree {
     iterator end() { return iterator(end_); }
     const_iterator end() const { return const_iterator(end_); }
 
-
     //* ============== Insert ==============
 
     // Returns true if the insertion was successful.
     // Returns false if the key already exists in the tree.
     ft::pair<iterator, bool> insert(const value_type& val) {
-      
-      (void)val;
-      bool exists = false;
-      return ft::make_pair(val, exists);
+
+        bool key_exists = false;
+
+        node_pointer root = get_root();
+        node_pointer& found_pos = find_insert_pos(root, val);
+
+        iterator insert_pos(found_pos);
+
+        if (!found_pos) {
+            insert_pos = insert_at(found_pos, get_root(), val);
+            key_exists = true;
+        }
+
+        return ft::make_pair(val, key_exists);
     }
 
     // Returns an iterator on the inserted node
@@ -130,6 +156,49 @@ class RBTree {
     */
 
   private:
+    // Starting at root, check each key
+    template <typename Key>
+    node_pointer& find_insert_pos(node_pointer& current_node, const Key& key) {
+
+        if (!current_node)
+            return NULL;
+
+        while (true) {
+
+            // value_compare checks if left param is less than right param
+            bool is_less_than = value_compare()(current_node.value, key);
+
+            if (is_less_than) {
+                if (!current_node.right)
+                    return current_node.right;
+                current_node = current_node.right;
+            } else if (!is_less_than) {
+                if (!current_node.left)
+                    return current_node.left;
+                current_node = current_node.left;
+            } else {
+                return current_node;
+            }
+        }
+    }
+
+    // Inserts a node at the specified position [pos] and returns an iterator
+    iterator insert_at(node_pointer& pos, node_pointer& parent, const value_type& val) {
+
+        pos = new_node(val);
+
+        pos.parent = parent;
+
+        if (begin_.left)
+            begin_.left = begin_.left;
+
+        //! fix_node_colors(get_root(), pos)
+
+        return iterator(pos);
+    }
+    // Returns a pointer to the root node (left child of end_ node)
+    node_pointer get_root() const { return end_.left; }
+
     /*
      * Returns the left most node in the sub-tree.
      * current_node is considered the root node.
@@ -316,8 +385,8 @@ class RBTree {
   protected:
     node_allocator node_alloc_;  // used to Allocate nodes
     allocator_type value_alloc_; // used to Allocate values in nodes
-    end_node_type end_;          // Node above root that marks the end of the tree
-    end_node_pointer begin_;
+    node<T> end_;                // Node above root that marks the end of the tree
+    node<T> begin_;
     value_compare comp_;
     size_type size_;
     // clang-format on
