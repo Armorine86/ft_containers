@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 13:34:32 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/24 09:05:02 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/24 16:44:18 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,24 +25,28 @@ class const_tree_iterator;
 template <typename T, typename Diff>
 class tree_iterator {
 
-  private:
-    typedef typename node<T>::node_pointer node_pointer;
+  public:
+    typedef node<T>* node_pointer;
+    typedef end_node<T>* end_node_pointer;
 
     //* ============== Member Types ==============
-
+    // clang-format off
   public:
-    typedef T value_type;
-    typedef Diff difference_type;
-    typedef value_type& reference;
-    typedef value_type* pointer;
-    typedef const_tree_iterator<T, Diff> const_iterator;
-    typedef std::bidirectional_iterator_tag iterator_category;
+    typedef T                                 value_type;
+    typedef Diff                              difference_type;
+    typedef value_type&                       reference;
+    typedef value_type*                       pointer;
+    typedef const_tree_iterator<T, Diff>      const_iterator;
+    typedef std::bidirectional_iterator_tag   iterator_category;
+    // clang-format on
 
     //* ============== CTOR / DTOR ==============
 
     tree_iterator() : ptr() {}
 
     tree_iterator(node_pointer p) : ptr(p) {}
+
+    tree_iterator(end_node_pointer p) : ptr(p) {}
 
     //* ============== Member Functions ==============
 
@@ -98,6 +102,7 @@ class const_tree_iterator {
 
   private:
     typedef typename node<T>::node_pointer node_pointer;
+    typedef end_node<T>* end_node_pointer;
 
     //* ============== Member Types ==============
 
@@ -114,6 +119,8 @@ class const_tree_iterator {
     const_tree_iterator() : ptr() {}
 
     const_tree_iterator(node_pointer p) : ptr(p) {}
+
+    const_tree_iterator(end_node_pointer p) : ptr(p) {}
 
     const_tree_iterator(non_const_iterator it) : ptr(it.base()) {}
 

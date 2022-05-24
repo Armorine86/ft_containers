@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 08:11:20 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/24 14:16:54 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/24 17:34:34 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,13 +30,13 @@ class map_value_type_compare : public std::binary_function<Key, Key, bool> {
   public:
     // Constructors
 
-    map_value_type_compare() : comp_() {}
-    map_value_type_compare(const Compare& cmp) : comp_(cmp) {}
+    map_value_type_compare() : comp() {}
+    map_value_type_compare(const Compare& cmp) : comp(cmp) {}
 
   public:
     // Member Functions
 
-    const Compare& key_comp() const { return comp_; }
+    const Compare& key_comp() const { return comp; }
 
     bool operator()(const T& x, const T& y) const { return key_comp()(x.first, y.first); }
 
@@ -44,10 +44,10 @@ class map_value_type_compare : public std::binary_function<Key, Key, bool> {
 
     bool operator()(const T& x, const Key& y) const { return key_comp()(x.first, y); }
 
-    void swap(map_value_type_compare& src) { std::swap(comp_, src.comp_); }
+    void swap(map_value_type_compare& src) { std::swap(comp, src.comp_); }
 
-  private:
-    Compare comp_;
+  protected:
+    Compare comp;
 
 }; // class map_value_type_compare
 
@@ -189,10 +189,10 @@ class map {
     void clear() { rbtree.clear(); }
 
     // Inserts a single value in the map.
-    ft::pair<iterator, bool> insert(const value_type& val) { rbtree.insert(val); }
+    ft::pair<iterator, bool> insert(const value_type& val) { return rbtree.insert(val); }
 
     // Inserts an element [in front] of the marked position.
-    iterator insert(iterator pos, const value_type& val) { rbtree.insert(pos, val); }
+    iterator insert(iterator pos, const value_type& val) { return rbtree.insert(pos, val); }
 
     // Inserts a range of element into the set starting with [first] up to [last].
     // Excluding the element pointed by [last].
