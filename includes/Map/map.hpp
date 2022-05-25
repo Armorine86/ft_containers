@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 08:11:20 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/24 17:34:34 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/25 15:33:12 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -254,6 +254,14 @@ class map {
 
     map::value_compare value_comp() const { return value_compare(rbtree.value_comp().key_comp()); }
 
+    //* =============== UTIL FUNCTIONS ===============
+    
+    // Prints the tree layout
+    void printTree() {
+        rbtree.printTree();
+    }
+
+    
     /**
      **  ==================================================
      **  |           PRIVATE MEMBER VARIABLES             |

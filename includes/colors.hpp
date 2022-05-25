@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/21 16:46:53 by mmondell          #+#    #+#             */
-/*   Updated: 2022/04/13 10:14:26 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/25 15:11:43 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,3 +28,4 @@
 #define ITALIC "\033[3m"
 #define END "\033[0;0m"
 #define ORANGE "\033[38;5;208m"
+#define D_GREY "\033[38;5;240m"

@@ -32,7 +32,15 @@ int main(void) {
     TESTED_NAMESPACE::map<int, const char*> m;
 
     m.insert(ft::make_pair(10, "Hello"));
-    std::cout << "allo" << std::endl;
+    m.insert(ft::make_pair(5, "WAZZAAA"));
+    m.insert(ft::make_pair(2, "KARAKOUKAS"));
+    m.insert(ft::make_pair(6, "Shut Up Karen!"));
+    m.insert(ft::make_pair(42, "Babye"));
+    m.insert(ft::make_pair(35, "Pouet!"));
+    m.insert(ft::make_pair(50, "Kapout!"));
+
+    m.printTree();
+    
     // {
     //     TESTED_NAMESPACE::vector<char> v;
 
