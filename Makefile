@@ -83,7 +83,7 @@ $(OBJS_PATH):
 
 # linux_redebug : fclean linux_debug
 
-release: CFLGAS += -O3
+release: CFLAGS += -O3
 release: all
 
 debug:	CFLAGS += -g -fstandalone-debug -fno-limit-debug-info
@@ -104,6 +104,4 @@ fclean: clean
 
 re: fclean all
 
-redebug: fclean debug
-
-.PHONY: all clean fclean re linux debug redebug fmt
+.PHONY: all clean fclean re linux debug redebug fmt release

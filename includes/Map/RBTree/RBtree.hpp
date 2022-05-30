@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 09:38:08 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/25 15:38:16 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/27 14:28:53 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,12 +74,12 @@ class RBTree {
         right_end_ = end_;
     }
 
-    // RBTree(const RBTree& src)
-    //     : node_alloc_(src.node_alloc_), value_alloc_(src.value_alloc_), end_(), comp_(src.comp_),
-    //       size_(0) {
+    RBTree(const RBTree& src)
+        : node_alloc_(src.node_alloc_), value_alloc_(src.value_alloc_), end_(), comp_(src.comp_),
+          size_(0) {
 
-    //     insert(src.begin(), src.end());
-    // }
+        insert(src.begin(), src.end());
+    }
 
     // RBTree(const value_compare& val, const allocator_type& val_alloc_)
     //     : node_alloc_(node_allocator()), value_alloc_(val_alloc_), end_(), comp_(val), size_(0)
@@ -121,6 +121,7 @@ class RBTree {
             init_tree(val);
             get_root()->is_black = true;
             iterator it(begin_);
+            
             key_exists = true;
             return ft::make_pair(it, key_exists);
         }
@@ -150,7 +151,8 @@ class RBTree {
     iterator insert(iterator pos, const value_type& val) {
 
         (void)pos;
-        insert(val);
+        return insert(val).first;
+        //insert(val);
     }
 
     template <typename InputIter>
@@ -196,15 +198,13 @@ class RBTree {
 */
 
 private:
+
 // Starting at root, check each key
 template <typename Key>
 node_pointer& find_insert_pos(iterator& parent, const Key& key) const {
 
     iterator current_node = get_root();
     node_pointer* ptr = get_root_ptr();
-
-    // if (!current_node)
-    //     return &current_node;
 
     while (true) {
 
@@ -231,20 +231,23 @@ node_pointer& find_insert_pos(iterator& parent, const Key& key) const {
     }
 }
 
-// Inserts a node at the specified position [pos] and returns an iterator
-iterator insert_at(Node& pos, Node& parent, const value_type& val) {
-
-    pos = new_node(val);
-
-    pos.parent = parent;
-
-    if (begin_->left)
-        begin_ = begin_->left;
-
-    //! fix_node_colors(get_root(), pos)
-
-    return iterator(pos);
-}
+// template <typename Key>
+// node_pointer& find_insert_pos(iterator pos, const Key& key) const {
+    
+//     // if pos == the node just before where val will be inserted, insert there
+//     // if pos == end()
+//     iterator root = get_root();
+    
+//     // check if the inserted key if greater or less than root, then check if greater or less
+//     // than immediate parent
+//     if (value_compare()(key, root.base()->value)) {
+        
+//         if (value_compare()(key, pos.base())) {
+//             return pos.base()->left;
+//         } else
+//             return pos.base()->right;
+//     }
+// }
 
 // Returns a pointer to the root node (left child of end_ node)
 Node* get_root() const { return end_->left; }
