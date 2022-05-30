@@ -255,13 +255,10 @@ class map {
     map::value_compare value_comp() const { return value_compare(rbtree.value_comp().key_comp()); }
 
     //* =============== UTIL FUNCTIONS ===============
-    
-    // Prints the tree layout
-    void printTree() {
-        rbtree.printTree();
-    }
 
-    
+    // Prints the tree layout
+    void printTree() { rbtree.printTree(); }
+
     /**
      **  ==================================================
      **  |           PRIVATE MEMBER VARIABLES             |
