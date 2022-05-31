@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 09:38:08 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/30 15:42:51 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/30 20:24:48 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,7 @@ class RBTree {
             return ft::make_pair(it, key_exists);
         }
 
-        iterator parent(begin_);
+        iterator parent(get_root());
         node_pointer& pos = find_insert_pos(parent, val);
 
         iterator it(pos);
@@ -136,7 +136,7 @@ class RBTree {
             pos->parent = parent.base();
             it = iterator(pos);
             key_exists = true;
-            insert_fix( pos);
+            insert_fix(pos);
         }
 
         if (begin_->left)
@@ -428,102 +428,96 @@ class RBTree {
     }
 
     // Case 1: if new_node is root and is RED
-    bool case_1(node_pointer& new_node) {
+    void case_1(node_pointer& new_node) {
 
         if (get_root() == new_node && !new_node->is_black) {
             new_node->is_black = true;
-            return true;
         }
-        return false;
     }
 
-    // Case 2: If the Parent node is black do nothing
-    bool case_2(node_pointer& new_node) {
+    // Case 2: new_node's uncle is RED ---> Recolor
+    void case_2(node_pointer& new_node) {
 
-        if (new_node->parent->is_black)
-            return true;
-        return false;
-    }
+        node_pointer uncle = get_uncle(new_node);
 
-    // Case 3: Parent node is also RED, Check if uncle is red or Black.
-    // Case 3.1: If uncle and parent are Red, Recolor Parent, Grand-parent and Uncle.
-    // Case 3.2: If Parent is Red and Uncle is black or NULL
-    // Case 3.2.1: If Parent is right child of Grand-parent and new_node is right child of Parent
-    bool case_3(node_pointer& new_node) {
-
-        // CASE 3.1 --> if new_node Uncle is RED
-        if (get_uncle(new_node)->is_black) {
+        if (!uncle || uncle->is_black) {
 
             // Red Uncle --> Recolor Black
-            get_uncle(new_node)->is_black = true;
+            if (uncle)
+                uncle->is_black = true;
 
             // Black G-P && Not Root --> Recolor RED
             get_grandparent(new_node)->is_black = get_grandparent(new_node) == get_root();
 
             // Red Parent --> Recolor Black
-            if (new_node->parent->is_black == false)
-                new_node->parent->is_black = true;
-
-            // Case 3.2 --> new_node P is RED and Uncle is Black or NULL
-        } else if (new_node->parent->is_black == false &&
-                   (get_uncle(new_node)->is_black == true || !get_uncle(new_node))) {
-
-            // CASE 3.2.1 --> P right child of G-P and new_node is right child of P
-            if (node_is_left_child(new_node) && node_is_left_child(new_node->parent)) {
-
-                // LEFT ROTATE
-                node_pointer great_grand_parent = get_grandparent(new_node->parent);
-                great_grand_parent->right = new_node->parent;
-                new_node->parent->left = get_grandparent(new_node);
-                get_grandparent(new_node)->parent = new_node->parent;
-                get_grandparent(new_node)->right = NULL;
-                new_node->parent = great_grand_parent;
-
-                new_node->parent->is_black = true;
-                new_node->parent->left->is_black = false;
-
-                return true;
-
-            // CASE 3.2.2 --> New_node is left child of P, P is right child of G-P
-            } else if (node_is_left_child(new_node) && !node_is_left_child(new_node->parent)) {
-                
-                node_pointer tmp = get_grandparent(new_node);
-                tmp->right = new_node;
-                new_node->right = new_node->parent;
-                new_node->right->parent = new_node;
-                new_node->parent->left = NULL;
-                new_node->parent = tmp;
-
-                return true;
-
-            }
+            new_node->parent->is_black = true;
         }
-        return false;
+        std::cout << "\n\n----------INSIDE CASE 2------------" << std::endl;
+        printTree();
+    }
+
+    // Case 3.1 -> New_node, parent and Grand parent forms a triangle AND uncle is black or NULL
+    // Case 3.2 -> New_node, Parent and Grand parent forms a line (all left or right childs)
+    void case_3(node_pointer& new_node) {
+
+        node_pointer uncle = get_uncle(new_node);
+
+        // If uncle is either NULL or Black
+        if (!uncle || uncle->is_black) {
+
+            // New_node, Parent and Grand-Parent forms a <triangle>
+            if (node_is_left_child(new_node) && !node_is_left_child(new_node->parent)) {
+                right_rotate(new_node->parent);
+
+            } else if (!node_is_left_child(new_node) && node_is_left_child(new_node->parent)) {
+                left_rotate(new_node->parent);
+            }
+            
+        } else {
+
+            if (node_is_left_child(new_node) && node_is_left_child(new_node->parent)) {
+            
+            } else if (!node_is_left_child(new_node) && !node_is_left_child(new_node->parent)) {
+            
+            } 
+        }
     }
 
     // Fixes and Rebalance the tree based on several Cases.
     // Case 1: Root must always be black.
-    // Case 2: Parent node needs to be black, if it is do nothing
+    // Case 2: new_node's uncle is RED
     // Case 3: Parent of the inserted node is also RED
     void insert_fix(node_pointer& new_node) {
 
-        if (size_  > 1) {    
-            while (new_node->parent->is_black == false) {
-                
-                // CASE 1 --> Root must always be black
-                if (!case_1(new_node)) {
+        if (size_ > 1) {
+            // CASE 1 --> Root must always be black
+            case_1(new_node);
 
-                    // CASE 2 --> Parent node needs to be black
-                    if (!case_2(new_node)) {
-
-                        // CASE 3 --> Parent of new_node is RED
-                        if (case_3(new_node)) {
-                            continue;
-                        }
-                    }
-                }
-            }
+            // CASE 2 --> new_node's uncle is RED -> Recolor
+            case_2(new_node);
+            
+            // CASE 3 --> new_node's Uncle is Black
+            while (new_node->parent->is_black == false)
+                case_3(new_node);
         }
+    }
+
+    void left_rotate(node_pointer& current_node) {
+
+        current_node->right->parent = current_node->parent;
+        current_node->right->left = current_node;
+        current_node->parent->left = current_node->right;
+        current_node->parent = current_node->right;
+        current_node->right = NULL;
+    }
+
+    void right_rotate(node_pointer& current_node) {
+
+        current_node->left->parent = current_node->parent;
+        current_node->left->right = current_node;
+        current_node->parent->right = current_node->left;
+        current_node->parent = current_node->left;
+        current_node->left = NULL;
     }
 
     // clang-format off

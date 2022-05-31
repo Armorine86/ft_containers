@@ -36,10 +36,14 @@ int main(void) {
     iter = m.insert(ft::make_pair(61, "Hello")).first;
     iter = m.insert(ft::make_pair(52, "WAZZAAA")).first;
     iter = m.insert(ft::make_pair(85, "KRAKOUKAS")).first;
-    iter = m.insert(ft::make_pair(76, "Shut Up Karen!")).first;
+    m.printTree();
+    std::cout << "\n\n------------------------" << std::endl;
+    // iter = m.insert(ft::make_pair(76, "Shut Up Karen!")).first;
     iter = m.insert(ft::make_pair(93, "Babye")).first;
-    iter = m.insert(ft::make_pair(100, "Pouet!")).first;
-    // iter = m.insert(ft::make_pair(50, "Kapout!")).first;
+    m.printTree();
+    std::cout << "\n\n------------------------" << std::endl;
+    // iter = m.insert(ft::make_pair(100, "Pouet!")).first;
+    iter = m.insert(ft::make_pair(87, "Kapout!")).first;
 
     // TESTED_NAMESPACE::map<int, const char*>::iterator result;
 
