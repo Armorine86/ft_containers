@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 08:11:20 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/25 15:33:12 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/31 12:03:58 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,10 @@
 #include "Iterator.hpp"
 #include "RBtree.hpp"
 #include "pair.hpp"
+#include "tree_algorithm.hpp"
 #include "utilities.hpp"
 
+#include <__tuple>
 #include <algorithm>
 #include <cstddef>
 #include <memory>
@@ -258,6 +260,8 @@ class map {
 
     // Prints the tree layout
     void printTree() { rbtree.printTree(); }
+
+    inline bool validTree(iterator root) { return rbtree.valid_RBtree(root.base()); }
 
     /**
      **  ==================================================

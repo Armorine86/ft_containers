@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 09:38:08 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/30 20:24:48 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/05/31 12:21:45 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 #include "node.hpp"
 #include "pair.hpp"
-#include "tree_algorithm.hpp"
 #include "tree_iterator.hpp"
 
 #include "colors.hpp"
@@ -191,6 +190,77 @@ class RBTree {
             printHelper(root->left, indent, false);
         }
     }
+
+    /*
+     *   Returns the height of the tree black nodes
+     */
+    template <typename NodePtr>
+    unsigned int valid_sub_trees(NodePtr current_node) {
+
+        if (current_node == NULL)
+            return true;
+
+        // Checks if current node left child points to current node
+        if (current_node->left != NULL && current_node->left->parent != current_node)
+            return false;
+
+        // Checks if current node right child points to current node
+        if (current_node->right != NULL && current_node->right->parent != current_node)
+            return false;
+
+        // Checks if current node left and right childs points to same node
+        if (current_node->left == current_node->right && current_node->left != NULL)
+            return false;
+
+        // if node is Red, neither child can be Red
+        if (!current_node->is_black) {
+            if (current_node->left && !current_node->left->is_black)
+                return false;
+
+            if (current_node->right && !current_node->right->is_black)
+                return false;
+        }
+
+        // Recursively checks each left child
+        unsigned int height = valid_sub_trees(current_node->left);
+
+        if (height == 0)
+            return 0;
+
+        // Recursively checks each right child
+        if (height != valid_sub_trees(current_node->right))
+            return 0;
+
+        return height + current_node->is_black; // Returns the height of the Tree (black nodes)
+    }
+
+    /*
+     *   Returns true if the tree is a valid Red-Black Tree
+     */
+    template <typename NodePtr>
+    inline bool valid_RBtree(NodePtr root) {
+
+        root = get_root();
+        // If there is no tree, returns true
+        if (root == NULL)
+            return true;
+
+        // if Root node has no parent (end_node), Tree is invalid
+        if (root->parent == NULL)
+            return false;
+
+        // if Root is not the left child of the end_node, Tree is invalid
+        if (!node_is_left_child(root))
+            return false;
+
+        // Root node is always Black, otherwise Tree if invalid
+        if (!root->is_black)
+            return false;
+
+        // Returns false if each sub nodes (Sub Trees) are valid
+        return valid_sub_trees(root) != 0;
+    }
+
     /**
     **  ==================================================
     **  |           PRIVATE MEMBER FUNCTIONS             |
@@ -233,9 +303,9 @@ class RBTree {
     }
 
     // Returns a pointer to the root node (left child of end_ node)
-    Node* get_root() const { return end_->left; }
+    node_pointer& get_root() const { return end_->left; }
 
-    Node** get_root_ptr() const { return &end_->left; }
+    node_pointer* get_root_ptr() const { return &end_->left; }
 
     /*
      * Returns the left most node in the sub-tree.
@@ -273,78 +343,9 @@ class RBTree {
     template <typename NodePtr>
     inline bool node_is_left_child(NodePtr current_node) {
 
-        assert(current_node != NULL);
-
-        return current_node == current_node->parent->left;
-    }
-
-    /*
-     *   Returns the height of the tree black nodes
-     */
-    template <typename NodePtr>
-    unsigned int valid_sub_trees(NodePtr current_node) {
-
-        if (current_node == NULL)
-            return true;
-
-        // Checks if current node left child points to current node
-        if (current_node->left != NULL && current_node->left->parent != current_node)
-            return false;
-
-        // Checks if current node right child points to current node
-        if (current_node->right != NULL && current_node->right->parent != current_node)
-            return false;
-
-        // Checks if current node left and right childs points to same node
-        if (current_node->left == current_node->right && current_node->left != NULL)
-            return false;
-
-        // if node is Red, neither child can be Red
-        if (!current_node->is_black) {
-            if (current_node->left && !current_node->left->is_black)
-                return false;
-
-            if (current_node->right && !current_node->right->is_black)
-                return false;
-        }
-
-        // Recursively checks each left child
-        unsigned int height = valid_sub_tree(current_node->left);
-
-        if (height == 0)
-            return 0;
-
-        // Recursively checks each right child
-        if (height != valid_sub_tree(current_node->right))
-            return 0;
-
-        return height + current_node->is_black; // Returns the height of the Tree (black nodes)
-    }
-
-    /*
-     *   Returns true if the tree is a valid Red-Black Tree
-     */
-    template <typename NodePtr>
-    inline bool valid_RBtree(NodePtr root) {
-
-        // If there is no tree, returns true
-        if (root == NULL)
-            return true;
-
-        // if Root node has no parent (end_node), Tree is invalid
-        if (root->parent == NULL)
-            return false;
-
-        // if Root is not the left child of the end_node, Tree is invalid
-        if (!node_is_left_child(root))
-            return false;
-
-        // Root node is always Black, otherwise Tree if invalid
-        if (!root->is_black)
-            return false;
-
-        // Returns false if each sub nodes (Sub Trees) are valid
-        return valid_sub_trees(root) != 0;
+        if (current_node->parent->left)
+            return current_node == current_node->parent->left;
+        return false;
     }
 
     /*
@@ -406,118 +407,163 @@ class RBTree {
 
     // Returns a pointer to the current_node grand parent node
     //
-    //                   (B) <--- grand-parent
-    //                  /   \
-    //                (D)     (A) <--- parent
-    //                       /
-    //                     (Z) <--- current-node
-    node_pointer get_grandparent(node_pointer& current_node) {
+    //...(B) <--- grand-parent.
+    //..../   \.
+    //(D)    (A) <--- parent.
+    //......./.
+    //.....(Z) <--- current-node.
+    node_pointer& get_grandparent(node_pointer& current_node) const {
         return current_node->parent->parent;
+    }
+
+    // Returns a pointer to the left child of the current_node grand parent node
+    //
+    //..............(B).
+    //............../   \.
+    //uncle ---> (D)     (A).
+    //.................../.
+    //.................(Z) <--- current-node.
+    node_pointer& get_uncle_left(node_pointer& current_node) const {
+
+        return get_grandparent(current_node)->left;
     }
 
     // Returns a pointer to the left child of the current_node grand parent node
     //
     //                   (B)
     //                  /   \
-    //    uncle ---> (D)     (A)
-    //                       /
-    //                     (Z) <--- current-node
-    node_pointer get_uncle(node_pointer& current_node) {
+    //                (D)   (A)<--- uncle
+    //                 \
+    //                  (Z) <--- current-node
+    node_pointer& get_uncle_right(node_pointer& current_node) const {
 
-        return get_grandparent(current_node)->left;
+        return get_grandparent(current_node)->right;
     }
 
-    // Case 1: if new_node is root and is RED
-    void case_1(node_pointer& new_node) {
+    // Case 1: Root is always Black
+    void case_1() {
 
-        if (get_root() == new_node && !new_node->is_black) {
-            new_node->is_black = true;
+        if (get_root()->is_black == false) {
+            get_root()->is_black = true;
         }
     }
 
     // Case 2: new_node's uncle is RED ---> Recolor
-    void case_2(node_pointer& new_node) {
+    bool case_2(node_pointer& new_node, node_pointer uncle) {
 
-        node_pointer uncle = get_uncle(new_node);
+        // If Red Uncle
+        if (uncle && !uncle->is_black) {
 
-        if (!uncle || uncle->is_black) {
-
-            // Red Uncle --> Recolor Black
-            if (uncle)
-                uncle->is_black = true;
-
-            // Black G-P && Not Root --> Recolor RED
-            get_grandparent(new_node)->is_black = get_grandparent(new_node) == get_root();
-
+            // Recolor Red uncle to Black        
+            uncle->is_black = true;
+    
             // Red Parent --> Recolor Black
             new_node->parent->is_black = true;
+
+            // Black G-P && Not Root --> Recolor RED
+            get_grandparent(new_node)->is_black = false;
+
+            new_node = new_node->parent->parent;
+
+            return true;
         }
-        std::cout << "\n\n----------INSIDE CASE 2------------" << std::endl;
-        printTree();
+        return false;
     }
 
-    // Case 3.1 -> New_node, parent and Grand parent forms a triangle AND uncle is black or NULL
-    // Case 3.2 -> New_node, Parent and Grand parent forms a line (all left or right childs)
+    // CASE 3 -> If new_node parent is a right child, get left uncle and call
+    // CASE 2 -> if uncle is RED, recolor Uncle, Parent and Grand-Parent.
+    // IF NOT CASE 2 -> Verify that new_node is a left child.
+    // If true, new_node becomes his parent and perform a right rotate.
+    // THEN, recolor new_node->parent and Grand-Parent and perform left_rotate.
+    // Repeat until either new_node is root OR new_node parent color isn't black.
     void case_3(node_pointer& new_node) {
 
-        node_pointer uncle = get_uncle(new_node);
+        if (!node_is_left_child(new_node->parent)) {
 
-        // If uncle is either NULL or Black
-        if (!uncle || uncle->is_black) {
+            // new_node->parent->parent->left
+            node_pointer uncle = get_uncle_left(new_node);
+            if (!case_2(new_node, uncle)) {
 
-            // New_node, Parent and Grand-Parent forms a <triangle>
-            if (node_is_left_child(new_node) && !node_is_left_child(new_node->parent)) {
-                right_rotate(new_node->parent);
+                if (node_is_left_child(new_node)) {
+                    new_node = new_node->parent;
+                    right_rotate(new_node);
+                }
 
-            } else if (!node_is_left_child(new_node) && node_is_left_child(new_node->parent)) {
-                left_rotate(new_node->parent);
+                new_node->parent->is_black = true;
+                get_grandparent(new_node)->is_black = false;
+                left_rotate(new_node->parent->parent);
             }
-            
         } else {
 
-            if (node_is_left_child(new_node) && node_is_left_child(new_node->parent)) {
-            
-            } else if (!node_is_left_child(new_node) && !node_is_left_child(new_node->parent)) {
-            
-            } 
+            // new_node->parent->parent->right
+            node_pointer uncle = get_uncle_right(new_node);
+            if (!case_2(new_node, uncle)) {
+
+                if (!node_is_left_child(new_node)) {
+                    new_node = new_node->parent;
+                    left_rotate(new_node);
+                }
+
+                new_node->parent->is_black = true;
+                get_grandparent(new_node)->is_black = false;
+                right_rotate(new_node->parent->parent);
+            }
         }
     }
 
     // Fixes and Rebalance the tree based on several Cases.
     // Case 1: Root must always be black.
-    // Case 2: new_node's uncle is RED
-    // Case 3: Parent of the inserted node is also RED
-    void insert_fix(node_pointer& new_node) {
+    // Case 2: new_node's uncle is RED (inside case 3)
+    // Case 3: Parent is either Left or Right Child
+    void insert_fix(node_pointer new_node) {
 
-        if (size_ > 1) {
-            // CASE 1 --> Root must always be black
-            case_1(new_node);
+        node_pointer root = get_root();
 
-            // CASE 2 --> new_node's uncle is RED -> Recolor
-            case_2(new_node);
-            
-            // CASE 3 --> new_node's Uncle is Black
-            while (new_node->parent->is_black == false)
-                case_3(new_node);
+        while (new_node != root && new_node->parent->is_black == false) {
+            // CASE 3 --> Checks if parent node is either a Left or Right Child
+            case_3(new_node);
+            case_1();
         }
     }
 
-    void left_rotate(node_pointer& current_node) {
+    void left_rotate(node_pointer current_node) {
 
-        current_node->right->parent = current_node->parent;
-        current_node->right->left = current_node;
-        current_node->parent->left = current_node->right;
-        current_node->parent = current_node->right;
-        current_node->right = NULL;
+        node_pointer tmp = current_node->right;
+
+        current_node->right = tmp->left;
+        if (tmp->left)
+            tmp->left->parent = current_node;
+
+        tmp->parent = current_node->parent;
+        if (current_node->parent == end_)
+            end_->left = tmp;
+        else if (current_node == current_node->parent->left)
+            current_node->parent->left = tmp;
+        else
+            current_node->parent->right = tmp;
+
+        tmp->left = current_node;
+        current_node->parent = tmp;
     }
 
-    void right_rotate(node_pointer& current_node) {
+    void right_rotate(node_pointer current_node) {
 
-        current_node->left->parent = current_node->parent;
-        current_node->left->right = current_node;
-        current_node->parent->right = current_node->left;
-        current_node->parent = current_node->left;
-        current_node->left = NULL;
+        node_pointer tmp = current_node->left;
+
+        current_node->left = tmp->right;
+        if (tmp->right)
+            tmp->right->parent = current_node;
+
+        tmp->parent = current_node->parent;
+        if (current_node->parent == end_)
+            end_->left = tmp;
+        else if (current_node == current_node->parent->right)
+            current_node->parent->right = tmp;
+        else
+            current_node->parent->left = tmp;
+
+        tmp->right = current_node;
+        current_node->parent = tmp;
     }
 
     // clang-format off
@@ -525,11 +571,59 @@ class RBTree {
     node_allocator      node_alloc_;    // used to Allocate nodes
     allocator_type      value_alloc_;   // used to Allocate values in nodes
     node_pointer        end_;           // Node above root that marks the end of the tree
-    node_pointer        begin_;
-    node_pointer        right_end_;
+    node_pointer        begin_;         // Left Most node
+    node_pointer        right_end_;     // Right Most node
     value_compare       comp_;
     size_type           size_;
     // clang-format on
 }; // class RBTree
 
 } // namespace ft
+
+
+
+// while (new_node != root && new_node->parent->is_black == false) {
+        //     node_pointer uncle = get_uncle_left(new_node);
+        //     if (!node_is_left_child(new_node->parent)) {
+        //         if (uncle && uncle->is_black == false) {
+
+        //             // Case 2 --> Uncle is RED -> Recolor
+        //             uncle->is_black = true;
+        //             new_node->parent->is_black = true;
+        //             new_node->parent->parent->is_black = false;
+        //             new_node = new_node->parent->parent;
+
+        //         } else {
+        //             if (node_is_left_child(new_node)) {
+        //                 new_node = new_node->parent;
+        //                 right_rotate(new_node);
+        //             }
+
+        //             new_node->parent->is_black = true;
+        //             new_node->parent->parent->is_black = false;
+        //             left_rotate(new_node->parent->parent);
+        //         }
+        //     } else {
+        //         uncle = get_uncle_right(new_node);
+        //         if (uncle && uncle->is_black == false) {
+
+        //             // Case 2 --> Uncle is RED -> Recolor
+        //             uncle->is_black = true;
+        //             new_node->parent->is_black = true;
+        //             new_node->parent->parent->is_black = false;
+        //             new_node = new_node->parent->parent;
+        //         } else {
+        //             if (!node_is_left_child(new_node)) {
+        //                 new_node = new_node->parent;
+        //                 left_rotate(new_node);
+        //             }
+
+        //             new_node->parent->is_black = true;
+        //             new_node->parent->parent->is_black = false;
+        //             right_rotate(new_node->parent->parent);
+        //         }
+        //     }
+        //     if (new_node == root)
+        //         break;
+        // }
+        // end_->left->is_black = true;

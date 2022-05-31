@@ -33,23 +33,46 @@ int main(void) {
 
     TESTED_NAMESPACE::map<int, const char*>::iterator iter = m.begin();
 
-    iter = m.insert(ft::make_pair(61, "Hello")).first;
-    iter = m.insert(ft::make_pair(52, "WAZZAAA")).first;
-    iter = m.insert(ft::make_pair(85, "KRAKOUKAS")).first;
+    iter = m.insert(ft::make_pair(8, "Hello")).first;
+    m.printTree();
+    std::cout << "\n\n------------------------" << std::endl;
+    iter = m.insert(ft::make_pair(5, "WAZZAAA")).first;
+    m.printTree();
+    std::cout << "\n\n------------------------" << std::endl;
+    iter = m.insert(ft::make_pair(15, "KRAKOUKAS")).first;
+    m.printTree();
+    std::cout << "\n\n------------------------" << std::endl;
+    iter = m.insert(ft::make_pair(12, "Hello")).first;
+    m.printTree();
+    std::cout << "\n\n------------------------" << std::endl;
+    iter = m.insert(ft::make_pair(19, "WAZZAAA")).first;
+    m.printTree();
+    std::cout << "\n\n------------------------" << std::endl;
+    iter = m.insert(ft::make_pair(9, "KRAKOUKAS")).first;
+    m.printTree();
+    std::cout << "\n\n------------------------" << std::endl;
+    iter = m.insert(ft::make_pair(13, "Hello")).first;
+    m.printTree();
+    std::cout << "\n\n------------------------" << std::endl;
+    iter = m.insert(ft::make_pair(23, "WAZZAAA")).first;
+    m.printTree();
+    std::cout << "\n\n------------------------" << std::endl;
+    iter = m.insert(ft::make_pair(10, "KRAKOUKAS")).first;
     m.printTree();
     std::cout << "\n\n------------------------" << std::endl;
     // iter = m.insert(ft::make_pair(76, "Shut Up Karen!")).first;
-    iter = m.insert(ft::make_pair(93, "Babye")).first;
-    m.printTree();
-    std::cout << "\n\n------------------------" << std::endl;
+    // iter = m.insert(ft::make_pair(93, "Babye")).first;
+    // m.printTree();
+    // std::cout << "\n\n------------------------" << std::endl;
     // iter = m.insert(ft::make_pair(100, "Pouet!")).first;
-    iter = m.insert(ft::make_pair(87, "Kapout!")).first;
+    // iter = m.insert(ft::make_pair(87, "Kapout!")).first;
 
     // TESTED_NAMESPACE::map<int, const char*>::iterator result;
 
     // result = m.insert(iter, ft::pair<int, const char*>(420, "Enhance your calm"));
 
     // std::cout << result.base()->value.first << "=>" << result.base()->value.second << std::endl;
+    iter = m.begin();
 
-    m.printTree();
+    std::cout << m.validTree(iter) << std::endl;
 }
