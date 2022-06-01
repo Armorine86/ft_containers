@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 08:11:20 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/31 12:03:58 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/01 14:29:34 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,8 @@
 #include "Iterator.hpp"
 #include "RBtree.hpp"
 #include "pair.hpp"
-#include "tree_algorithm.hpp"
 #include "utilities.hpp"
 
-#include <__tuple>
 #include <algorithm>
 #include <cstddef>
 #include <memory>

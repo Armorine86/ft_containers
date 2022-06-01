@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 09:38:08 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/31 12:21:45 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/01 14:36:48 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,7 +135,6 @@ class RBTree {
             pos->parent = parent.base();
             it = iterator(pos);
             key_exists = true;
-            insert_fix(pos);
         }
 
         if (begin_->left)
@@ -143,15 +142,38 @@ class RBTree {
         if (right_end_->parent && right_end_->right)
             right_end_ = right_end_->right;
 
+        insert_fix(pos);
+
         return ft::make_pair(it, key_exists);
     }
 
-    // Returns an iterator on the inserted node
-    iterator insert(iterator pos, const value_type& val) {
+    // Will check if inserted node can fit at hint for insertion optimization,
+    // otherwise, will start from root and find insert position.
+    iterator insert(iterator hint, const value_type& val) {
 
-        (void)pos;
-        return insert(val).first;
-        // insert(val);
+        if (size_ == 0) {
+            init_tree(val);
+            get_root()->is_black = true;
+
+            return iterator(begin_);
+        }
+
+        iterator root(get_root());
+        node_pointer& pos = find_insert_pos(root, hint, val);
+
+        if (!pos) {
+            pos = new_node(val);
+            pos->parent = root.base();
+        }
+
+        if (begin_->left)
+            begin_ = begin_->left;
+        if (right_end_->parent && right_end_->right)
+            right_end_ = right_end_->right;
+
+        insert_fix(pos);
+
+        return pos;
     }
 
     template <typename InputIter>
@@ -279,6 +301,7 @@ class RBTree {
 
             // value_compare checks if left parameter is less than right parameter
             if (value_compare()(current_node.base()->value, key)) {
+                // current_node > key = false --> Right
                 if (!current_node.base()->right) {
                     return current_node.base()->right;
                 }
@@ -288,6 +311,7 @@ class RBTree {
                 current_node = current_node.base()->right;
 
             } else if (value_compare()(key, current_node.base()->value)) {
+                // Key > current_node = false --> Left
                 if (!current_node.base()->left) {
                     return current_node.base()->left;
                 }
@@ -302,73 +326,66 @@ class RBTree {
         }
     }
 
+    template <typename Key>
+    node_pointer& find_insert_pos(iterator& root, iterator& hint, const Key& key) {
+
+        iterator hint_parent(hint.base()->parent);
+
+        if (value_compare()(key, hint_parent.base()->value)) {
+            // key < hint_parent = true --> Check Hint
+            if (node_is_left_child(hint.base())) {
+                // key fits at hint
+                if (value_compare()(key, hint.base()->value)) {
+                    // key fits --> insert left
+                    if (!hint.base()->left) {
+                        root = hint;
+                        return hint.base()->left;
+                    } else
+                        // key doesn't fit --> start from root
+                        return find_insert_pos(root, key);
+                } else {
+                    // key fits --> insert right
+                    if (!hint.base()->right) {
+                        root = hint;
+                        return hint.base()->right;
+                    } else
+                        // key doesn't fit --> start from root
+                        return find_insert_pos(root, key);
+                }
+            } else
+                // Key doesn't fit -> start from root
+                return find_insert_pos(root, key);
+
+        } else if (value_compare()(hint_parent.base()->value, key)) {
+            if (node_is_left_child(hint.base())) {
+                // key doesn't fit -> start from root
+                return find_insert_pos(root, key);
+            } else if (value_compare()(key, hint.base()->value)) {
+                // key fits at hint -> insert left
+                if (!hint.base()->left) {
+                    root = hint;
+                    return hint.base()->left;
+                } else
+                    // key doesn't fit --> start from root
+                    return find_insert_pos(root, key);
+            } else {
+                // key fits --> insert right
+                if (!hint.base()->right) {
+                    root = hint;
+                    return hint.base()->right;
+                } else
+                    // key doesn't fit --> start from root
+                    return find_insert_pos(root, key);
+            }
+
+        } else {
+            return find_insert_pos(root, key);
+        }
+    }
+
     // Returns a pointer to the root node (left child of end_ node)
     node_pointer& get_root() const { return end_->left; }
-
     node_pointer* get_root_ptr() const { return &end_->left; }
-
-    /*
-     * Returns the left most node in the sub-tree.
-     * current_node is considered the root node.
-     */
-    template <typename NodePtr>
-    inline NodePtr tree_min(NodePtr current_node) {
-
-        assert(current_node != NULL);
-
-        while (current_node->left != NULL)
-            current_node = current_node->left;
-
-        return current_node;
-    }
-
-    /*
-     * Returns the right most node in the sub-tree
-     * current_node is considered the root node.
-     */
-    template <typename NodePtr>
-    inline NodePtr tree_max(NodePtr current_node) {
-
-        assert(current_node != NULL);
-
-        while (current_node->right != NULL)
-            current_node = current_node->right;
-
-        return current_node;
-    }
-
-    /*
-     *	Returns true if the current node is a left child
-     */
-    template <typename NodePtr>
-    inline bool node_is_left_child(NodePtr current_node) {
-
-        if (current_node->parent->left)
-            return current_node == current_node->parent->left;
-        return false;
-    }
-
-    /*
-     *   A leaf is a node which both left and right childs are NULL.
-     *   They are the extremities of the tree
-     */
-    template <typename NodePtr>
-    NodePtr tree_leaf(NodePtr x) {
-
-        while (x->right != NULL || x->left != NULL) {
-
-            if (x->left != NULL) {
-                x = x->left;
-                continue;
-            }
-
-            if (x->right != NULL) {
-                x = x->right;
-                continue;
-            }
-        }
-        return x;
-    }
 
     // Allocates a new node and construct the passed value.
     Node* new_node(const value_type& val) {
@@ -399,6 +416,7 @@ class RBTree {
 
     // Init an empty node with no value
     void init_tree(const value_type& val) {
+
         end_->left = new_node(val);
         begin_ = end_->left;
         begin_->parent = end_;
@@ -420,7 +438,7 @@ class RBTree {
     //
     //..............(B).
     //............../   \.
-    //uncle ---> (D)     (A).
+    // uncle ---> (D)     (A).
     //.................../.
     //.................(Z) <--- current-node.
     node_pointer& get_uncle_left(node_pointer& current_node) const {
@@ -454,9 +472,9 @@ class RBTree {
         // If Red Uncle
         if (uncle && !uncle->is_black) {
 
-            // Recolor Red uncle to Black        
+            // Recolor Red uncle to Black
             uncle->is_black = true;
-    
+
             // Red Parent --> Recolor Black
             new_node->parent->is_black = true;
 
@@ -580,50 +598,48 @@ class RBTree {
 
 } // namespace ft
 
-
-
 // while (new_node != root && new_node->parent->is_black == false) {
-        //     node_pointer uncle = get_uncle_left(new_node);
-        //     if (!node_is_left_child(new_node->parent)) {
-        //         if (uncle && uncle->is_black == false) {
+//     node_pointer uncle = get_uncle_left(new_node);
+//     if (!node_is_left_child(new_node->parent)) {
+//         if (uncle && uncle->is_black == false) {
 
-        //             // Case 2 --> Uncle is RED -> Recolor
-        //             uncle->is_black = true;
-        //             new_node->parent->is_black = true;
-        //             new_node->parent->parent->is_black = false;
-        //             new_node = new_node->parent->parent;
+//             // Case 2 --> Uncle is RED -> Recolor
+//             uncle->is_black = true;
+//             new_node->parent->is_black = true;
+//             new_node->parent->parent->is_black = false;
+//             new_node = new_node->parent->parent;
 
-        //         } else {
-        //             if (node_is_left_child(new_node)) {
-        //                 new_node = new_node->parent;
-        //                 right_rotate(new_node);
-        //             }
+//         } else {
+//             if (node_is_left_child(new_node)) {
+//                 new_node = new_node->parent;
+//                 right_rotate(new_node);
+//             }
 
-        //             new_node->parent->is_black = true;
-        //             new_node->parent->parent->is_black = false;
-        //             left_rotate(new_node->parent->parent);
-        //         }
-        //     } else {
-        //         uncle = get_uncle_right(new_node);
-        //         if (uncle && uncle->is_black == false) {
+//             new_node->parent->is_black = true;
+//             new_node->parent->parent->is_black = false;
+//             left_rotate(new_node->parent->parent);
+//         }
+//     } else {
+//         uncle = get_uncle_right(new_node);
+//         if (uncle && uncle->is_black == false) {
 
-        //             // Case 2 --> Uncle is RED -> Recolor
-        //             uncle->is_black = true;
-        //             new_node->parent->is_black = true;
-        //             new_node->parent->parent->is_black = false;
-        //             new_node = new_node->parent->parent;
-        //         } else {
-        //             if (!node_is_left_child(new_node)) {
-        //                 new_node = new_node->parent;
-        //                 left_rotate(new_node);
-        //             }
+//             // Case 2 --> Uncle is RED -> Recolor
+//             uncle->is_black = true;
+//             new_node->parent->is_black = true;
+//             new_node->parent->parent->is_black = false;
+//             new_node = new_node->parent->parent;
+//         } else {
+//             if (!node_is_left_child(new_node)) {
+//                 new_node = new_node->parent;
+//                 left_rotate(new_node);
+//             }
 
-        //             new_node->parent->is_black = true;
-        //             new_node->parent->parent->is_black = false;
-        //             right_rotate(new_node->parent->parent);
-        //         }
-        //     }
-        //     if (new_node == root)
-        //         break;
-        // }
-        // end_->left->is_black = true;
+//             new_node->parent->is_black = true;
+//             new_node->parent->parent->is_black = false;
+//             right_rotate(new_node->parent->parent);
+//         }
+//     }
+//     if (new_node == root)
+//         break;
+// }
+// end_->left->is_black = true;

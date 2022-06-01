@@ -6,14 +6,14 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 13:34:32 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/31 11:56:37 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/01 10:33:55 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include "node.hpp"
-#include "tree_algorithm.hpp"
+#include "tree_utils.hpp"
 
 #include <iterator>
 

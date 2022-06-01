@@ -33,33 +33,50 @@ int main(void) {
 
     TESTED_NAMESPACE::map<int, const char*>::iterator iter = m.begin();
 
-    iter = m.insert(ft::make_pair(8, "Hello")).first;
+    iter = m.insert(ft::make_pair(15, "Hello")).first;
     m.printTree();
     std::cout << "\n\n------------------------" << std::endl;
-    iter = m.insert(ft::make_pair(5, "WAZZAAA")).first;
+
+    iter = m.insert(ft::make_pair(10, "WAZZAAA")).first;
     m.printTree();
     std::cout << "\n\n------------------------" << std::endl;
-    iter = m.insert(ft::make_pair(15, "KRAKOUKAS")).first;
+
+    iter = m.insert(ft::make_pair(7, "KRAKOUKAS")).first;
     m.printTree();
     std::cout << "\n\n------------------------" << std::endl;
+
     iter = m.insert(ft::make_pair(12, "Hello")).first;
     m.printTree();
     std::cout << "\n\n------------------------" << std::endl;
-    iter = m.insert(ft::make_pair(19, "WAZZAAA")).first;
+
+    iter = m.insert(ft::make_pair(25, "WAZZAAA")).first;
     m.printTree();
     std::cout << "\n\n------------------------" << std::endl;
-    iter = m.insert(ft::make_pair(9, "KRAKOUKAS")).first;
+
+    iter = m.insert(ft::make_pair(18, "KRAKOUKAS")).first;
     m.printTree();
     std::cout << "\n\n------------------------" << std::endl;
-    iter = m.insert(ft::make_pair(13, "Hello")).first;
+
+    iter = m.insert(ft::make_pair(29, "Hello")).first;
     m.printTree();
     std::cout << "\n\n------------------------" << std::endl;
-    iter = m.insert(ft::make_pair(23, "WAZZAAA")).first;
+
+    iter = m.insert(ft::make_pair(28, "WAZZAAA")).first;
     m.printTree();
     std::cout << "\n\n------------------------" << std::endl;
-    iter = m.insert(ft::make_pair(10, "KRAKOUKAS")).first;
+
+    iter = m.insert(ft::make_pair(30, "KRAKOUKAS")).first;
     m.printTree();
     std::cout << "\n\n------------------------" << std::endl;
+
+    iter = m.insert(ft::make_pair(27, "KRAKOUKAS")).first;
+    m.printTree();
+    std::cout << "\n\n------------------------" << std::endl;
+
+    m.insert(iter, ft::make_pair(26, "KRAKOUKAS"));
+    m.printTree();
+    std::cout << "\n\n------------------------" << std::endl;
+
     // iter = m.insert(ft::make_pair(76, "Shut Up Karen!")).first;
     // iter = m.insert(ft::make_pair(93, "Babye")).first;
     // m.printTree();
