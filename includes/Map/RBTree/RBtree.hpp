@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 09:38:08 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/01 14:36:48 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/01 14:45:05 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,6 +182,24 @@ class RBTree {
         for (; first != last; ++first) {
             insert(*first);
         }
+    }
+
+    void erase(iterator pos) {
+        
+        (void)pos;
+    }
+
+    template <typename InputIter>
+    void erase(InputIter first, InputIter last) {
+
+        for (; first != last; ++first)
+            erase(first);
+    }
+
+    template <typename Key>
+    size_type erase(const Key& key) {
+
+        remove_node(key);
     }
 
     // Prints the tree layout
