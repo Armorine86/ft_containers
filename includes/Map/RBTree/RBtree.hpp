@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 09:38:08 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/02 12:17:52 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/02 15:27:30 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,9 @@
 #include "node.hpp"
 #include "pair.hpp"
 #include "tree_iterator.hpp"
-
 #include "colors.hpp"
 #include "tree_utils.hpp"
+
 #include <cassert>
 #include <cstddef>
 #include <iostream>
@@ -191,7 +191,10 @@ class RBTree {
 
         BST_remove(toBeDeleted.base());
 
+        delete_node(toBeDeleted.base());
+        
         // DeleteFix(toBeDeleted.base());
+
     }
 
     template <typename InputIter>
@@ -498,7 +501,7 @@ class RBTree {
     }
 
     // Case 1: Root is always Black
-    void case_1() {
+    void insert_case_1() {
 
         if (get_root()->is_black == false) {
             get_root()->is_black = true;
@@ -506,7 +509,7 @@ class RBTree {
     }
 
     // Case 2: new_node's uncle is RED ---> Recolor
-    bool case_2(node_pointer& new_node, node_pointer uncle) {
+    bool insert_case_2(node_pointer& new_node, node_pointer uncle) {
 
         // If Red Uncle
         if (uncle && !uncle->is_black) {
@@ -533,13 +536,13 @@ class RBTree {
     // If true, new_node becomes his parent and perform a right rotate.
     // THEN, recolor new_node->parent and Grand-Parent and perform left_rotate.
     // Repeat until either new_node is root OR new_node parent color isn't black.
-    void case_3(node_pointer& new_node) {
+    void insert_case_3(node_pointer& new_node) {
 
         if (!node_is_left_child(new_node->parent)) {
 
             // new_node->parent->parent->left
             node_pointer uncle = get_uncle_left(new_node);
-            if (!case_2(new_node, uncle)) {
+            if (!insert_case_2(new_node, uncle)) {
 
                 if (node_is_left_child(new_node)) {
                     new_node = new_node->parent;
@@ -554,7 +557,7 @@ class RBTree {
 
             // new_node->parent->parent->right
             node_pointer uncle = get_uncle_right(new_node);
-            if (!case_2(new_node, uncle)) {
+            if (!insert_case_2(new_node, uncle)) {
 
                 if (!node_is_left_child(new_node)) {
                     new_node = new_node->parent;
@@ -578,8 +581,8 @@ class RBTree {
 
         while (new_node != root && new_node->parent->is_black == false) {
             // CASE 3 --> Checks if parent node is either a Left or Right Child
-            case_3(new_node);
-            case_1();
+            insert_case_3(new_node);
+            insert_case_1();
         }
     }
 
@@ -635,7 +638,6 @@ class RBTree {
                     toBeDeleted->parent->left = NULL;
                 else
                     toBeDeleted->parent->right = NULL;
-                delete_node(toBeDeleted);
 
                 // Case 2 -> Node has only one child
             } else if (node_only_child(toBeDeleted)) {
@@ -645,7 +647,6 @@ class RBTree {
                     toBeDeleted->left->parent = toBeDeleted->parent;
                 else
                     toBeDeleted->right->parent = toBeDeleted->parent;
-                delete_node(toBeDeleted);
 
                 // Case 3 -> toBeDeleted Node has two child
             } else {
@@ -656,7 +657,6 @@ class RBTree {
                 node_pointer successor = find_successor(toBeDeleted->left);
 
                 swap_nodes(toBeDeleted, successor);
-                delete_node(toBeDeleted);
                 
                 successor->is_black = color;
             }

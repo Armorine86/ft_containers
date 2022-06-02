@@ -19,7 +19,8 @@ VECTOR_HDRS			=	Vector.hpp Iterator.hpp Iterator_traits.hpp
 
 MAP_FILES			=	
 MAP_HDRS			=	map.hpp pair.hpp
-RBTREE_HDRS			=	RBtree.hpp tree_iterator.hpp tree_node_types.hpp tree_utils.hpp
+RBTREE_HDRS			=	RBtree.hpp tree_iterator.hpp tree_node_types.hpp tree_utils.hpp\
+						tree_algos.hpp
 				
 STACK_FILES			= 	
 STACK_HDRS			= 	Stack.hpp
@@ -91,7 +92,7 @@ debug:	$(NAME)
 
 redebug : fclean debug
 
-fmt		:
+fmt:
 	clang-format -i $(SRCS) $(addsuffix *.hpp, $(ALL_INCLUDES))
 
 clean:
