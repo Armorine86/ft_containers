@@ -32,55 +32,58 @@ int main(void) {
     TESTED_NAMESPACE::map<int, const char*> m;
 
     TESTED_NAMESPACE::map<int, const char*>::iterator iter = m.begin();
+    TESTED_NAMESPACE::map<int, const char*>::iterator todelete = m.begin();
 
     iter = m.insert(ft::make_pair(15, "Hello")).first;
     m.printTree();
-    std::cout << "\n\n------------------------" << std::endl;
+    std::cout << "\n\n------------------------\n" << std::endl;
 
     iter = m.insert(ft::make_pair(10, "WAZZAAA")).first;
     m.printTree();
-    std::cout << "\n\n------------------------" << std::endl;
+    std::cout << "\n\n------------------------\n" << std::endl;
 
     iter = m.insert(ft::make_pair(7, "KRAKOUKAS")).first;
     m.printTree();
-    std::cout << "\n\n------------------------" << std::endl;
+    std::cout << "\n\n------------------------\n" << std::endl;
 
     iter = m.insert(ft::make_pair(12, "Hello")).first;
     m.printTree();
-    std::cout << "\n\n------------------------" << std::endl;
+    std::cout << "\n\n------------------------\n" << std::endl;
 
-    iter = m.insert(ft::make_pair(25, "WAZZAAA")).first;
+    todelete = m.insert(ft::make_pair(25, "WAZZAAA")).first;
     m.printTree();
-    std::cout << "\n\n------------------------" << std::endl;
+    std::cout << "\n\n------------------------\n" << std::endl;
 
     iter = m.insert(ft::make_pair(18, "KRAKOUKAS")).first;
     m.printTree();
-    std::cout << "\n\n------------------------" << std::endl;
+    std::cout << "\n\n------------------------\n" << std::endl;
 
     iter = m.insert(ft::make_pair(29, "Hello")).first;
     m.printTree();
-    std::cout << "\n\n------------------------" << std::endl;
+    std::cout << "\n\n------------------------\n" << std::endl;
 
     iter = m.insert(ft::make_pair(28, "WAZZAAA")).first;
     m.printTree();
-    std::cout << "\n\n------------------------" << std::endl;
+    std::cout << "\n\n------------------------\n" << std::endl;
 
     iter = m.insert(ft::make_pair(30, "KRAKOUKAS")).first;
     m.printTree();
-    std::cout << "\n\n------------------------" << std::endl;
+    std::cout << "\n\n------------------------\n" << std::endl;
 
     iter = m.insert(ft::make_pair(27, "KRAKOUKAS")).first;
     m.printTree();
-    std::cout << "\n\n------------------------" << std::endl;
+    std::cout << "\n\n------------------------\n" << std::endl;
 
-    m.insert(iter, ft::make_pair(26, "KRAKOUKAS"));
+    iter = m.insert(iter, ft::make_pair(26, "KRAKOUKAS"));
     m.printTree();
-    std::cout << "\n\n------------------------" << std::endl;
+    std::cout << "\n\n------------------------\n" << std::endl;
+
+    m.erase(todelete);
 
     // iter = m.insert(ft::make_pair(76, "Shut Up Karen!")).first;
     // iter = m.insert(ft::make_pair(93, "Babye")).first;
     // m.printTree();
-    // std::cout << "\n\n------------------------" << std::endl;
+    // std::cout << "\n\n------------------------\n" << std::endl;
     // iter = m.insert(ft::make_pair(100, "Pouet!")).first;
     // iter = m.insert(ft::make_pair(87, "Kapout!")).first;
 
@@ -91,5 +94,8 @@ int main(void) {
     // std::cout << result.base()->value.first << "=>" << result.base()->value.second << std::endl;
     iter = m.begin();
 
-    std::cout << m.validTree(iter) << std::endl;
+    m.printTree();
+    std::cout << "\n\n------------------------\n" << std::endl;
+
+    std::cout << "Tree is valid: " << std::boolalpha << m.validTree(iter) << std::endl;
 }

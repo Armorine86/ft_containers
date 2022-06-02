@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 09:38:08 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/01 14:45:05 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/02 12:17:52 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include "tree_iterator.hpp"
 
 #include "colors.hpp"
+#include "tree_utils.hpp"
 #include <cassert>
 #include <cstddef>
 #include <iostream>
@@ -42,13 +43,13 @@ class RBTree {
     typedef const value_type& 								    const_reference;
     typedef tree_iterator<value_type, difference_type>          iterator;
     typedef const_tree_iterator<value_type, difference_type>    const_iterator;
-    typedef typename Allocator::pointer                         pointer;
-    typedef typename Allocator::const_pointer 				    const_pointer;
+    typedef typename allocator_type::pointer                    pointer;
+    typedef typename allocator_type::const_pointer 				const_pointer;
     typedef Node*                                               node_pointer;
 
     
     // Rebinds the value Allocator to a Node allocator
-    typedef typename allocator_type::template rebind<Node >::other   node_allocator;
+    typedef typename allocator_type::template rebind<Node>::other   node_allocator;
 
     // clang-format on
     /**
@@ -117,7 +118,7 @@ class RBTree {
 
         bool key_exists = false;
 
-        if (size_ == 0) {
+        if (empty()) {
             init_tree(val);
             get_root()->is_black = true;
             iterator it(begin_);
@@ -151,7 +152,7 @@ class RBTree {
     // otherwise, will start from root and find insert position.
     iterator insert(iterator hint, const value_type& val) {
 
-        if (size_ == 0) {
+        if (empty()) {
             init_tree(val);
             get_root()->is_black = true;
 
@@ -184,24 +185,36 @@ class RBTree {
         }
     }
 
-    void erase(iterator pos) {
-        
-        (void)pos;
+    //* ============== Erase ==============
+
+    void erase(iterator toBeDeleted) {
+
+        BST_remove(toBeDeleted.base());
+
+        // DeleteFix(toBeDeleted.base());
     }
 
     template <typename InputIter>
     void erase(InputIter first, InputIter last) {
 
         for (; first != last; ++first)
-            erase(first);
+            first = erase(first);
     }
 
     template <typename Key>
     size_type erase(const Key& key) {
 
-        remove_node(key);
+        const_iterator pos = find(key);
+
+        if (pos == end())
+            return 0;
+
+        erase(pos);
+
+        return 1;
     }
 
+    
     // Prints the tree layout
     void printTree() {
         if (get_root()) {
@@ -359,7 +372,7 @@ class RBTree {
                         root = hint;
                         return hint.base()->left;
                     } else
-                        // key doesn't fit --> start from root
+                        // Node has child --> start from root
                         return find_insert_pos(root, key);
                 } else {
                     // key fits --> insert right
@@ -367,7 +380,7 @@ class RBTree {
                         root = hint;
                         return hint.base()->right;
                     } else
-                        // key doesn't fit --> start from root
+                        // Node has child --> start from root
                         return find_insert_pos(root, key);
                 }
             } else
@@ -384,7 +397,7 @@ class RBTree {
                     root = hint;
                     return hint.base()->left;
                 } else
-                    // key doesn't fit --> start from root
+                    // Node has child --> start from root
                     return find_insert_pos(root, key);
             } else {
                 // key fits --> insert right
@@ -392,7 +405,7 @@ class RBTree {
                     root = hint;
                     return hint.base()->right;
                 } else
-                    // key doesn't fit --> start from root
+                    // Node has child --> start from root
                     return find_insert_pos(root, key);
             }
 
@@ -430,6 +443,14 @@ class RBTree {
         new_node->parent = NULL;
 
         return new_node;
+    }
+
+    // Delete the node from the tree
+    void delete_node(node_pointer node) {
+
+        value_alloc_.destroy(&node->value);
+        node_alloc_.deallocate(node, 1);
+        size_--;
     }
 
     // Init an empty node with no value
@@ -602,6 +623,46 @@ class RBTree {
         current_node->parent = tmp;
     }
 
+    // Returns true if tree size is zero
+    bool empty() { return size_ == 0; }
+
+    void BST_remove(node_pointer toBeDeleted) {
+        if (!empty()) {
+
+            // Case 1 -> Node is a leaf
+            if (node_is_leaf(toBeDeleted)) {
+                if (node_is_left_child(toBeDeleted))
+                    toBeDeleted->parent->left = NULL;
+                else
+                    toBeDeleted->parent->right = NULL;
+                delete_node(toBeDeleted);
+
+                // Case 2 -> Node has only one child
+            } else if (node_only_child(toBeDeleted)) {
+
+                // The child parent's becomes the parent of toBeDeleted
+                if (toBeDeleted->left)
+                    toBeDeleted->left->parent = toBeDeleted->parent;
+                else
+                    toBeDeleted->right->parent = toBeDeleted->parent;
+                delete_node(toBeDeleted);
+
+                // Case 3 -> toBeDeleted Node has two child
+            } else {
+
+                bool color = toBeDeleted->is_black;
+                
+                // Find the largest value in the left Subtree of the toBeDeleted node
+                node_pointer successor = find_successor(toBeDeleted->left);
+
+                swap_nodes(toBeDeleted, successor);
+                delete_node(toBeDeleted);
+                
+                successor->is_black = color;
+            }
+        }
+    }
+
     // clang-format off
   private:
     node_allocator      node_alloc_;    // used to Allocate nodes
@@ -615,49 +676,3 @@ class RBTree {
 }; // class RBTree
 
 } // namespace ft
-
-// while (new_node != root && new_node->parent->is_black == false) {
-//     node_pointer uncle = get_uncle_left(new_node);
-//     if (!node_is_left_child(new_node->parent)) {
-//         if (uncle && uncle->is_black == false) {
-
-//             // Case 2 --> Uncle is RED -> Recolor
-//             uncle->is_black = true;
-//             new_node->parent->is_black = true;
-//             new_node->parent->parent->is_black = false;
-//             new_node = new_node->parent->parent;
-
-//         } else {
-//             if (node_is_left_child(new_node)) {
-//                 new_node = new_node->parent;
-//                 right_rotate(new_node);
-//             }
-
-//             new_node->parent->is_black = true;
-//             new_node->parent->parent->is_black = false;
-//             left_rotate(new_node->parent->parent);
-//         }
-//     } else {
-//         uncle = get_uncle_right(new_node);
-//         if (uncle && uncle->is_black == false) {
-
-//             // Case 2 --> Uncle is RED -> Recolor
-//             uncle->is_black = true;
-//             new_node->parent->is_black = true;
-//             new_node->parent->parent->is_black = false;
-//             new_node = new_node->parent->parent;
-//         } else {
-//             if (!node_is_left_child(new_node)) {
-//                 new_node = new_node->parent;
-//                 left_rotate(new_node);
-//             }
-
-//             new_node->parent->is_black = true;
-//             new_node->parent->parent->is_black = false;
-//             right_rotate(new_node->parent->parent);
-//         }
-//     }
-//     if (new_node == root)
-//         break;
-// }
-// end_->left->is_black = true;

@@ -1,18 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   tree_algorithm.hpp                                 :+:      :+:    :+:   */
+/*   tree_utils.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/13 12:47:23 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/31 12:33:09 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/02 12:12:39 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include <cassert>
+#include <cstddef>
 
 namespace ft {
 
@@ -113,6 +114,68 @@ NodePtr tree_leaf(NodePtr x) {
         }
     }
     return x;
+}
+
+// Return TRUE if the node left and right child are NULL
+template <typename NodePtr>
+bool node_is_leaf(NodePtr node) {
+
+    return !node->left && !node->right;
+}
+
+// Returns a NodePtr to the only valid child.
+// returns NULL otherwise.
+template <typename NodePtr>
+NodePtr node_only_child(NodePtr node) {
+
+    if (node->left && !node->right)
+        return node->left;
+    else if (node->right && !node->left)
+        return node->right;
+    else
+        return NULL;
+}
+
+// Finds the largest value in the left subtree of the pointed Node
+template <typename NodePtr>
+NodePtr find_successor(NodePtr node) {
+
+    while (node->right)
+        node = node->right;
+    return node;
+}
+
+// Swaps the target Node with it's successor
+template <typename NodePtr>
+void swap_nodes(NodePtr target, NodePtr successor) {
+
+    // Step 1 -> Successor parent becomes leaf, so corresponding child must be NULL
+    if (node_is_left_child(successor)) {
+        successor->parent->left = NULL;
+    } else
+        successor->parent->right = NULL;
+
+    // Step 2 -> Swap successor's parent with target's parent
+    successor->parent = target->parent;
+
+    //  Step 3 -> If one of the Target's child is the successor
+    //  corresponding successor's child must be NULL
+    //  Otherwise, you'll have infinite Loop
+    if (target->left == successor)
+        successor->left = NULL;
+    else
+        successor->left = target->left;
+
+    if (target->right == successor)
+        successor->right = NULL;
+    else
+        successor->right = target->right;
+
+    //* Step 4 -> If target is parent's left or right child, it must point to successor
+    if (node_is_left_child(target)) {
+        target->parent->left = successor;
+    } else
+        target->parent->right = successor;
 }
 
 } // namespace ft
