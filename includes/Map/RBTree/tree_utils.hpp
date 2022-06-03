@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/13 12:47:23 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/03 09:05:26 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/03 10:58:01 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,21 +171,111 @@ void swap_nodes(NodePtr target, NodePtr successor) {
     else
         successor->right = target->right;
 
-    //* Step 4 -> If target is parent's left or right child, it must point to successor
+    // Step 4 -> If target is parent's left or right child, it must point to successor
     if (node_is_left_child(target)) {
         target->parent->left = successor;
     } else
         target->parent->right = successor;
 }
 
+// Returns True if the key is equal to the node's key
 template <typename Key, typename Value, typename Compare>
 bool is_equal(const Key& key, Value node, Compare) {
 
-    if (Compare()(key, node.base()->value) || Compare()(node.base()->value, key)) {
-        return false;
-    }
+    return !Compare()(key, node.base()->value) && !Compare()(node.base()->value, key);
+}
 
-    return true;
+// Returns True if the key is less than the node's key
+template <typename Key, typename Value, typename Compare>
+bool key_is_less(const Key& key, Value node, Compare) {
+
+    return (Compare()(key, node.base()->value));
+}
+
+// Returns a pointer to the current_node grand parent node
+//
+//    (GP) <--- grand-parent.
+//   /    \
+// (U)    (P) <--- parent.
+//        /
+//     (X) <--- current-node.
+template <typename NodePtr>
+NodePtr& get_grandparent(NodePtr& current_node) {
+    return current_node->parent->parent;
+}
+
+// Returns a pointer to the left child of the current_node grand parent node.
+//
+//                (GP)
+//               /    \
+// uncle ---> (U)     (P)
+//                    /
+//                 (X) <--- current-node.
+template <typename NodePtr>
+NodePtr& get_uncle_left(NodePtr& current_node) {
+
+    return get_grandparent(current_node)->left;
+}
+
+// Returns a pointer to the left child of the current_node grand parent node
+//
+//           (GP)
+//          /    \
+//        (P)     (U)<--- uncle
+//          \
+//           (X) <--- current-node
+template <typename NodePtr>
+NodePtr& get_uncle_right(NodePtr& current_node) {
+
+    return get_grandparent(current_node)->right;
+}
+
+// Returns a pointer to the sibling of the current node
+//
+//                      (P) <-- Parent
+//                     /   \
+// current_node --->(X)    (S) <-- Sibling
+//                        /   \
+//             niece -->(N)   (NE) <-- Nephew
+template <typename NodePtr>
+NodePtr& get_sibling(NodePtr& current_node) {
+    
+    if (node_is_left_child(current_node))
+        return current_node->parent->right;
+    else
+        return current_node->parent->left;
+}
+
+// Returns a pointer to the sibling of the current node
+//
+//                      (P) <-- Parent
+//                     /   \
+// current_node --->(X)    (S) <-- Sibling
+//                        /   \
+//             niece -->(N)   (NE) <-- Nephew
+template <typename NodePtr>
+NodePtr& get_niece(NodePtr& current_node) {
+    
+    if (node_is_left_child(current_node))
+        return current_node->parent->right->left;
+    else
+        return current_node->parent->left->right;
+}
+
+// Returns a pointer to the sibling of the current node
+//
+//                      (P) <-- Parent
+//                     /   \
+// current_node --->(X)    (S) <-- Sibling
+//                        /   \
+//             niece -->(N)   (NE) <-- Nephew
+template <typename NodePtr>
+NodePtr& get_nephew(NodePtr& current_node) {
+    
+    if (node_is_left_child(current_node))
+        return current_node->parent->left->right;
+    else
+        return current_node->parent->right->left;
 }
 
 } // namespace ft

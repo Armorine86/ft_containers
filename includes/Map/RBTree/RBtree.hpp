@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 09:38:08 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/03 09:11:31 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/03 10:58:12 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,7 +193,7 @@ class RBTree {
 
         delete_node(toBeDeleted.base());
 
-        DeleteFix(toBeDeleted.base());
+        delete_fix(toBeDeleted.base());
     }
 
     template <typename InputIter>
@@ -223,6 +223,7 @@ class RBTree {
 
         if (!empty()) {
 
+            iterator root(get_root());
             iterator current_node;
             if (value_compare()(key, get_root()->value)) {
                 current_node = begin();
@@ -231,29 +232,28 @@ class RBTree {
 
             if (current_node == begin()) {
 
-                for (; current_node != get_root(); ++current_node) {
+                for (; current_node != root; ++current_node) {
                     if (!is_equal(key, current_node, value_compare())) {
                         continue;
                     }
                     //  Found Key
                     return current_node;
                 }
-                // Key not found
-                return end();
 
             } else {
 
-                for (; current_node != get_root(); --current_node) {
+                for (; current_node != root; --current_node) {
                     if (!is_equal(key, current_node, value_compare())) {
                         continue;
                     }
                     // Found Key
                     return current_node;
                 }
-                // Key not found
-                return end();
             }
         }
+
+        // Key Not Found
+        return end();
     }
 
     template <typename Key>
@@ -378,7 +378,7 @@ class RBTree {
         while (true) {
 
             // value_compare checks if left parameter is less than right parameter
-            if (value_compare()(current_node.base()->value, key)) {
+            if (!key_is_less(key, current_node, value_compare())) {
                 // current_node > key = false --> Right
                 if (!current_node.base()->right) {
                     return current_node.base()->right;
@@ -388,7 +388,7 @@ class RBTree {
                     parent = parent.base()->right;
                 current_node = current_node.base()->right;
 
-            } else if (value_compare()(key, current_node.base()->value)) {
+            } else if (key_is_less(key, current_node, value_compare())) {
                 // Key > current_node = false --> Left
                 if (!current_node.base()->left) {
                     return current_node.base()->left;
@@ -409,11 +409,11 @@ class RBTree {
 
         iterator hint_parent(hint.base()->parent);
 
-        if (value_compare()(key, hint_parent.base()->value)) {
+        if (key_is_less(key, hint_parent, value_compare())) {
             // key < hint_parent = true --> Check Hint
             if (node_is_left_child(hint.base())) {
                 // key fits at hint
-                if (value_compare()(key, hint.base()->value)) {
+                if (key_is_less(key, hint, value_compare())) {
                     // key fits --> insert left
                     if (!hint.base()->left) {
                         root = hint;
@@ -434,11 +434,11 @@ class RBTree {
                 // Key doesn't fit -> start from root
                 return find_insert_pos(root, key);
 
-        } else if (value_compare()(hint_parent.base()->value, key)) {
+        } else if (!key_is_less(key, hint_parent, value_compare())) {
             if (node_is_left_child(hint.base())) {
                 // key doesn't fit -> start from root
                 return find_insert_pos(root, key);
-            } else if (value_compare()(key, hint.base()->value)) {
+            } else if (key_is_less(key, hint, value_compare())) {
                 // key fits at hint -> insert left
                 if (!hint.base()->left) {
                     root = hint;
@@ -507,41 +507,6 @@ class RBTree {
         begin_ = end_->left;
         begin_->parent = end_;
         right_end_ = begin_;
-    }
-
-    // Returns a pointer to the current_node grand parent node
-    //
-    //...(B) <--- grand-parent.
-    //..../   \.
-    //(D)    (A) <--- parent.
-    //......./.
-    //.....(Z) <--- current-node.
-    node_pointer& get_grandparent(node_pointer& current_node) const {
-        return current_node->parent->parent;
-    }
-
-    // Returns a pointer to the left child of the current_node grand parent node
-    //
-    //..............(B).
-    //............../   \.
-    // uncle ---> (D)     (A).
-    //.................../.
-    //.................(Z) <--- current-node.
-    node_pointer& get_uncle_left(node_pointer& current_node) const {
-
-        return get_grandparent(current_node)->left;
-    }
-
-    // Returns a pointer to the left child of the current_node grand parent node
-    //
-    //                   (B)
-    //                  /   \
-    //                (D)   (A)<--- uncle
-    //                 \
-    //                  (Z) <--- current-node
-    node_pointer& get_uncle_right(node_pointer& current_node) const {
-
-        return get_grandparent(current_node)->right;
     }
 
     // Case 1: Root is always Black
@@ -628,6 +593,11 @@ class RBTree {
             insert_case_3(new_node);
             insert_case_1();
         }
+    }
+
+    void delete_fix(node_pointer current_node) {
+        
+        (void)current_node;
     }
 
     void left_rotate(node_pointer current_node) {
