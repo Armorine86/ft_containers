@@ -6,16 +6,16 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 09:38:08 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/02 15:27:30 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/03 09:11:31 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
+#include "colors.hpp"
 #include "node.hpp"
 #include "pair.hpp"
 #include "tree_iterator.hpp"
-#include "colors.hpp"
 #include "tree_utils.hpp"
 
 #include <cassert>
@@ -192,9 +192,8 @@ class RBTree {
         BST_remove(toBeDeleted.base());
 
         delete_node(toBeDeleted.base());
-        
-        // DeleteFix(toBeDeleted.base());
 
+        DeleteFix(toBeDeleted.base());
     }
 
     template <typename InputIter>
@@ -207,7 +206,7 @@ class RBTree {
     template <typename Key>
     size_type erase(const Key& key) {
 
-        const_iterator pos = find(key);
+        iterator pos = find(key);
 
         if (pos == end())
             return 0;
@@ -217,7 +216,52 @@ class RBTree {
         return 1;
     }
 
-    
+    //* ============== Find ==============
+
+    template <typename Key>
+    iterator find(const Key& key) {
+
+        if (!empty()) {
+
+            iterator current_node;
+            if (value_compare()(key, get_root()->value)) {
+                current_node = begin();
+            } else
+                current_node = iterator(right_end_);
+
+            if (current_node == begin()) {
+
+                for (; current_node != get_root(); ++current_node) {
+                    if (!is_equal(key, current_node, value_compare())) {
+                        continue;
+                    }
+                    //  Found Key
+                    return current_node;
+                }
+                // Key not found
+                return end();
+
+            } else {
+
+                for (; current_node != get_root(); --current_node) {
+                    if (!is_equal(key, current_node, value_compare())) {
+                        continue;
+                    }
+                    // Found Key
+                    return current_node;
+                }
+                // Key not found
+                return end();
+            }
+        }
+    }
+
+    template <typename Key>
+    const_iterator find(const Key& key) const {
+
+        return find(key);
+    }
+
     // Prints the tree layout
     void printTree() {
         if (get_root()) {
@@ -652,12 +696,12 @@ class RBTree {
             } else {
 
                 bool color = toBeDeleted->is_black;
-                
+
                 // Find the largest value in the left Subtree of the toBeDeleted node
                 node_pointer successor = find_successor(toBeDeleted->left);
 
                 swap_nodes(toBeDeleted, successor);
-                
+
                 successor->is_black = color;
             }
         }

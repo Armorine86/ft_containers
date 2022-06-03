@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 13:34:32 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/01 10:33:55 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/03 09:11:00 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ class tree_iterator {
     bool operator==(const_iterator& rhs) const { return ptr == rhs.base(); }
 
     bool operator!=(tree_iterator& rhs) const { return !(*this == rhs); }
-    bool operator!=(const_iterator& rhs) const { return !(*this == rhs); }
+    bool operator!=(const_iterator& rhs) const { return !(*this == rhs.base()); }
 
   private:
     node_pointer ptr;

@@ -78,7 +78,7 @@ int main(void) {
     m.printTree();
     std::cout << "\n\n------------------------\n" << std::endl;
 
-    m.erase(todelete);
+    m.erase(25);
 
     // iter = m.insert(ft::make_pair(76, "Shut Up Karen!")).first;
     // iter = m.insert(ft::make_pair(93, "Babye")).first;

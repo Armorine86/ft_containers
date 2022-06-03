@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/13 12:47:23 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/02 12:12:39 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/03 09:05:26 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,6 +176,16 @@ void swap_nodes(NodePtr target, NodePtr successor) {
         target->parent->left = successor;
     } else
         target->parent->right = successor;
+}
+
+template <typename Key, typename Value, typename Compare>
+bool is_equal(const Key& key, Value node, Compare) {
+
+    if (Compare()(key, node.base()->value) || Compare()(node.base()->value, key)) {
+        return false;
+    }
+
+    return true;
 }
 
 } // namespace ft
