@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/13 12:47:23 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/03 10:58:01 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/03 13:40:59 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -240,6 +240,7 @@ NodePtr& get_uncle_right(NodePtr& current_node) {
 template <typename NodePtr>
 NodePtr& get_sibling(NodePtr& current_node) {
     
+    // If current_node is a left chilf, his sibling is his parent's right child
     if (node_is_left_child(current_node))
         return current_node->parent->right;
     else
@@ -256,6 +257,8 @@ NodePtr& get_sibling(NodePtr& current_node) {
 template <typename NodePtr>
 NodePtr& get_niece(NodePtr& current_node) {
     
+    // If current_node is a left child, the Niece is the left child of
+    // current_node's sibling
     if (node_is_left_child(current_node))
         return current_node->parent->right->left;
     else
@@ -272,10 +275,12 @@ NodePtr& get_niece(NodePtr& current_node) {
 template <typename NodePtr>
 NodePtr& get_nephew(NodePtr& current_node) {
     
+    // If current_node is a left child, the Nephew is the right child of
+    // current_node's sibling
     if (node_is_left_child(current_node))
-        return current_node->parent->left->right;
+        return get_sibling(current_node)->right;
     else
-        return current_node->parent->right->left;
+        return get_sibling(current_node)->left;
 }
 
 } // namespace ft

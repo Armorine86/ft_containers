@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 09:38:08 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/03 10:58:12 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/03 13:58:21 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -597,7 +597,24 @@ class RBTree {
 
     void delete_fix(node_pointer current_node) {
         
-        (void)current_node;
+        iterator root(get_root());
+        while (true) {
+
+            if (current_node == root)
+                break;
+            else if (node_is_leaf(current_node))
+                break;
+            else if (!get_sibling(current_node)->is_black) {
+                //TODO
+            } else if (!get_nephew(current_node)->is_black) {
+                //TODO
+            } else if (!get_niece(current_node)->is_black) {
+                //TODO
+            } else {
+                get_sibling(current_node)->is_black = false;
+                
+            }
+        }
     }
 
     void left_rotate(node_pointer current_node) {
