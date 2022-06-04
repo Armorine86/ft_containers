@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/13 12:47:23 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/03 13:40:59 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/04 08:23:14 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,18 +149,21 @@ NodePtr find_successor(NodePtr node) {
 template <typename NodePtr>
 void swap_nodes(NodePtr target, NodePtr successor) {
 
-    // Step 1 -> Successor parent becomes leaf, so corresponding child must be NULL
+    // Step 1 -> Keep a pointer to target's parent;
+    NodePtr T_parent = target->parent;
+    
+    // Step 2 -> Switch Both target's and successor's parents
+    target->parent = successor->parent;
+    successor->parent = T_parent;
+
+    // Step 3 -> Check if successor is a left or right child.
+    // Make it's parent corresponding children point to him
     if (node_is_left_child(successor)) {
-        successor->parent->left = NULL;
+        T_parent->left = successor;
     } else
-        successor->parent->right = NULL;
+        T_parent->right = successor;
 
-    // Step 2 -> Swap successor's parent with target's parent
-    successor->parent = target->parent;
-
-    //  Step 3 -> If one of the Target's child is the successor
-    //  corresponding successor's child must be NULL
-    //  Otherwise, you'll have infinite Loop
+    // Step 4 -> Check if the Target is the Successor's parent.
     if (target->left == successor)
         successor->left = NULL;
     else
@@ -170,12 +173,23 @@ void swap_nodes(NodePtr target, NodePtr successor) {
         successor->right = NULL;
     else
         successor->right = target->right;
-
-    // Step 4 -> If target is parent's left or right child, it must point to successor
+    
+    // Step 5 -> check if Target is a left or right child.
+    // Make it's parent point to him
     if (node_is_left_child(target)) {
-        target->parent->left = successor;
+        target->parent->left = target;
     } else
-        target->parent->right = successor;
+        target->parent->right = target;
+    
+    // Step 6 -> target is now the new leaf, both child are NULL
+    target->left = NULL;
+    target->right = NULL;
+
+    // Step 7 -> Reconnect successor child's parent to the node
+    if (successor->left)
+        successor->left->parent = successor;
+    if (successor->right)
+        successor->right->parent = successor;
 }
 
 // Returns True if the key is equal to the node's key

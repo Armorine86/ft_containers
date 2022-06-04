@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 09:38:08 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/03 13:58:21 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/04 08:23:45 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -191,9 +191,9 @@ class RBTree {
 
         BST_remove(toBeDeleted.base());
 
-        delete_node(toBeDeleted.base());
-
         delete_fix(toBeDeleted.base());
+
+        delete_node(toBeDeleted.base());
     }
 
     template <typename InputIter>
@@ -495,6 +495,10 @@ class RBTree {
     // Delete the node from the tree
     void delete_node(node_pointer node) {
 
+        if (node_is_left_child(node))
+            node->parent->left = NULL;
+        else
+            node->parent->right = NULL;
         value_alloc_.destroy(&node->value);
         node_alloc_.deallocate(node, 1);
         size_--;
@@ -596,25 +600,26 @@ class RBTree {
     }
 
     void delete_fix(node_pointer current_node) {
-        
+
         iterator root(get_root());
+        
         while (true) {
 
-            if (current_node == root)
+            if (current_node == root.base())
                 break;
-            else if (node_is_leaf(current_node))
+            else if (!current_node->is_black)
                 break;
             else if (!get_sibling(current_node)->is_black) {
-                //TODO
+                // TODO
             } else if (!get_nephew(current_node)->is_black) {
-                //TODO
+                // TODO
             } else if (!get_niece(current_node)->is_black) {
-                //TODO
+                // TODO
             } else {
                 get_sibling(current_node)->is_black = false;
-                
             }
         }
+        current_node->is_black = true;
     }
 
     void left_rotate(node_pointer current_node) {
