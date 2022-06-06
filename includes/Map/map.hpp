@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 08:11:20 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/06 11:51:25 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/06 14:41:47 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -298,7 +298,7 @@ bool operator<=(const ft::map<Key, T, Compare, Alloc>& left,
 template <typename Key, typename T, typename Compare, typename Alloc>
 bool operator>(const ft::map<Key, T, Compare, Alloc>& left,
                const ft::map<Key, T, Compare, Alloc>& right) {
-    right > left;
+    return right > left;
 }
 
 template <typename Key, typename T, typename Compare, typename Alloc>

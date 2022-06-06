@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 09:38:08 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/06 11:50:56 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/06 14:41:57 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,8 +68,8 @@ class RBTree {
     //       right_end_(), comp_(), size_(0) {
     //       }
 
-    RBTree(const value_compare& val)
-        : node_alloc_(node_allocator()), value_alloc_(allocator_type()), end_(), begin_(),
+    RBTree(const value_compare& val, allocator_type alloc_ = allocator_type())
+        : node_alloc_(node_allocator()), value_alloc_(alloc_), end_(), begin_(),
           right_end_(), comp_(val), size_(0) {
         (void)val;
         end_ = new_node();
@@ -83,10 +83,6 @@ class RBTree {
 
         insert(src.begin(), src.end());
     }
-
-    // RBTree(const value_compare& val, const allocator_type& val_alloc_)
-    //     : node_alloc_(node_allocator()), value_alloc_(val_alloc_), end_(), comp_(val), size_(0)
-    //     {}
 
     RBTree& operator=(const RBTree& rhs) {
 
