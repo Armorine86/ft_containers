@@ -6,20 +6,16 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 08:11:20 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/06 10:12:49 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/06 11:51:25 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include "Iterator.hpp"
-#include "RBtree.hpp"
-#include "pair.hpp"
 #include "utilities.hpp"
+#include "RBtree.hpp"
 
-#include <algorithm>
-#include <cstddef>
-#include <memory>
 #include <stdexcept>
 
 namespace ft {
@@ -130,7 +126,7 @@ class map {
         return *this;
     }
 
-    ~map() { }
+    ~map() {}
 
     //* =============== ITERATORS FUNCTIONS ===============
 

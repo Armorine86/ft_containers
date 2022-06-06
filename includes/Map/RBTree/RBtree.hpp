@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 09:38:08 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/06 10:31:14 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/06 11:50:56 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ class RBTree {
 
     ~RBTree() {
         clear_tree(get_root());
-        
+
         if (end().base()) {
             value_alloc_.destroy(&end().base()->value);
             node_alloc_.deallocate(end().base(), 1);
@@ -237,9 +237,16 @@ class RBTree {
         return 1;
     }
 
-    void clear() { erase(begin(), end()); }
+    void clear() { clear_tree(get_root()); }
 
-    void swap() {}
+    void swap(RBTree& src) {
+
+        std::swap(end_, src.end_);
+        std::swap(begin_, src.begin_);
+        std::swap(right_end_, src.right_end_);
+        std::swap(size_, src.size_);
+        std::swap(comp_, src.comp_);
+    }
 
     /**
     **  ==================================================
@@ -545,7 +552,7 @@ class RBTree {
     }
 
     void clear_tree(node_pointer node) {
-        
+
         if (node) {
             clear_tree(node->left);
             clear_tree(node->right);

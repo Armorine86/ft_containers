@@ -6,13 +6,13 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 08:14:45 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/24 13:53:38 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/06 10:42:43 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "type_traits.hpp"
+#include "../Vector/type_traits.hpp"
 
 namespace ft {
 
