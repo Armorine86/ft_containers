@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 09:38:08 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/04 08:23:45 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/05 21:08:25 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 
 #include <cassert>
 #include <cstddef>
+#include <ios>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -199,8 +200,9 @@ class RBTree {
     template <typename InputIter>
     void erase(InputIter first, InputIter last) {
 
-        for (; first != last; ++first)
-            first = erase(first);
+        for (; first != last; ++first) {
+            erase(first);
+        }
     }
 
     template <typename Key>
@@ -225,7 +227,11 @@ class RBTree {
 
             iterator root(get_root());
             iterator current_node;
-            if (value_compare()(key, get_root()->value)) {
+
+            if (is_equal(key, root, value_compare()))
+                return root;
+
+            if (key_is_less(key, root, Compare())) {
                 current_node = begin();
             } else
                 current_node = iterator(right_end_);
@@ -233,7 +239,7 @@ class RBTree {
             if (current_node == begin()) {
 
                 for (; current_node != root; ++current_node) {
-                    if (!is_equal(key, current_node, value_compare())) {
+                    if (!is_equal(key, current_node, Compare())) {
                         continue;
                     }
                     //  Found Key
@@ -243,7 +249,7 @@ class RBTree {
             } else {
 
                 for (; current_node != root; --current_node) {
-                    if (!is_equal(key, current_node, value_compare())) {
+                    if (!is_equal(key, current_node, Compare())) {
                         continue;
                     }
                     // Found Key
@@ -289,76 +295,6 @@ class RBTree {
             printHelper(root->right, indent, true);
             printHelper(root->left, indent, false);
         }
-    }
-
-    /*
-     *   Returns the height of the tree black nodes
-     */
-    template <typename NodePtr>
-    unsigned int valid_sub_trees(NodePtr current_node) {
-
-        if (current_node == NULL)
-            return true;
-
-        // Checks if current node left child points to current node
-        if (current_node->left != NULL && current_node->left->parent != current_node)
-            return false;
-
-        // Checks if current node right child points to current node
-        if (current_node->right != NULL && current_node->right->parent != current_node)
-            return false;
-
-        // Checks if current node left and right childs points to same node
-        if (current_node->left == current_node->right && current_node->left != NULL)
-            return false;
-
-        // if node is Red, neither child can be Red
-        if (!current_node->is_black) {
-            if (current_node->left && !current_node->left->is_black)
-                return false;
-
-            if (current_node->right && !current_node->right->is_black)
-                return false;
-        }
-
-        // Recursively checks each left child
-        unsigned int height = valid_sub_trees(current_node->left);
-
-        if (height == 0)
-            return 0;
-
-        // Recursively checks each right child
-        if (height != valid_sub_trees(current_node->right))
-            return 0;
-
-        return height + current_node->is_black; // Returns the height of the Tree (black nodes)
-    }
-
-    /*
-     *   Returns true if the tree is a valid Red-Black Tree
-     */
-    template <typename NodePtr>
-    inline bool valid_RBtree(NodePtr root) {
-
-        root = get_root();
-        // If there is no tree, returns true
-        if (root == NULL)
-            return true;
-
-        // if Root node has no parent (end_node), Tree is invalid
-        if (root->parent == NULL)
-            return false;
-
-        // if Root is not the left child of the end_node, Tree is invalid
-        if (!node_is_left_child(root))
-            return false;
-
-        // Root node is always Black, otherwise Tree if invalid
-        if (!root->is_black)
-            return false;
-
-        // Returns false if each sub nodes (Sub Trees) are valid
-        return valid_sub_trees(root) != 0;
     }
 
     /**
@@ -568,7 +504,7 @@ class RBTree {
             }
         } else {
 
-            // new_node->parent->parent->right
+            // uncle = new_node->parent->parent->right
             node_pointer uncle = get_uncle_right(new_node);
             if (!insert_case_2(new_node, uncle)) {
 
@@ -602,21 +538,64 @@ class RBTree {
     void delete_fix(node_pointer current_node) {
 
         iterator root(get_root());
-        
+
         while (true) {
 
             if (current_node == root.base())
                 break;
             else if (!current_node->is_black)
                 break;
-            else if (!get_sibling(current_node)->is_black) {
-                // TODO
-            } else if (!get_nephew(current_node)->is_black) {
-                // TODO
-            } else if (!get_niece(current_node)->is_black) {
-                // TODO
-            } else {
+
+            // CASE 1 -> If Sibling is RED
+            else if (get_sibling(current_node) && !get_sibling(current_node)->is_black) {
+
+                current_node->parent->is_black = false;
+
+                get_sibling(current_node)->is_black = true;
+
+                if (node_is_left_child(get_sibling(current_node))) {
+                    right_rotate(get_sibling(current_node)->parent);
+
+                } else {
+                    left_rotate(get_sibling(current_node)->parent);
+                }
+
+                // CASE 2 -> if Nephew is RED (TERMINAL CASE)
+            } else if (get_nephew(current_node) && !get_nephew(current_node)->is_black) {
+
+                get_sibling(current_node)->is_black = current_node->parent->is_black;
+
+                current_node->parent->is_black = true;
+
+                get_nephew(current_node)->is_black = true;
+
+                if (node_is_left_child(get_sibling(current_node))) {
+                    right_rotate(get_sibling(current_node)->parent);
+                } else {
+                    left_rotate(get_sibling(current_node)->parent);
+                }
+                current_node = current_node->parent;
+                break;
+
+                // CASE 3 -> if Niece is RED
+            } else if (get_niece(current_node) && !get_niece(current_node)->is_black) {
+
+                get_niece(current_node)->is_black = true;
+
                 get_sibling(current_node)->is_black = false;
+
+                if (node_is_left_child(get_niece(current_node))) {
+                    right_rotate(get_niece(current_node)->parent);
+
+                } else {
+                    left_rotate(get_niece(current_node)->parent);
+                }
+
+                // CASE 4 -> Current_node, Sibling, Niece and Nephew are all Black
+            } else {
+                if (get_sibling(current_node))
+                    get_sibling(current_node)->is_black = false;
+                current_node = current_node->parent;
             }
         }
         current_node->is_black = true;
@@ -670,19 +649,32 @@ class RBTree {
 
             // Case 1 -> Node is a leaf
             if (node_is_leaf(toBeDeleted)) {
-                if (node_is_left_child(toBeDeleted))
-                    toBeDeleted->parent->left = NULL;
-                else
-                    toBeDeleted->parent->right = NULL;
+
+                if (toBeDeleted->is_black == false) {
+                    if (node_is_left_child(toBeDeleted))
+                        toBeDeleted->parent->left = NULL;
+                    else
+                        toBeDeleted->parent->right = NULL;
+                } else
+                    return;
 
                 // Case 2 -> Node has only one child
             } else if (node_only_child(toBeDeleted)) {
 
-                // The child parent's becomes the parent of toBeDeleted
-                if (toBeDeleted->left)
-                    toBeDeleted->left->parent = toBeDeleted->parent;
-                else
-                    toBeDeleted->right->parent = toBeDeleted->parent;
+                node_pointer child = (toBeDeleted->left) ? toBeDeleted->left : toBeDeleted->right;
+
+                // Replace toBeDeleted by it's child
+                if (node_is_left_child(toBeDeleted)) {
+                    toBeDeleted->parent->left = child;
+                } else {
+                    toBeDeleted->parent->right = child;
+                }
+
+                child->parent = toBeDeleted->parent;
+                toBeDeleted->parent = child;
+                // child->is_black = toBeDeleted->is_black;
+                (toBeDeleted->left) ? child->left = toBeDeleted : child->right = toBeDeleted;
+                (toBeDeleted->left) ? toBeDeleted->left = NULL : toBeDeleted->right = NULL;
 
                 // Case 3 -> toBeDeleted Node has two child
             } else {

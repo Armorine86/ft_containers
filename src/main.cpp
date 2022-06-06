@@ -1,5 +1,6 @@
 #include "map.hpp"
 #include "pair.hpp"
+#include "tree_utils.hpp"
 #include "vector.hpp"
 #include <iostream>
 #include <map>
@@ -32,84 +33,69 @@ int main(void) {
     TESTED_NAMESPACE::map<int, const char*> m;
 
     TESTED_NAMESPACE::map<int, const char*>::iterator iter = m.begin();
-    TESTED_NAMESPACE::map<int, const char*>::iterator todelete = m.begin();
-    TESTED_NAMESPACE::map<int, const char*>::const_iterator tofind;
+    TESTED_NAMESPACE::map<int, const char*>::iterator root = m.end().base()->left;
 
-    iter = m.insert(ft::make_pair(15, "Hello")).first;
+    iter = m.insert(ft::make_pair(50, "Hello")).first;
     m.printTree();
     std::cout << "\n------------------------" << std::endl;
-    std::cout << "Tree is valid: " << std::boolalpha << m.validTree(iter) << "\n" << std::endl;
+    std::cout << "Tree is valid: " << std::boolalpha << ft::valid_RBtree(root.base()) << "\n" << std::endl;
 
-    iter = m.insert(ft::make_pair(10, "WAZZAAA")).first;
+    iter = m.insert(ft::make_pair(70, "Hello")).first;
     m.printTree();
     std::cout << "\n------------------------" << std::endl;
-    std::cout << "Tree is valid: " << std::boolalpha << m.validTree(iter) << "\n" << std::endl;
+    std::cout << "Tree is valid: " << std::boolalpha << ft::valid_RBtree(root.base()) << "\n" << std::endl;
 
-    iter = m.insert(ft::make_pair(7, "KRAKOUKAS")).first;
+    iter = m.insert(ft::make_pair(40, "Hello")).first;
     m.printTree();
     std::cout << "\n------------------------" << std::endl;
-    std::cout << "Tree is valid: " << std::boolalpha << m.validTree(iter) << "\n" << std::endl;
+    std::cout << "Tree is valid: " << std::boolalpha << ft::valid_RBtree(root.base()) << "\n" << std::endl;
 
-    iter = m.insert(ft::make_pair(12, "Hello")).first;
+    iter = m.insert(ft::make_pair(25, "Hello")).first;
     m.printTree();
     std::cout << "\n------------------------" << std::endl;
-    std::cout << "Tree is valid: " << std::boolalpha << m.validTree(iter) << "\n" << std::endl;
+    std::cout << "Tree is valid: " << std::boolalpha << ft::valid_RBtree(root.base()) << "\n" << std::endl;
 
-    todelete = m.insert(ft::make_pair(25, "WAZZAAA")).first;
+    iter = m.insert(ft::make_pair(35, "Hello")).first;
     m.printTree();
     std::cout << "\n------------------------" << std::endl;
-    std::cout << "Tree is valid: " << std::boolalpha << m.validTree(iter) << "\n" << std::endl;
+    std::cout << "Tree is valid: " << std::boolalpha << ft::valid_RBtree(root.base()) << "\n" << std::endl;
 
-    iter = m.insert(ft::make_pair(18, "KRAKOUKAS")).first;
+    iter = m.insert(ft::make_pair(20, "Hello")).first;
     m.printTree();
     std::cout << "\n------------------------" << std::endl;
-    std::cout << "Tree is valid: " << std::boolalpha << m.validTree(iter) << "\n" << std::endl;
+    std::cout << "Tree is valid: " << std::boolalpha << ft::valid_RBtree(root.base()) << "\n" << std::endl;
 
-    iter = m.insert(ft::make_pair(29, "Hello")).first;
+    iter = m.insert(ft::make_pair(36, "Hello")).first;
     m.printTree();
     std::cout << "\n------------------------" << std::endl;
-    std::cout << "Tree is valid: " << std::boolalpha << m.validTree(iter) << "\n" << std::endl;
+    std::cout << "Tree is valid: " << std::boolalpha << ft::valid_RBtree(root.base()) << "\n" << std::endl;
 
-    iter = m.insert(ft::make_pair(28, "WAZZAAA")).first;
+    iter = m.insert(ft::make_pair(45, "Hello")).first;
     m.printTree();
     std::cout << "\n------------------------" << std::endl;
-    std::cout << "Tree is valid: " << std::boolalpha << m.validTree(iter) << "\n" << std::endl;
+    std::cout << "Tree is valid: " << std::boolalpha << ft::valid_RBtree(root.base()) << "\n" << std::endl;
 
-    iter = m.insert(ft::make_pair(30, "KRAKOUKAS")).first;
+    iter = m.insert(ft::make_pair(27, "Hello")).first;
     m.printTree();
     std::cout << "\n------------------------" << std::endl;
-    std::cout << "Tree is valid: " << std::boolalpha << m.validTree(iter) << "\n" << std::endl;
+    std::cout << "Tree is valid: " << std::boolalpha << ft::valid_RBtree(root.base()) << "\n" << std::endl;
 
-    iter = m.insert(ft::make_pair(27, "KRAKOUKAS")).first;
+    iter = m.insert(ft::make_pair(28, "Hello")).first;
     m.printTree();
     std::cout << "\n------------------------" << std::endl;
-    std::cout << "Tree is valid: " << std::boolalpha << m.validTree(iter) << "\n" << std::endl;
+    std::cout << "Tree is valid: " << std::boolalpha << ft::valid_RBtree(root.base()) << "\n" << std::endl;
 
-    iter = m.insert(iter, ft::make_pair(26, "KRAKOUKAS"));
+    iter = m.insert(ft::make_pair(65, "Hello")).first;
     m.printTree();
     std::cout << "\n------------------------" << std::endl;
-    std::cout << "Tree is valid: " << std::boolalpha << m.validTree(iter) << "\n" << std::endl;
+    std::cout << "Tree is valid: " << std::boolalpha << ft::valid_RBtree(root.base()) << "\n" << std::endl;
 
-    // std::cout << "Success: " << std::boolalpha << m.erase(47) << std::endl;
-
-    // iter = m.insert(ft::make_pair(76, "Shut Up Karen!")).first;
-    // iter = m.insert(ft::make_pair(93, "Babye")).first;
-    // m.printTree();
-    // std::cout << "\n------------------------" << std::endl;
-    // iter = m.insert(ft::make_pair(100, "Pouet!")).first;
-    // iter = m.insert(ft::make_pair(87, "Kapout!")).first;
-
-    // TESTED_NAMESPACE::map<int, const char*>::iterator result;
-
-    // result = m.insert(iter, ft::pair<int, const char*>(420, "Enhance your calm"));
-
-    // std::cout << result.base()->value.first << "=>" << result.base()->value.second << std::endl;
     iter = m.begin();
 
-    m.erase(m.find(29));
+    m.erase(m.find(20));
 
     m.printTree();
     std::cout << "\n------------------------" << std::endl;
 
-    std::cout << "Tree is valid: " << std::boolalpha << m.validTree(iter) << "\n" << std::endl;
+    std::cout << "Tree is valid: " << std::boolalpha << ft::valid_RBtree(root.base()) << "\n" << std::endl;
 }

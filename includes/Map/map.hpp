@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 08:11:20 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/03 08:37:27 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/05 21:16:03 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,7 +206,7 @@ class map {
 
     // Removes all elements between [first] and [last].
     // Excluding the element pointed by [last].
-    void erase(const_iterator first, const_iterator last) { rbtree.erase(first, last); }
+    void erase(iterator first, iterator last) { rbtree.erase(first, last); }
 
     // Removes the element with the key equivalent to key
     size_type erase(const Key& key) { return rbtree.erase(key); }
@@ -258,8 +258,6 @@ class map {
 
     // Prints the tree layout
     void printTree() { rbtree.printTree(); }
-
-    inline bool validTree(iterator root) { return rbtree.valid_RBtree(root.base()); }
 
     /**
      **  ==================================================
