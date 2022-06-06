@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 08:11:20 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/06 15:34:32 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/06 16:02:59 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,7 +144,8 @@ class map {
 
     T& at(const Key& key) {
 
-        iterator it = find(key);
+      // return rbtree.at(key);
+        const_iterator it = find(key);
 
         if (it == end())
             throw std::out_of_range("Key does not exist");
@@ -153,7 +154,7 @@ class map {
     }
 
     const T& at(const Key& key) const {
-
+      // return rbtree.at(key).base()->value->second;
         const_iterator it = find(key);
 
         if (it == end())

@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 09:38:08 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/06 15:33:35 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/06 16:01:24 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 #include <ios>
 #include <iostream>
 #include <memory>
+#include <stdexcept>
 #include <string>
 
 namespace ft {
@@ -376,6 +377,17 @@ class RBTree {
         return find(key);
     }
 
+    // template <typename Key>
+    // iterator at(const Key& key) {
+        
+    //     const_iterator it = find(key);
+
+    //     if (it == end())
+    //         throw std::out_of_range("Key dopesn't exists");
+        
+    //     return it;
+    // }
+    
     // Prints the tree layout
     void printTree() {
         if (get_root()) {
