@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/13 12:47:23 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/05 21:09:02 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/06 09:11:38 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -230,16 +230,16 @@ void swap_nodes(NodePtr target, NodePtr successor) {
 
 // Returns True if the key is equal to the node's key
 template <typename Key, typename Value, typename Compare>
-bool is_equal(const Key& key, Value& node, Compare) {
+bool is_equal(const Key& key, Value& value, Compare) {
 
-    return !Compare()(key, node.base()->value) && !Compare()(node.base()->value, key);
+    return !Compare()(key, value) && !Compare()(value, key);
 }
 
-// Returns True if the key is less than the node's key
+// Returns True if the key is less than the value's key
 template <typename Key, typename Value, typename Compare>
-bool key_is_less(const Key& key, Value& node, Compare) {
+bool key_is_less(const Key& key, Value& value, Compare) {
 
-    return (Compare()(key, node.base()->value));
+    return (Compare()(key, value));
 }
 
 // Returns a pointer to the current_node grand parent node

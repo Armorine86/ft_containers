@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 09:38:08 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/05 21:08:25 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/06 10:31:14 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include "tree_iterator.hpp"
 #include "tree_utils.hpp"
 
+#include <algorithm>
 #include <cassert>
 #include <cstddef>
 #include <ios>
@@ -51,8 +52,8 @@ class RBTree {
     
     // Rebinds the value Allocator to a Node allocator
     typedef typename allocator_type::template rebind<Node>::other   node_allocator;
-
     // clang-format on
+
     /**
     **  ==================================================
     **  |               MEMBER FUNCTIONS                 |
@@ -97,21 +98,37 @@ class RBTree {
         return *this;
     }
 
-    //! Needs to Destroy / Deallocate all nodes
-    ~RBTree() {}
+    ~RBTree() {
+        clear_tree(get_root());
+        
+        if (end().base()) {
+            value_alloc_.destroy(&end().base()->value);
+            node_alloc_.deallocate(end().base(), 1);
+        }
+    }
 
   public:
     // Returns a copy of the allocator associated with the Set
     allocator_type get_allocator() { return value_alloc_; }
 
-    //* ============== Iterators ==============
+    /**
+    **  ==================================================
+    **  |             ITERATORS FUNCTIONS                |
+    **  ==================================================
+    */
 
     iterator begin() { return iterator(begin_); }
     const_iterator begin() const { return const_iterator(begin_); }
     iterator end() { return iterator(end_); }
     const_iterator end() const { return const_iterator(end_); }
 
-    //* ============== Insert ==============
+    /**
+    **  ==================================================
+    **  |             MODIFIERS FUNCTIONS                |
+    **  ==================================================
+    */
+
+    //* ============== INSERT ==============
 
     // Returns true if the insertion was successful.
     // Returns false if the key already exists in the tree.
@@ -186,15 +203,17 @@ class RBTree {
         }
     }
 
-    //* ============== Erase ==============
+    //* ============== ERASE ==============
 
-    void erase(iterator toBeDeleted) {
+    void erase(iterator node) {
 
-        BST_remove(toBeDeleted.base());
+        node_pointer toBeDeleted = node.base();
 
-        delete_fix(toBeDeleted.base());
+        BST_remove(toBeDeleted);
 
-        delete_node(toBeDeleted.base());
+        delete_fix(toBeDeleted);
+
+        delete_node(toBeDeleted);
     }
 
     template <typename InputIter>
@@ -218,6 +237,91 @@ class RBTree {
         return 1;
     }
 
+    void clear() { erase(begin(), end()); }
+
+    void swap() {}
+
+    /**
+    **  ==================================================
+    **  |              CAPACITY FUNCTIONS                |
+    **  ==================================================
+    */
+
+    // Returns true if tree size is zero
+    bool empty() { return size_ == 0; }
+
+    size_type size() const { return size_; }
+
+    size_type max_size() const {
+        const size_t diffmax = std::numeric_limits<difference_type>::max();
+        const size_t allocmax = node_alloc_.max_size();
+
+        return std::min(diffmax, allocmax);
+    }
+
+    /**
+     **  ==================================================
+     **  |               LOOKUP FUNCTIONS                 |
+     **  ==================================================
+     */
+
+    template <typename Key>
+    size_type count(const Key& key) const {
+        if (find(key))
+            return 1;
+        return 0;
+    }
+
+    template <typename Key>
+    ft::pair<iterator, iterator> equal_range(const Key& key) {
+        return ft::make_pair(lower_bound(key), upper_bound(key));
+    }
+
+    template <typename Key>
+    ft::pair<const_iterator, const_iterator> equal_range(const Key& key) const {
+        return ft::make_pair(lower_bound(key), upper_bound(key));
+    }
+
+    template <typename Key>
+    iterator lower_bound(const Key& key) {
+
+        for (iterator first = begin(); first != end(); ++first) {
+            if (key_is_less(key, first.base()->value, value_compare()))
+                return --first;
+        }
+        return end();
+    }
+
+    template <typename Key>
+    const_iterator lower_bound(const Key& key) const {
+
+        for (iterator first = begin(); first != end(); ++first) {
+            if (key_is_less(key, first.base()->value, value_compare()))
+                return --first;
+        }
+        return end();
+    }
+
+    template <typename Key>
+    iterator upper_bound(const Key& key) {
+
+        for (iterator first = begin(); first != end(); ++first) {
+            if (key_is_less(key, first.base()->value, value_compare()))
+                return first;
+        }
+        return end();
+    }
+
+    template <typename Key>
+    const_iterator upper_bound(const Key& key) const {
+
+        for (iterator first = begin(); first != end(); ++first) {
+            if (key_is_less(key, first.base()->value, value_compare()))
+                return first;
+        }
+        return end();
+    }
+
     //* ============== Find ==============
 
     template <typename Key>
@@ -231,7 +335,7 @@ class RBTree {
             if (is_equal(key, root, value_compare()))
                 return root;
 
-            if (key_is_less(key, root, Compare())) {
+            if (key_is_less(key, root.base()->value, Compare())) {
                 current_node = begin();
             } else
                 current_node = iterator(right_end_);
@@ -314,7 +418,7 @@ class RBTree {
         while (true) {
 
             // value_compare checks if left parameter is less than right parameter
-            if (!key_is_less(key, current_node, value_compare())) {
+            if (!key_is_less(key, current_node.base()->value, value_compare())) {
                 // current_node > key = false --> Right
                 if (!current_node.base()->right) {
                     return current_node.base()->right;
@@ -324,7 +428,7 @@ class RBTree {
                     parent = parent.base()->right;
                 current_node = current_node.base()->right;
 
-            } else if (key_is_less(key, current_node, value_compare())) {
+            } else if (key_is_less(key, current_node.base()->value, value_compare())) {
                 // Key > current_node = false --> Left
                 if (!current_node.base()->left) {
                     return current_node.base()->left;
@@ -345,11 +449,11 @@ class RBTree {
 
         iterator hint_parent(hint.base()->parent);
 
-        if (key_is_less(key, hint_parent, value_compare())) {
+        if (key_is_less(key, hint_parent.base()->value, value_compare())) {
             // key < hint_parent = true --> Check Hint
             if (node_is_left_child(hint.base())) {
                 // key fits at hint
-                if (key_is_less(key, hint, value_compare())) {
+                if (key_is_less(key, hint.base()->value, value_compare())) {
                     // key fits --> insert left
                     if (!hint.base()->left) {
                         root = hint;
@@ -370,11 +474,11 @@ class RBTree {
                 // Key doesn't fit -> start from root
                 return find_insert_pos(root, key);
 
-        } else if (!key_is_less(key, hint_parent, value_compare())) {
+        } else if (!key_is_less(key, hint_parent.base()->value, value_compare())) {
             if (node_is_left_child(hint.base())) {
                 // key doesn't fit -> start from root
                 return find_insert_pos(root, key);
-            } else if (key_is_less(key, hint, value_compare())) {
+            } else if (key_is_less(key, hint.base()->value, value_compare())) {
                 // key fits at hint -> insert left
                 if (!hint.base()->left) {
                     root = hint;
@@ -438,6 +542,16 @@ class RBTree {
         value_alloc_.destroy(&node->value);
         node_alloc_.deallocate(node, 1);
         size_--;
+    }
+
+    void clear_tree(node_pointer node) {
+        
+        if (node) {
+            clear_tree(node->left);
+            clear_tree(node->right);
+            value_alloc_.destroy(&node->value);
+            node_alloc_.deallocate(node, 1);
+        }
     }
 
     // Init an empty node with no value
@@ -554,10 +668,10 @@ class RBTree {
                 get_sibling(current_node)->is_black = true;
 
                 if (node_is_left_child(get_sibling(current_node))) {
-                    right_rotate(get_sibling(current_node)->parent);
+                    right_rotate(current_node->parent);
 
                 } else {
-                    left_rotate(get_sibling(current_node)->parent);
+                    left_rotate(current_node->parent);
                 }
 
                 // CASE 2 -> if Nephew is RED (TERMINAL CASE)
@@ -570,9 +684,9 @@ class RBTree {
                 get_nephew(current_node)->is_black = true;
 
                 if (node_is_left_child(get_sibling(current_node))) {
-                    right_rotate(get_sibling(current_node)->parent);
+                    right_rotate(current_node->parent);
                 } else {
-                    left_rotate(get_sibling(current_node)->parent);
+                    left_rotate(current_node->parent);
                 }
                 current_node = current_node->parent;
                 break;
@@ -640,9 +754,6 @@ class RBTree {
         tmp->right = current_node;
         current_node->parent = tmp;
     }
-
-    // Returns true if tree size is zero
-    bool empty() { return size_ == 0; }
 
     void BST_remove(node_pointer toBeDeleted) {
         if (!empty()) {

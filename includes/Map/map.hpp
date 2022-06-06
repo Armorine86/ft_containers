@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 08:11:20 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/05 21:16:03 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/06 10:12:49 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,7 +130,7 @@ class map {
         return *this;
     }
 
-    ~map() {}
+    ~map() { }
 
     //* =============== ITERATORS FUNCTIONS ===============
 
