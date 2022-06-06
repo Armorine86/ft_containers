@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 09:38:08 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/06 14:41:57 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/06 15:33:35 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 #include "colors.hpp"
 #include "node.hpp"
-#include "pair.hpp"
+#include "Map/pair.hpp"
 #include "tree_iterator.hpp"
 #include "tree_utils.hpp"
 
@@ -80,7 +80,8 @@ class RBTree {
     RBTree(const RBTree& src)
         : node_alloc_(src.node_alloc_), value_alloc_(src.value_alloc_), end_(), comp_(src.comp_),
           size_(0) {
-
+        
+        end_ = src.end_;
         insert(src.begin(), src.end());
     }
 
@@ -90,7 +91,6 @@ class RBTree {
             RBTree tmp(rhs);
             swap(tmp);
         }
-
         return *this;
     }
 
@@ -335,18 +335,19 @@ class RBTree {
             iterator root(get_root());
             iterator current_node;
 
-            if (is_equal(key, root, value_compare()))
+            if (is_equal(key, *root, value_compare()))
                 return root;
 
-            if (key_is_less(key, root.base()->value, Compare())) {
+            if (key_is_less(key, *root, Compare())) {
                 current_node = begin();
-            } else
+            } else if (!key_is_less(key, *root, Compare()))
                 current_node = iterator(right_end_);
+            
 
             if (current_node == begin()) {
 
                 for (; current_node != root; ++current_node) {
-                    if (!is_equal(key, current_node, Compare())) {
+                    if (!is_equal(key, *current_node, Compare())) {
                         continue;
                     }
                     //  Found Key
@@ -356,7 +357,7 @@ class RBTree {
             } else {
 
                 for (; current_node != root; --current_node) {
-                    if (!is_equal(key, current_node, Compare())) {
+                    if (!is_equal(key, *current_node, Compare())) {
                         continue;
                     }
                     // Found Key

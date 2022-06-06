@@ -6,15 +6,15 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 08:11:20 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/06 14:41:47 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/06 15:34:32 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "Iterator.hpp"
+#include "Vector/Iterator.hpp"
 #include "utilities.hpp"
-#include "RBtree.hpp"
+#include "RBTree/RBtree.hpp"
 
 #include <stdexcept>
 

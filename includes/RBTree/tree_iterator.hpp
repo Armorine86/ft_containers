@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 13:34:32 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/06 10:02:10 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/06 14:50:29 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ class tree_iterator {
 
     reference operator*() const { return ptr->value; }
 
-    reference& operator->() const { return &(operator*()); }
+    pointer operator->() const { return &(operator*()); }
 
     tree_iterator& operator++() {
 
@@ -126,7 +126,7 @@ class const_tree_iterator {
 
     reference operator*() const { return ptr->value; }
 
-    reference& operator->() const { return &(operator*()); }
+    pointer operator->() const { return &(operator*()); }
 
     const_tree_iterator operator++() {
 
