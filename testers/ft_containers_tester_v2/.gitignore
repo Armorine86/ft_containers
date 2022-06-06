@@ -1,0 +1,7 @@
+*.o
+test
+.vscode
+*.log
+*.diff
+*.code-workspace
+*.out
