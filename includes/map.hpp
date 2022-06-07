@@ -12,9 +12,9 @@
 
 #pragma once
 
+#include "RBTree/RBtree.hpp"
 #include "Vector/Iterator.hpp"
 #include "utilities.hpp"
-#include "RBTree/RBtree.hpp"
 
 #include <stdexcept>
 
@@ -144,7 +144,7 @@ class map {
 
     T& at(const Key& key) {
 
-      // return rbtree.at(key);
+        // return rbtree.at(key);
         const_iterator it = find(key);
 
         if (it == end())
@@ -154,7 +154,7 @@ class map {
     }
 
     const T& at(const Key& key) const {
-      // return rbtree.at(key).base()->value->second;
+        // return rbtree.at(key).base()->value->second;
         const_iterator it = find(key);
 
         if (it == end())

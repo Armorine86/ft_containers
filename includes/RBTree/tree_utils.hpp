@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/13 12:47:23 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/06 15:23:02 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/06 20:32:01 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -236,7 +236,7 @@ bool is_equal(const Key& key, Value& value, Compare) {
         return true;
     }
     return false;
-    //return Compare()(key, value) && Compare()(value, key);
+    // return Compare()(key, value) && Compare()(value, key);
 }
 
 // Returns True if the key is less than the value's key

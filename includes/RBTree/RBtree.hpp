@@ -6,25 +6,24 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 09:38:08 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/06 16:01:24 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/06 22:21:29 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "colors.hpp"
+#include "../Map/pair.hpp"
+#include "../colors.hpp"
 #include "node.hpp"
-#include "Map/pair.hpp"
 #include "tree_iterator.hpp"
 #include "tree_utils.hpp"
 
 #include <algorithm>
 #include <cassert>
 #include <cstddef>
-#include <ios>
 #include <iostream>
+#include <limits>
 #include <memory>
-#include <stdexcept>
 #include <string>
 
 namespace ft {
@@ -64,14 +63,11 @@ class RBTree {
     //* ============== CTORS / DTOR ==============
 
   public:
-    // RBTree()
-    //     : node_alloc_(node_allocator()), value_alloc_(allocator_type()), end_(), begin_(),
-    //       right_end_(), comp_(), size_(0) {
-    //       }
-
+    
     RBTree(const value_compare& val, allocator_type alloc_ = allocator_type())
-        : node_alloc_(node_allocator()), value_alloc_(alloc_), end_(), begin_(),
-          right_end_(), comp_(val), size_(0) {
+        : node_alloc_(node_allocator()), value_alloc_(alloc_), end_(), begin_(), right_end_(),
+          comp_(val), size_(0) {
+              
         (void)val;
         end_ = new_node();
         begin_ = end_;
@@ -79,10 +75,16 @@ class RBTree {
     }
 
     RBTree(const RBTree& src)
-        : node_alloc_(src.node_alloc_), value_alloc_(src.value_alloc_), end_(), comp_(src.comp_),
-          size_(0) {
+        : node_alloc_(src.node_alloc_), value_alloc_(src.value_alloc_), end_(), comp_(src.comp_), size_(0) {
+
+        if (!end_) {
+            end_ = new_node();
+            begin_ = end_;
+            right_end_ = end_;
+        }
         
-        end_ = src.end_;
+        // const_iterator first = src.begin();
+        // const_iterator last = src.end();
         insert(src.begin(), src.end());
     }
 
@@ -92,6 +94,7 @@ class RBTree {
             RBTree tmp(rhs);
             swap(tmp);
         }
+
         return *this;
     }
 
@@ -99,7 +102,6 @@ class RBTree {
         clear_tree(get_root());
 
         if (end().base()) {
-            value_alloc_.destroy(&end().base()->value);
             node_alloc_.deallocate(end().base(), 1);
         }
     }
@@ -290,7 +292,7 @@ class RBTree {
     iterator lower_bound(const Key& key) {
 
         for (iterator first = begin(); first != end(); ++first) {
-            if (key_is_less(key, first.base()->value, value_compare()))
+            if (key_is_less(key, *first, value_compare()))
                 return --first;
         }
         return end();
@@ -300,7 +302,7 @@ class RBTree {
     const_iterator lower_bound(const Key& key) const {
 
         for (iterator first = begin(); first != end(); ++first) {
-            if (key_is_less(key, first.base()->value, value_compare()))
+            if (key_is_less(key, *first, value_compare()))
                 return --first;
         }
         return end();
@@ -310,7 +312,7 @@ class RBTree {
     iterator upper_bound(const Key& key) {
 
         for (iterator first = begin(); first != end(); ++first) {
-            if (key_is_less(key, first.base()->value, value_compare()))
+            if (key_is_less(key, *first, value_compare()))
                 return first;
         }
         return end();
@@ -320,7 +322,7 @@ class RBTree {
     const_iterator upper_bound(const Key& key) const {
 
         for (iterator first = begin(); first != end(); ++first) {
-            if (key_is_less(key, first.base()->value, value_compare()))
+            if (key_is_less(key, *first, value_compare()))
                 return first;
         }
         return end();
@@ -341,9 +343,8 @@ class RBTree {
 
             if (key_is_less(key, *root, Compare())) {
                 current_node = begin();
-            } else if (!key_is_less(key, *root, Compare()))
+            } else
                 current_node = iterator(right_end_);
-            
 
             if (current_node == begin()) {
 
@@ -377,17 +378,6 @@ class RBTree {
         return find(key);
     }
 
-    // template <typename Key>
-    // iterator at(const Key& key) {
-        
-    //     const_iterator it = find(key);
-
-    //     if (it == end())
-    //         throw std::out_of_range("Key dopesn't exists");
-        
-    //     return it;
-    // }
-    
     // Prints the tree layout
     void printTree() {
         if (get_root()) {
@@ -434,7 +424,7 @@ class RBTree {
         while (true) {
 
             // value_compare checks if left parameter is less than right parameter
-            if (!key_is_less(key, current_node.base()->value, value_compare())) {
+            if (!key_is_less(key, *current_node, value_compare())) {
                 // current_node > key = false --> Right
                 if (!current_node.base()->right) {
                     return current_node.base()->right;
@@ -444,7 +434,7 @@ class RBTree {
                     parent = parent.base()->right;
                 current_node = current_node.base()->right;
 
-            } else if (key_is_less(key, current_node.base()->value, value_compare())) {
+            } else if (key_is_less(key, *current_node, value_compare())) {
                 // Key > current_node = false --> Left
                 if (!current_node.base()->left) {
                     return current_node.base()->left;
@@ -465,11 +455,11 @@ class RBTree {
 
         iterator hint_parent(hint.base()->parent);
 
-        if (key_is_less(key, hint_parent.base()->value, value_compare())) {
+        if (key_is_less(key, *hint_parent, value_compare())) {
             // key < hint_parent = true --> Check Hint
             if (node_is_left_child(hint.base())) {
                 // key fits at hint
-                if (key_is_less(key, hint.base()->value, value_compare())) {
+                if (key_is_less(key, *hint, value_compare())) {
                     // key fits --> insert left
                     if (!hint.base()->left) {
                         root = hint;
@@ -490,11 +480,11 @@ class RBTree {
                 // Key doesn't fit -> start from root
                 return find_insert_pos(root, key);
 
-        } else if (!key_is_less(key, hint_parent.base()->value, value_compare())) {
+        } else if (!key_is_less(key, *hint_parent, value_compare())) {
             if (node_is_left_child(hint.base())) {
                 // key doesn't fit -> start from root
                 return find_insert_pos(root, key);
-            } else if (key_is_less(key, hint.base()->value, value_compare())) {
+            } else if (key_is_less(key, *hint, value_compare())) {
                 // key fits at hint -> insert left
                 if (!hint.base()->left) {
                     root = hint;
@@ -577,6 +567,7 @@ class RBTree {
         begin_ = end_->left;
         begin_->parent = end_;
         right_end_ = begin_;
+        right_end_->parent = end_;
     }
 
     // Case 1: Root is always Black
