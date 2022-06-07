@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 09:38:08 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/06 22:57:00 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/06 23:20:51 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,11 +63,10 @@ class RBTree {
     //* ============== CTORS / DTOR ==============
 
   public:
-    
     RBTree(const value_compare& val, allocator_type alloc_ = allocator_type())
         : node_alloc_(node_allocator()), value_alloc_(alloc_), end_(), begin_(), right_end_(),
           comp_(val), size_(0) {
-              
+
         (void)val;
         end_ = new_node();
         begin_ = end_;
@@ -75,14 +74,15 @@ class RBTree {
     }
 
     RBTree(const RBTree& src)
-        : node_alloc_(src.node_alloc_), value_alloc_(src.value_alloc_), end_(), comp_(src.comp_), size_(0) {
+        : node_alloc_(src.node_alloc_), value_alloc_(src.value_alloc_), end_(), comp_(src.comp_),
+          size_(0) {
 
         if (!end_) {
             end_ = new_node();
             begin_ = end_;
             right_end_ = end_;
         }
-        
+
         // const_iterator first = src.begin();
         // const_iterator last = src.end();
         insert(src.begin(), src.end());
@@ -332,7 +332,7 @@ class RBTree {
 
     template <typename Key>
     iterator find(const Key& key) {
-        
+
         return find_key<iterator>(key);
     }
 
@@ -378,21 +378,27 @@ class RBTree {
     */
 
   private:
-
     template <typename Iter, typename Key>
-    Iter find_key(const Key& key) {
+    Iter find_key(const Key& key) const {
+
+        node_pointer ptr = find_ptr(key);
+
+        return ptr == NULL ? Iter(end_) : Iter(ptr);
+    }
+
+    template <typename Key>
+    node_pointer find_ptr(const Key& key) const {
+
         if (!empty()) {
 
             iterator root(get_root());
-            iterator current_node;
+            const_iterator current_node;
 
             if (is_equal(key, *root, Compare()))
-                return root;
+                return root.base();
 
-            if (key_is_less(key, *root, Compare())) {
-                current_node = begin();
-            } else
-                current_node = iterator(right_end_);
+            key_is_less(key, *root, Compare()) ? current_node = begin()
+                                               : current_node = iterator(right_end_);
 
             if (current_node == begin()) {
 
@@ -401,7 +407,7 @@ class RBTree {
                         continue;
                     }
                     //  Found Key
-                    return current_node;
+                    return current_node.base();
                 }
 
             } else {
@@ -411,15 +417,15 @@ class RBTree {
                         continue;
                     }
                     // Found Key
-                    return current_node;
+                    return current_node.base();
                 }
             }
         }
 
         // Key Not Found
-        return end();
+        return end_;
     }
-    
+
     // Starting at root, check each key
     template <typename Key>
     node_pointer& find_insert_pos(iterator& parent, const Key& key) const {
