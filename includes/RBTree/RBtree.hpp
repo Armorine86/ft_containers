@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 09:38:08 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/06 22:21:29 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/06 22:57:00 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -254,7 +254,7 @@ class RBTree {
     */
 
     // Returns true if tree size is zero
-    bool empty() { return size_ == 0; }
+    bool empty() const { return size_ == 0; }
 
     size_type size() const { return size_; }
 
@@ -332,50 +332,14 @@ class RBTree {
 
     template <typename Key>
     iterator find(const Key& key) {
-
-        if (!empty()) {
-
-            iterator root(get_root());
-            iterator current_node;
-
-            if (is_equal(key, *root, value_compare()))
-                return root;
-
-            if (key_is_less(key, *root, Compare())) {
-                current_node = begin();
-            } else
-                current_node = iterator(right_end_);
-
-            if (current_node == begin()) {
-
-                for (; current_node != root; ++current_node) {
-                    if (!is_equal(key, *current_node, Compare())) {
-                        continue;
-                    }
-                    //  Found Key
-                    return current_node;
-                }
-
-            } else {
-
-                for (; current_node != root; --current_node) {
-                    if (!is_equal(key, *current_node, Compare())) {
-                        continue;
-                    }
-                    // Found Key
-                    return current_node;
-                }
-            }
-        }
-
-        // Key Not Found
-        return end();
+        
+        return find_key<iterator>(key);
     }
 
     template <typename Key>
     const_iterator find(const Key& key) const {
 
-        return find(key);
+        return find_key<const_iterator>(key);
     }
 
     // Prints the tree layout
@@ -414,6 +378,48 @@ class RBTree {
     */
 
   private:
+
+    template <typename Iter, typename Key>
+    Iter find_key(const Key& key) {
+        if (!empty()) {
+
+            iterator root(get_root());
+            iterator current_node;
+
+            if (is_equal(key, *root, Compare()))
+                return root;
+
+            if (key_is_less(key, *root, Compare())) {
+                current_node = begin();
+            } else
+                current_node = iterator(right_end_);
+
+            if (current_node == begin()) {
+
+                for (; current_node != root; ++current_node) {
+                    if (!is_equal(key, *current_node, Compare())) {
+                        continue;
+                    }
+                    //  Found Key
+                    return current_node;
+                }
+
+            } else {
+
+                for (; current_node != root; --current_node) {
+                    if (!is_equal(key, *current_node, Compare())) {
+                        continue;
+                    }
+                    // Found Key
+                    return current_node;
+                }
+            }
+        }
+
+        // Key Not Found
+        return end();
+    }
+    
     // Starting at root, check each key
     template <typename Key>
     node_pointer& find_insert_pos(iterator& parent, const Key& key) const {

@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 08:11:20 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/06 16:02:59 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/06 22:55:28 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,8 +144,7 @@ class map {
 
     T& at(const Key& key) {
 
-        // return rbtree.at(key);
-        const_iterator it = find(key);
+        iterator it = find(key);
 
         if (it == end())
             throw std::out_of_range("Key does not exist");
@@ -154,7 +153,7 @@ class map {
     }
 
     const T& at(const Key& key) const {
-        // return rbtree.at(key).base()->value->second;
+      
         const_iterator it = find(key);
 
         if (it == end())
@@ -219,11 +218,11 @@ class map {
 
     // Returns an iterator on the matching key.
     // If no element is found, returns an iterator on end().
-    iterator find(const Key& key) { return rbtree.find(key); }
+    iterator find(const key_type& key) { return rbtree.find(key); }
 
     // Returns a const_iterator on the matching key.
     // If no element is found, returns an iterator on end().
-    const_iterator find(const Key& key) const { return rbtree.find(key); }
+    const_iterator find(const key_type& key) const { return rbtree.find(key); }
 
     // Returns a range containing all elements matching with the given key.
     ft::pair<iterator, iterator> equal_range(const Key& key) { return rbtree.equal_range(key); }
