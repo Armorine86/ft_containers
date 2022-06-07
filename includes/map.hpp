@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 08:11:20 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/06 22:55:28 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/07 08:31:58 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,7 +172,7 @@ class map {
 
     //* =============== CAPACITY FUNCTIONS ===============
 
-    bool empty() { return size() > 0; }
+    bool empty() { return rbtree.empty(); }
 
     size_type size() const { return rbtree.size(); }
 
@@ -272,38 +272,39 @@ void swap(const ft::map<Key, T, Compare, Alloc>& x, const ft::map<Key, T, Compar
 }
 
 template <typename Key, typename T, typename Compare, typename Alloc>
-bool operator==(const ft::map<Key, T, Compare, Alloc>& left,
-                const ft::map<Key, T, Compare, Alloc>& right) {
+inline bool operator==(const ft::map<Key, T, Compare, Alloc>& left,
+                       const ft::map<Key, T, Compare, Alloc>& right) {
     return left.size() == right.size() && std::equal(left.begin(), left.end(), right.begin());
 }
 
 template <typename Key, typename T, typename Compare, typename Alloc>
-bool operator!=(const ft::map<Key, T, Compare, Alloc>& left,
-                const ft::map<Key, T, Compare, Alloc>& right) {
-    return (!left == right);
+inline bool operator!=(const ft::map<Key, T, Compare, Alloc>& left,
+                       const ft::map<Key, T, Compare, Alloc>& right) {
+    return !(left == right);
 }
 
 template <typename Key, typename T, typename Compare, typename Alloc>
-bool operator<(const ft::map<Key, T, Compare, Alloc>& left,
-               const ft::map<Key, T, Compare, Alloc>& right) {
+inline bool operator<(const ft::map<Key, T, Compare, Alloc>& left,
+                      const ft::map<Key, T, Compare, Alloc>& right) {
     return ft::lexicographical_compare(left.begin(), left.end(), right.begin(), right.end());
 }
 
 template <typename Key, typename T, typename Compare, typename Alloc>
-bool operator<=(const ft::map<Key, T, Compare, Alloc>& left,
-                const ft::map<Key, T, Compare, Alloc>& right) {
-    return !(right > left);
+inline bool operator<=(const ft::map<Key, T, Compare, Alloc>& left,
+                       const ft::map<Key, T, Compare, Alloc>& right) {
+    return !(right < left);
 }
 
 template <typename Key, typename T, typename Compare, typename Alloc>
-bool operator>(const ft::map<Key, T, Compare, Alloc>& left,
-               const ft::map<Key, T, Compare, Alloc>& right) {
-    return right > left;
+inline bool operator>(const ft::map<Key, T, Compare, Alloc>& left,
+                      const ft::map<Key, T, Compare, Alloc>& right) {
+
+    return right < left;
 }
 
 template <typename Key, typename T, typename Compare, typename Alloc>
-bool operator>=(const ft::map<Key, T, Compare, Alloc>& left,
-                const ft::map<Key, T, Compare, Alloc>& right) {
+inline bool operator>=(const ft::map<Key, T, Compare, Alloc>& left,
+                       const ft::map<Key, T, Compare, Alloc>& right) {
     return !(left < right);
 }
 } // namespace ft

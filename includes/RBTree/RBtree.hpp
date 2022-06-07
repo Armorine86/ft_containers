@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 09:38:08 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/06 23:20:51 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/07 15:20:35 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,9 +82,6 @@ class RBTree {
             begin_ = end_;
             right_end_ = end_;
         }
-
-        // const_iterator first = src.begin();
-        // const_iterator last = src.end();
         insert(src.begin(), src.end());
     }
 
@@ -99,11 +96,11 @@ class RBTree {
     }
 
     ~RBTree() {
-        clear_tree(get_root());
+        if (!empty())
+            clear_tree(get_root());
 
-        if (end().base()) {
-            node_alloc_.deallocate(end().base(), 1);
-        }
+        if (end_)
+            node_alloc_.deallocate(end_, 1);
     }
 
   public:
@@ -204,23 +201,35 @@ class RBTree {
 
     //* ============== ERASE ==============
 
-    void erase(iterator node) {
+    iterator erase(iterator node) {
 
-        node_pointer toBeDeleted = node.base();
+        iterator it = node;
+        ++it;
 
-        BST_remove(toBeDeleted);
+        node_pointer toBeDeleted = node. base();
+        node_pointer new_leaf = NULL;
 
-        delete_fix(toBeDeleted);
+        BST_remove(toBeDeleted, new_leaf);
+        if (!new_leaf)
+            new_leaf = toBeDeleted;
+        printTree();
+        std::cout << "\n------------------------" << std::endl;
+        std::cout << "Is valid: " << std::boolalpha << ft::valid_RBtree(end().base()->left) << std::endl;
+
+        delete_fix(new_leaf);
 
         delete_node(toBeDeleted);
+
+        return iterator(it.base());
     }
 
     template <typename InputIter>
     void erase(InputIter first, InputIter last) {
 
-        for (; first != last; ++first) {
-            erase(first);
+        for (; first != last;) {
+            first = erase(first);
         }
+        // reset_pointers();
     }
 
     template <typename Key>
@@ -236,7 +245,15 @@ class RBTree {
         return 1;
     }
 
-    void clear() { clear_tree(get_root()); }
+    void clear() {
+
+        clear_tree(get_root());
+
+        size_ = 0;
+        end_->left = NULL;
+        begin_ = end_;
+        right_end_ = end_;
+    }
 
     void swap(RBTree& src) {
 
@@ -273,9 +290,11 @@ class RBTree {
 
     template <typename Key>
     size_type count(const Key& key) const {
-        if (find(key))
-            return 1;
-        return 0;
+
+        node_pointer ptr = find_ptr(key);
+        if (ptr == end_)
+            return 0;
+        return 1;
     }
 
     template <typename Key>
@@ -291,9 +310,9 @@ class RBTree {
     template <typename Key>
     iterator lower_bound(const Key& key) {
 
-        for (iterator first = begin(); first != end(); ++first) {
-            if (key_is_less(key, *first, value_compare()))
-                return --first;
+        for (iterator first(begin_); first != end(); ++first) {
+            if (!key_is_less(*first, key, value_compare()))
+                return first;
         }
         return end();
     }
@@ -301,9 +320,9 @@ class RBTree {
     template <typename Key>
     const_iterator lower_bound(const Key& key) const {
 
-        for (iterator first = begin(); first != end(); ++first) {
-            if (key_is_less(key, *first, value_compare()))
-                return --first;
+        for (iterator first(begin_); first != end(); ++first) {
+            if (!key_is_less(*first, key, value_compare()))
+                return first;
         }
         return end();
     }
@@ -311,7 +330,7 @@ class RBTree {
     template <typename Key>
     iterator upper_bound(const Key& key) {
 
-        for (iterator first = begin(); first != end(); ++first) {
+        for (iterator first(begin_); first != end(); ++first) {
             if (key_is_less(key, *first, value_compare()))
                 return first;
         }
@@ -321,7 +340,7 @@ class RBTree {
     template <typename Key>
     const_iterator upper_bound(const Key& key) const {
 
-        for (iterator first = begin(); first != end(); ++first) {
+        for (iterator first(begin_); first != end(); ++first) {
             if (key_is_less(key, *first, value_compare()))
                 return first;
         }
@@ -559,7 +578,15 @@ class RBTree {
             node->parent->right = NULL;
         value_alloc_.destroy(&node->value);
         node_alloc_.deallocate(node, 1);
-        size_--;
+        --size_;
+
+        if (get_root()) {
+            begin_ = tree_min(get_root());
+            right_end_ = tree_max(get_root());
+        } else {
+            begin_ = end_;
+            right_end_ = end_;
+        }
     }
 
     void clear_tree(node_pointer node) {
@@ -774,53 +801,54 @@ class RBTree {
         current_node->parent = tmp;
     }
 
-    void BST_remove(node_pointer toBeDeleted) {
-        if (!empty()) {
+    void BST_remove(node_pointer toBeDeleted, node_pointer& new_leaf) {
 
-            // Case 1 -> Node is a leaf
-            if (node_is_leaf(toBeDeleted)) {
+        //! REWORK
+        // // Case 1 -> Node is a leaf
+        // if (node_is_leaf(toBeDeleted)) {
+        //     return;
 
-                if (toBeDeleted->is_black == false) {
-                    if (node_is_left_child(toBeDeleted))
-                        toBeDeleted->parent->left = NULL;
-                    else
-                        toBeDeleted->parent->right = NULL;
-                } else
-                    return;
+        //     // Case 2 -> Node has only one child
+        // } else if (node_only_child(toBeDeleted)) {
 
-                // Case 2 -> Node has only one child
-            } else if (node_only_child(toBeDeleted)) {
+        //     node_pointer child = (toBeDeleted->left) ? toBeDeleted->left : toBeDeleted->right;
 
-                node_pointer child = (toBeDeleted->left) ? toBeDeleted->left : toBeDeleted->right;
+        //     // Replace toBeDeleted by it's child
+        //     if (node_is_left_child(toBeDeleted)) {
+        //         toBeDeleted->parent->left = child;
+        //     } else {
+        //         toBeDeleted->parent->right = child;
+        //     }
 
-                // Replace toBeDeleted by it's child
-                if (node_is_left_child(toBeDeleted)) {
-                    toBeDeleted->parent->left = child;
-                } else {
-                    toBeDeleted->parent->right = child;
-                }
+        //     child->parent = toBeDeleted->parent;
+        //     toBeDeleted->parent = child;
+        //     // child->is_black = toBeDeleted->is_black;
+        //     (toBeDeleted->left) ? child->left = toBeDeleted : child->right = toBeDeleted;
+        //     (toBeDeleted->left) ? toBeDeleted->left = NULL : toBeDeleted->right = NULL;
 
-                child->parent = toBeDeleted->parent;
-                toBeDeleted->parent = child;
-                // child->is_black = toBeDeleted->is_black;
-                (toBeDeleted->left) ? child->left = toBeDeleted : child->right = toBeDeleted;
-                (toBeDeleted->left) ? toBeDeleted->left = NULL : toBeDeleted->right = NULL;
+        //     // Case 3 -> toBeDeleted Node has two child
+        // } else {
 
-                // Case 3 -> toBeDeleted Node has two child
-            } else {
+        //     // bool color = toBeDeleted->is_black;
 
-                bool color = toBeDeleted->is_black;
+        //     // Find the largest value in the left Subtree of the toBeDeleted node
+        //     node_pointer successor = find_successor(toBeDeleted->left);
 
-                // Find the largest value in the left Subtree of the toBeDeleted node
-                node_pointer successor = find_successor(toBeDeleted->left);
-
-                swap_nodes(toBeDeleted, successor);
-
-                successor->is_black = color;
-            }
-        }
+        //     new_leaf = swap_nodes(toBeDeleted, successor);
+            
+        //     // successor->is_black = color;
+        // }
     }
 
+    void reset_pointers() {
+        begin_ = end_;
+        right_end_ = end_;
+
+        while (begin_->left)
+            begin_ = begin_->left;
+        while (right_end_->right)
+            right_end_ = right_end_->right;
+    }
     // clang-format off
   private:
     node_allocator      node_alloc_;    // used to Allocate nodes
