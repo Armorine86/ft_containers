@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 09:38:08 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/07 15:20:35 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/07 22:31:32 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -207,16 +207,14 @@ class RBTree {
         ++it;
 
         node_pointer toBeDeleted = node. base();
-        node_pointer new_leaf = NULL;
-
-        BST_remove(toBeDeleted, new_leaf);
-        if (!new_leaf)
-            new_leaf = toBeDeleted;
+        
+        BST_remove(toBeDeleted);
+       
         printTree();
         std::cout << "\n------------------------" << std::endl;
         std::cout << "Is valid: " << std::boolalpha << ft::valid_RBtree(end().base()->left) << std::endl;
 
-        delete_fix(new_leaf);
+        delete_fix(toBeDeleted);
 
         delete_node(toBeDeleted);
 
@@ -801,43 +799,43 @@ class RBTree {
         current_node->parent = tmp;
     }
 
-    void BST_remove(node_pointer toBeDeleted, node_pointer& new_leaf) {
+    void BST_remove(node_pointer toBeDeleted) {
 
         //! REWORK
-        // // Case 1 -> Node is a leaf
-        // if (node_is_leaf(toBeDeleted)) {
-        //     return;
+        // Case 1 -> Node is a leaf
+        if (node_is_leaf(toBeDeleted)) {
+            return;
 
-        //     // Case 2 -> Node has only one child
-        // } else if (node_only_child(toBeDeleted)) {
+            // Case 2 -> Node has only one child
+        } else if (node_only_child(toBeDeleted)) {
 
-        //     node_pointer child = (toBeDeleted->left) ? toBeDeleted->left : toBeDeleted->right;
+            node_pointer child = (toBeDeleted->left) ? toBeDeleted->left : toBeDeleted->right;
 
-        //     // Replace toBeDeleted by it's child
-        //     if (node_is_left_child(toBeDeleted)) {
-        //         toBeDeleted->parent->left = child;
-        //     } else {
-        //         toBeDeleted->parent->right = child;
-        //     }
+            // Replace toBeDeleted by it's child
+            if (node_is_left_child(toBeDeleted)) {
+                toBeDeleted->parent->left = child;
+            } else {
+                toBeDeleted->parent->right = child;
+            }
 
-        //     child->parent = toBeDeleted->parent;
-        //     toBeDeleted->parent = child;
-        //     // child->is_black = toBeDeleted->is_black;
-        //     (toBeDeleted->left) ? child->left = toBeDeleted : child->right = toBeDeleted;
-        //     (toBeDeleted->left) ? toBeDeleted->left = NULL : toBeDeleted->right = NULL;
+            child->parent = toBeDeleted->parent;
+            toBeDeleted->parent = child;
+            // child->is_black = toBeDeleted->is_black;
+            (toBeDeleted->left) ? child->left = toBeDeleted : child->right = toBeDeleted;
+            (toBeDeleted->left) ? toBeDeleted->left = NULL : toBeDeleted->right = NULL;
 
-        //     // Case 3 -> toBeDeleted Node has two child
-        // } else {
+            // Case 3 -> toBeDeleted Node has two child
+        } else {
 
-        //     // bool color = toBeDeleted->is_black;
+            bool color = toBeDeleted->is_black;
 
-        //     // Find the largest value in the left Subtree of the toBeDeleted node
-        //     node_pointer successor = find_successor(toBeDeleted->left);
+            // Find the largest value in the left Subtree of the toBeDeleted node
+            node_pointer successor = find_successor(toBeDeleted->left);
 
-        //     new_leaf = swap_nodes(toBeDeleted, successor);
+            swap_nodes(toBeDeleted, successor);
             
-        //     // successor->is_black = color;
-        // }
+            successor->is_black = color;
+        }
     }
 
     void reset_pointers() {
