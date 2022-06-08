@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 09:38:08 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/07 22:31:32 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/08 16:00:38 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,6 +140,13 @@ class RBTree {
             return ft::make_pair(it, key_exists);
         }
 
+        node_pointer key_found = find_ptr(val);
+        if (key_found != end_) {
+            key_found = NULL;
+            iterator it(key_found);
+            return ft::make_pair(it, false);
+        }
+        
         iterator parent(get_root());
         node_pointer& pos = find_insert_pos(parent, val);
 
@@ -158,6 +165,9 @@ class RBTree {
             right_end_ = right_end_->right;
 
         insert_fix(pos);
+        // printTree();
+        // std::cout << "\n------------------------" << std::endl;
+        // std::cout << "Is valid: " << std::boolalpha << ft::valid_RBtree(end().base()->left) << std::endl;
 
         return ft::make_pair(it, key_exists);
     }
@@ -171,6 +181,11 @@ class RBTree {
             get_root()->is_black = true;
 
             return iterator(begin_);
+        }
+
+        iterator key_found = find_ptr(val);
+        if (key_found == end()) {
+            return key_found;
         }
 
         iterator root(get_root());
@@ -206,17 +221,21 @@ class RBTree {
         iterator it = node;
         ++it;
 
-        node_pointer toBeDeleted = node. base();
+        node_pointer toBeDeleted = node.base();
+
+        node_pointer tmp = NULL;
+        BST_remove(toBeDeleted, tmp);
+
+        if (tmp) 
+            delete_fix(tmp);
+        else
+            delete_fix(toBeDeleted);
+        delete_node(toBeDeleted);
         
-        BST_remove(toBeDeleted);
-       
         printTree();
         std::cout << "\n------------------------" << std::endl;
-        std::cout << "Is valid: " << std::boolalpha << ft::valid_RBtree(end().base()->left) << std::endl;
-
-        delete_fix(toBeDeleted);
-
-        delete_node(toBeDeleted);
+        std::cout << "Is valid: " << std::boolalpha << ft::valid_RBtree(end().base()->left)
+                  << std::endl;
 
         return iterator(it.base());
     }
@@ -378,9 +397,9 @@ class RBTree {
             }
 
             if (root->is_black)
-                std::cout << D_GREY;
+                std::cout << D_GREY << "(B)";
             else
-                std::cout << BRED;
+                std::cout << BRED << "(R)";
 
             std::cout << root->value.first << END << std::endl;
             printHelper(root->right, indent, true);
@@ -799,13 +818,12 @@ class RBTree {
         current_node->parent = tmp;
     }
 
-    void BST_remove(node_pointer toBeDeleted) {
+    void BST_remove(node_pointer& toBeDeleted, node_pointer& temp) {
 
-        //! REWORK
         // Case 1 -> Node is a leaf
         if (node_is_leaf(toBeDeleted)) {
             return;
-
+            
             // Case 2 -> Node has only one child
         } else if (node_only_child(toBeDeleted)) {
 
@@ -820,9 +838,10 @@ class RBTree {
 
             child->parent = toBeDeleted->parent;
             toBeDeleted->parent = child;
-            // child->is_black = toBeDeleted->is_black;
             (toBeDeleted->left) ? child->left = toBeDeleted : child->right = toBeDeleted;
             (toBeDeleted->left) ? toBeDeleted->left = NULL : toBeDeleted->right = NULL;
+
+            temp = child;
 
             // Case 3 -> toBeDeleted Node has two child
         } else {
@@ -831,13 +850,56 @@ class RBTree {
 
             // Find the largest value in the left Subtree of the toBeDeleted node
             node_pointer successor = find_successor(toBeDeleted->left);
-
-            swap_nodes(toBeDeleted, successor);
+            node_pointer tmp = NULL;
             
+            // if (successor->parent == toBeDeleted && node_is_leaf(successor))
+            tmp = special_swap(toBeDeleted, successor);
+            // else
+            //    tmp = swap_nodes(toBeDeleted, successor);
+
+            // printTree();
+            // std::cout << "\n------------------------" << std::endl;
+
             successor->is_black = color;
+            
+            temp = tmp;
+            // printTree();
         }
     }
 
+    node_pointer special_swap(node_pointer target, node_pointer successor) {
+        
+        node_pointer temp = new_node(successor->value);
+        node_pointer child = NULL;
+
+        if (successor->left)
+            child = successor->left;
+
+        target->parent->left = temp;
+        temp->parent = target->parent;
+        temp->right = target->right;
+        temp->right->parent = temp;
+        temp->left = target;
+
+        target->left = NULL;
+        target->right = NULL;
+        target->parent = temp;
+
+        
+        delete_node(successor);
+        
+        if (child) {
+            child->parent = temp;
+            temp->left = child;
+            target->parent = child;
+            child->left = target;
+        }
+
+        printTree();
+
+        return target;
+    }
+    
     void reset_pointers() {
         begin_ = end_;
         right_end_ = end_;
@@ -846,6 +908,82 @@ class RBTree {
             begin_ = begin_->left;
         while (right_end_->right)
             right_end_ = right_end_->right;
+    }
+
+    // Swaps the target Node with it's successor
+    
+    node_pointer swap_nodes(node_pointer target, node_pointer successor) {
+
+        // node_pointer child = NULL;
+        // node_pointer tmp = new_node(target->value);
+        // tmp->parent = successor->parent;
+        // tmp->left = successor->left;
+        // tmp->right = successor->right;
+
+        // if (successor->left)
+        //     child = successor->left;
+            
+        // if (target->left == successor)
+        //     target->left = NULL;
+        
+        // successor->parent = target->parent;
+        // successor->parent->left = successor;
+        // successor->left = target->left;
+        // if (successor->left)
+        //     successor->left->parent = successor;
+        // successor->right = target->right;
+        // if (successor->right)
+        //     successor->right->parent = successor;
+
+        // target->parent = tmp->parent;
+        // target->parent->left = target;
+        // target->left = tmp->left;
+        // if (target->left) 
+        //     target->left->parent = target;
+        // target->right = tmp->right;
+        // if (target->right)
+        //     target->right->parent = target;
+
+         // Searching in left sub-tree, successor cannot have a right child at this point
+
+        node_pointer child = NULL;
+        if (!node_is_leaf(successor))
+            child = successor->left;
+
+        successor->parent = target->parent;
+
+        if (target->left == successor)
+            target->left = NULL;
+        else {
+            successor->left = target->left;
+            successor->left->parent = successor;
+        }
+
+        if (target->right == successor)
+            target->right = NULL;
+        else {
+            successor->right = target->right;
+            successor->right->parent = successor;
+        }
+
+        if (node_is_left_child(target))
+            target->parent->left = successor;
+        else
+            target->parent->right = successor;
+
+        // if (child) {
+        //     target->parent = child;
+        //     target->parent->right = target;
+
+        // } else {
+        //     target->parent = successor;
+        //     successor->left = target;
+        // }
+        target->right = NULL;
+
+        // printTree();
+        // std::cout << "\n------------------------" << std::endl;
+        return child;
     }
     // clang-format off
   private:

@@ -9,7 +9,7 @@
 #include <vector>
 
 #define TESTED_TYPE int
-#define NAMESPACE ft
+#define NAMESPACE std
 #define STRVECTOR NAMESPACE::vector<std::string>
 
 bool mygreater(int i, int j) { return (i > j); }
@@ -139,19 +139,19 @@ int main(void) {
     // }
 
     {
-        NAMESPACE::map<int, const char*> m;
-        m.insert(NAMESPACE::make_pair(23, "23n"));
-        m.insert(NAMESPACE::make_pair(25, "asdasdfsdfsafdsf"));
-        m.insert(NAMESPACE::make_pair(1, "asdssdfdfdffffff"));
-        m.insert(NAMESPACE::make_pair(2, "dsfdffffdfdfdsdfdffa"));
-        m.insert(NAMESPACE::make_pair(3, "sssdfs"));
-        m.insert(NAMESPACE::make_pair(75, "dfse"));
-        m.insert(NAMESPACE::make_pair(30, "sefsadfasdfasdfsadfasdfsf"));
-        m.insert(NAMESPACE::make_pair(-22, "dfhkihgbnfbcx5reterjhd"));
-        m.insert(NAMESPACE::make_pair(-23, "sdffgdfgrefet34thfgheewt"));
-        m.insert(NAMESPACE::make_pair(0, "98y4rtuohwidsjusdossefsse"));
+        NAMESPACE::map<std::string, std::string> m;
+        m.insert(NAMESPACE::make_pair("", "23n"));
+        m.insert(NAMESPACE::make_pair("", "asdasdfsdfsafdsf"));
+        m.insert(NAMESPACE::make_pair("", "asdssdfdfdffffff"));
+        m.insert(NAMESPACE::make_pair("", "dsfdffffdfdfdsdfdffa"));
+        m.insert(NAMESPACE::make_pair("", "sssdfs"));
+        m.insert(NAMESPACE::make_pair("", "dfse"));
+        m.insert(NAMESPACE::make_pair("", "sefsadfasdfasdfsadfasdfsf"));
+        m.insert(NAMESPACE::make_pair("", "dfhkihgbnfbcx5reterjhd"));
+        m.insert(NAMESPACE::make_pair("", "sdffgdfgrefet34thfgheewt"));
+        m.insert(NAMESPACE::make_pair("", "98y4rtuohwidsjusdossefsse"));
 
-        m.printTree();
+        //m.printTree();
         std::cout << "\n------------------------" << std::endl;
 
         m.erase(m.begin(), m.end());

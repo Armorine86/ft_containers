@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/13 12:47:23 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/07 22:31:05 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/08 11:41:43 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,37 +140,10 @@ NodePtr node_only_child(NodePtr node) {
 template <typename NodePtr>
 NodePtr find_successor(NodePtr node) {
 
-    while (node->left)
-        node = node->left;
+    while (node->right)
+        node = node->right;
 
     return node;
-}
-
-// Swaps the target Node with it's successor
-template <typename NodePtr>
-void swap_nodes(NodePtr target, NodePtr& successor) {
-    
-    successor->parent = target->parent;
-    
-    if (target->left == successor)
-        target->left = NULL;
-    else {
-        successor->left = target->left;
-        successor->left->parent = successor;
-    }
-    
-    if (target->right == successor)
-        target->right = NULL;
-    else {
-        successor->right = target->right;
-        successor->right->parent = successor;
-    }
-    
-    if (node_is_left_child(target))
-        target->parent->left = successor;
-    else
-        target->parent->right = successor;
-    
 }
 
 // Returns True if the key is equal to the node's key

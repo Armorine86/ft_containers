@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 08:14:45 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/06 10:42:43 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/08 14:41:37 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ class pair {
   public:
     pair() : first(first_type()), second(second_type()) {}
 
-    pair(const T1& x, const T2& y) : first(x), second(y) {}
+    pair(const first_type& x, const second_type& y) : first(x), second(y) {}
 
     template <typename U1, typename U2>
     pair(const pair<U1, U2>& pr) : first(pr.first), second(pr.second) {}
