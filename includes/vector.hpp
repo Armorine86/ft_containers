@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/13 10:16:33 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/10 14:01:15 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/10 15:34:15 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -363,9 +363,6 @@ class vector {
 
         size_type diff = std::distance(begin(), pos); // if realloc happens
 
-        // if (pos == end())
-        //     push_back(val);
-        // else
         insert(pos, 1, val);
 
         return iterator(start_ + diff);
@@ -477,11 +474,11 @@ class vector {
     void resize(size_type n, value_type val = value_type()) {
 
         if (size() > n) {
-            for (; size() > n;)
+            while (size() > n)
                 pop_back();
         } else if (n > size()) {
             check_size(n);
-            for (; size() < n;)
+            while (size() < n)
                 push_back(val);
         }
     }

@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 09:38:08 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/10 15:19:27 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/10 16:19:19 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -304,42 +304,68 @@ class RBTree {
 
     template <typename Key>
     iterator lower_bound(const Key& key) {
-
-        for (iterator first(begin_); first != end(); ++first) {
-            if (!key_is_less(*first, key, value_compare()))
-                return first;
+    
+        node_pointer ptr = get_root();
+        iterator it(end_);
+        while (ptr != NULL) {
+            if (!value_compare()(ptr->value, key)) {
+                it = iterator(ptr);
+                ptr = ptr->left;
+            }
+            else
+                ptr = ptr->right;
         }
-        return end();
+        return it;
     }
 
     template <typename Key>
     const_iterator lower_bound(const Key& key) const {
-
-        for (iterator first(begin_); first != end(); ++first) {
-            if (!key_is_less(*first, key, value_compare()))
-                return first;
+        
+        node_pointer ptr = get_root();
+        const_iterator it(end_);
+        while (ptr != NULL) {
+            if (!value_compare()(ptr->value, key)) {
+                it = const_iterator(ptr);
+                ptr = ptr->left;
+            }
+            else
+                ptr = ptr->right;
         }
-        return end();
+        return it;
     }
 
     template <typename Key>
     iterator upper_bound(const Key& key) {
 
-        for (iterator first(begin_); first != end(); ++first) {
-            if (key_is_less(key, *first, value_compare()))
-                return first;
+        node_pointer ptr = get_root();
+        iterator it(end_);
+        while (ptr != NULL) {
+            if (key_is_less(key, ptr->value, value_compare())) {
+                it = iterator(ptr);
+                ptr = ptr->left;
+            }
+            else
+                ptr = ptr->right;
         }
-        return end();
+        
+        return it;
     }
 
     template <typename Key>
     const_iterator upper_bound(const Key& key) const {
 
-        for (iterator first(begin_); first != end(); ++first) {
-            if (key_is_less(key, *first, value_compare()))
-                return first;
+        node_pointer ptr = get_root();
+        const_iterator it(end_);
+        while (ptr != NULL) {
+            if (key_is_less(key, ptr->value, value_compare())) {
+                it = const_iterator(ptr);
+                ptr = ptr->left;
+            }
+            else
+                ptr = ptr->right;
         }
-        return end();
+        
+        return it;
     }
 
     //* ============== Find ==============
