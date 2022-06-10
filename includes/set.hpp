@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/17 16:39:17 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/10 13:28:16 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/10 14:14:16 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,21 +123,23 @@ class set {
     }
 
     // Removes a single element marked by pos
-    iterator erase(const_iterator pos) { return rbtree.erase(pos); }
+    void erase(iterator pos) { rbtree.erase(pos); }
 
     // Removes the element with the key equivalent to key
     size_type erase(const Key& key) { return rbtree.erase(key); }
 
     // Removes all elements between [first] and [last].
     // Excluding the element pointed by [last].
-    iterator erase(const_iterator first, const_iterator last) { return rbtree.erase(first, last); }
+    void erase(iterator first, iterator last) { return rbtree.erase(first, last); }
 
     // Removes all the elements from the container.
     // Size will be reduced to 0.
     void clear() { rbtree.clear(); }
 
     // Swap current container for src container.
-    void swap(set& src) { rbtree.swap(src); }
+    void swap(set& src) { rbtree.swap(src.rbtree); }
+
+    void printTree() { rbtree.printTree(); }
 
     //* ============== Lookup ==============
 

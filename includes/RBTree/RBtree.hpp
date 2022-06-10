@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 09:38:08 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/10 13:21:45 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/10 15:19:27 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,8 @@ class RBTree {
     // Returns a copy of the allocator associated with the Set
     allocator_type get_allocator() const { return value_alloc_; }
 
+    value_compare value_comp() const { return value_compare(); }
+
     /**
     **  ==================================================
     **  |             ITERATORS FUNCTIONS                |
@@ -208,7 +210,6 @@ class RBTree {
         iterator it = node;
         ++it;
 
-            
         node_pointer toBeDeleted = node.base();
 
         BST_remove(toBeDeleted);
@@ -378,7 +379,7 @@ class RBTree {
             else
                 std::cout << BRED << "(R)";
 
-            std::cout << root->value.first << END << std::endl;
+            std::cout << root/*->value.first*/ << END << std::endl;
             printHelper(root->right, indent, true);
             printHelper(root->left, indent, false);
         }
@@ -568,9 +569,7 @@ class RBTree {
             value_alloc_.destroy(&node->value);
             node_alloc_.deallocate(node, 1);
 
-
             --size_;
-
         }
     }
 
@@ -862,6 +861,8 @@ class RBTree {
     void swap_nodes(node_pointer target, node_pointer successor) {
 
         Node tmp = *target;
+        
+        // node_pointer successor_parent = successor->parent;
 
         target->is_black = successor->is_black;
         successor->is_black = tmp.is_black;
@@ -880,8 +881,10 @@ class RBTree {
 
         if (successor->parent == target)
             target->parent = successor;
-        else
+        else {
             target->parent = successor->parent;
+            target->parent->right = target;
+        }
 
         if (successor->parent != target) {
             if (node_is_left_child(successor))
@@ -894,8 +897,9 @@ class RBTree {
         target->right = successor->right;
         successor->parent = tmp.parent;
 
-        if (target->left)
-            target->parent->left = target;
+        if (target->left) {
+            target->left->parent = target;
+        }
         if (tmp.left != successor)
             successor->left = tmp.left;
         else
@@ -914,6 +918,9 @@ class RBTree {
         if (successor->right)
             successor->right->parent = successor;
 
+        // target->parent = successor_parent;
+        // successor_parent->right = target;
+        
         // printTree();
         // std::cout << "\n------------------------" << std::endl;
     }

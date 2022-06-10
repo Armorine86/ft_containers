@@ -146,10 +146,10 @@ int main(void) {
     //               << std::endl;
 
     //     iter = m.insert(ft::make_pair(20, "Hello")).first;
-    //     // m.printTree();
-    //     // std::cout << "\n------------------------" << std::endl;
-    //     std::cout << "Tree is valid: " << std::boolalpha << ft::valid_RBtree(root.base()) << "\n"
-    //               << std::endl;
+        // m.printTree();
+        // std::cout << "\n------------------------" << std::endl;
+        // std::cout << "Tree is valid: " << std::boolalpha << ft::valid_RBtree(root.base()) << "\n"
+        //           << std::endl;
 
     //     iter = m.insert(ft::make_pair(36, "Hello")).first;
     //     // m.printTree();
