@@ -6,14 +6,14 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/17 16:39:17 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/24 08:38:39 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/10 13:28:16 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "Iterator.hpp"
-#include "RBtree.hpp"
+#include "Iterator/Iterator.hpp"
+#include "RBTree/RBtree.hpp"
 #include "pair.hpp"
 #include "utilities.hpp"
 
@@ -56,7 +56,7 @@ class set {
   public:
     set() : rbtree(value_compare()) {}
 
-    explicit set(const key_compare& comp = key_compare(),
+    explicit set(const key_compare& comp,
                  const allocator_type& alloc = allocator_type())
         : rbtree(comp, alloc) {}
 
@@ -70,7 +70,11 @@ class set {
 
     set(const set& src) : rbtree(src.rbtree) {}
 
-    set& operator=(const set& rhs) { rbtree = rhs.rbtree; }
+    set& operator=(const set& rhs) {
+        rbtree = rhs.rbtree;
+
+        return *this;
+    }
 
     ~set() {}
 
@@ -106,10 +110,10 @@ class set {
     //* ============== Modifiers ==============
 
     // Inserts a single value in the set.
-    ft::pair<iterator, bool> insert(const value_type& val) { rbtree.insert(val); }
+    ft::pair<iterator, bool> insert(const value_type& val) { return rbtree.insert(val); }
 
     // Inserts an element [in front] of the marked position.
-    iterator insert(iterator pos, const value_type& val) { rbtree.insert(pos, val); }
+    iterator insert(iterator pos, const value_type& val) { return rbtree.insert(pos, val); }
 
     // Inserts a range of element into the set starting with [first] up to [last].
     // Excluding the element pointed by [last].
@@ -119,14 +123,14 @@ class set {
     }
 
     // Removes a single element marked by pos
-    iterator erase(const_iterator pos) { rbtree.erase(pos); }
+    iterator erase(const_iterator pos) { return rbtree.erase(pos); }
 
     // Removes the element with the key equivalent to key
-    size_type erase(const Key& key) { rbtree.erase(key); }
+    size_type erase(const Key& key) { return rbtree.erase(key); }
 
     // Removes all elements between [first] and [last].
     // Excluding the element pointed by [last].
-    iterator erase(const_iterator first, const_iterator last) { rbtree.erase(first, last); }
+    iterator erase(const_iterator first, const_iterator last) { return rbtree.erase(first, last); }
 
     // Removes all the elements from the container.
     // Size will be reduced to 0.
@@ -192,7 +196,7 @@ class set {
 */
 
 template <typename Key, typename Compare, typename Alloc>
-void swap(const ft::set<Key, Compare, Alloc>& x, const ft::set<Key, Compare, Alloc>& y) {
+void swap(ft::set<Key, Compare, Alloc>& x, ft::set<Key, Compare, Alloc>& y) {
 
     x.swap(y);
 }
@@ -222,7 +226,7 @@ template <typename Key, typename Compare, typename Alloc>
 bool operator>(const ft::set<Key, Compare, Alloc>& left,
                const ft::set<Key, Compare, Alloc>& right) {
 
-    return right > left;
+    return right < left;
 }
 
 template <typename Key, typename Compare, typename Alloc>

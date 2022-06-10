@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/13 12:47:23 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/08 11:41:43 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/10 10:54:42 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -208,7 +208,7 @@ NodePtr& get_uncle_right(NodePtr& current_node) {
 template <typename NodePtr>
 NodePtr& get_sibling(NodePtr& current_node) {
 
-    // If current_node is a left chilf, his sibling is his parent's right child
+    // If current_node is a left child, his sibling is his parent's right child
     if (node_is_left_child(current_node))
         return current_node->parent->right;
     else
@@ -227,13 +227,13 @@ NodePtr get_niece(NodePtr& current_node) {
 
     // If current_node is a left child, the Niece is the left child of
     // current_node's sibling
-    if (get_sibling(current_node)) {
+    // if (get_sibling(current_node)) {
         if (node_is_left_child(current_node))
             return get_sibling(current_node)->left;
         else
             return get_sibling(current_node)->right;
-    }
-    return NULL;
+    // }
+    // return NULL;
 }
 
 // Returns a pointer to the sibling of the current node
@@ -249,13 +249,13 @@ NodePtr get_nephew(NodePtr& current_node) {
     // If current_node is a left child, the Nephew is the right child of
     // current_node's sibling
 
-    if (get_sibling(current_node)) {
+    // if (get_sibling(current_node)) {
         if (node_is_left_child(current_node))
             return get_sibling(current_node)->right;
         else
             return get_sibling(current_node)->left;
-    }
-    return NULL;
+    // }
+    // return NULL;
 }
 
 /*

@@ -4,7 +4,5 @@
 -Wpedantic
 -std=c++98
 -Iincludes/
--Iincludes/Vector/
--Iincludes/Stack/
--Iincludes/Map/
+-Iincludes/Iterator/
 -Iincludes/Map/RBTree/

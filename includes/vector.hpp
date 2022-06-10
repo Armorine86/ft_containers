@@ -6,15 +6,15 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/13 10:16:33 by mmondell          #+#    #+#             */
-/*   Updated: 2022/05/19 09:57:43 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/10 12:23:39 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "../utilities.hpp"
-#include "Iterator.hpp"
-#include "type_traits.hpp"
+#include "utilities.hpp"
+#include "Vector/Iterator.hpp"
+#include "Vector/type_traits.hpp"
 #include <cstddef>
 #include <iostream>
 #include <limits>

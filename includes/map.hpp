@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 08:11:20 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/09 20:48:58 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/10 10:28:34 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -246,9 +246,11 @@ class map {
 
     //* =============== OBSERVER FUNCTIONS ===============
 
-    key_compare key_comp() const { return rbtree.value_comp().key_comp(); }
+    key_compare key_comp() const { return key_compare(); }
 
-    map::value_compare value_comp() const { return value_compare(rbtree.value_comp().key_comp()); }
+    map::value_compare value_comp() const {
+        return value_compare(key_comp());
+    }
 
     //* =============== UTIL FUNCTIONS ===============
 
@@ -267,7 +269,7 @@ class map {
 }; // class map
 
 template <typename Key, typename T, typename Compare, typename Alloc>
-void swap(const ft::map<Key, T, Compare, Alloc>& x, const ft::map<Key, T, Compare, Alloc>& y) {
+void swap(ft::map<Key, T, Compare, Alloc>& x, ft::map<Key, T, Compare, Alloc>& y) {
     x.swap(y);
 }
 
