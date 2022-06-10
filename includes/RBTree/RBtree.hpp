@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 09:38:08 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/10 16:19:19 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/10 16:44:01 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -430,40 +430,59 @@ class RBTree {
     node_pointer find_ptr(const Key& key) const {
 
         if (!empty()) {
+            
+            node_pointer ptr = end_->left;
 
-            iterator root(get_root());
-            const_iterator current_node;
-
-            if (is_equal(key, *root, Compare()))
-                return root.base();
-
-            key_is_less(key, *root, Compare()) ? current_node = begin()
-                                               : current_node = iterator(right_end_);
-
-            if (current_node == begin()) {
-
-                for (; current_node != root; ++current_node) {
-                    if (!is_equal(key, *current_node, Compare())) {
-                        continue;
-                    }
-                    //  Found Key
-                    return current_node.base();
+            while (ptr != NULL) {
+                if (key_is_less(key, ptr->value, value_compare())) {
+                    ptr = ptr->left;
                 }
-
-            } else {
-
-                for (; current_node != root; --current_node) {
-                    if (!is_equal(key, *current_node, Compare())) {
-                        continue;
-                    }
-                    // Found Key
-                    return current_node.base();
-                }
+                else if (key_is_less(ptr->value, key, value_compare()))
+                    ptr = ptr->right;
+                else
+                    return ptr;
             }
+            return ptr;   
         }
 
-        // Key Not Found
         return end_;
+        
+        
+        // if (!empty()) {
+
+        //     iterator root(get_root());
+        //     const_iterator current_node;
+
+        //     if (is_equal(key, *root, Compare()))
+        //         return root.base();
+
+        //     key_is_less(key, *root, Compare()) ? current_node = begin()
+        //                                        : current_node = iterator(right_end_);
+
+        //     if (current_node == begin()) {
+
+        //         for (; current_node != root; ++current_node) {
+        //             if (!is_equal(key, *current_node, Compare())) {
+        //                 continue;
+        //             }
+        //             //  Found Key
+        //             return current_node.base();
+        //         }
+
+        //     } else {
+
+        //         for (; current_node != root; --current_node) {
+        //             if (!is_equal(key, *current_node, Compare())) {
+        //                 continue;
+        //             }
+        //             // Found Key
+        //             return current_node.base();
+        //         }
+        //     }
+        // }
+
+        // // Key Not Found
+        // return end_;
     }
 
     // Starting at root, check each key
