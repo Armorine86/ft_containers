@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 09:38:08 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/10 16:44:01 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/10 16:44:34 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -444,45 +444,7 @@ class RBTree {
             }
             return ptr;   
         }
-
         return end_;
-        
-        
-        // if (!empty()) {
-
-        //     iterator root(get_root());
-        //     const_iterator current_node;
-
-        //     if (is_equal(key, *root, Compare()))
-        //         return root.base();
-
-        //     key_is_less(key, *root, Compare()) ? current_node = begin()
-        //                                        : current_node = iterator(right_end_);
-
-        //     if (current_node == begin()) {
-
-        //         for (; current_node != root; ++current_node) {
-        //             if (!is_equal(key, *current_node, Compare())) {
-        //                 continue;
-        //             }
-        //             //  Found Key
-        //             return current_node.base();
-        //         }
-
-        //     } else {
-
-        //         for (; current_node != root; --current_node) {
-        //             if (!is_equal(key, *current_node, Compare())) {
-        //                 continue;
-        //             }
-        //             // Found Key
-        //             return current_node.base();
-        //         }
-        //     }
-        // }
-
-        // // Key Not Found
-        // return end_;
     }
 
     // Starting at root, check each key
