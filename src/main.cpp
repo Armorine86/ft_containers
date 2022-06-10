@@ -151,7 +151,7 @@ int main(void) {
         m.insert(NAMESPACE::make_pair("", "sdffgdfgrefet34thfgheewt"));
         m.insert(NAMESPACE::make_pair("", "98y4rtuohwidsjusdossefsse"));
 
-        //m.printTree();
+        // m.printTree();
         std::cout << "\n------------------------" << std::endl;
 
         m.erase(m.begin(), m.end());

@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 08:11:20 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/07 08:31:58 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/09 20:48:58 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,7 +164,7 @@ class map {
 
     T& operator[](const Key& key) {
 
-        return (*((this->insert(make_pair(key, mapped_type()))).first)).second;
+        return insert(ft::make_pair(key, mapped_type())).first->second;
     }
 
     // Returns a copy of the allocator associated with the Set

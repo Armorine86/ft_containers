@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 09:38:08 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/08 16:00:38 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/09 21:55:07 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ class RBTree {
 
   public:
     // Returns a copy of the allocator associated with the Set
-    allocator_type get_allocator() { return value_alloc_; }
+    allocator_type get_allocator() const { return value_alloc_; }
 
     /**
     **  ==================================================
@@ -140,13 +140,6 @@ class RBTree {
             return ft::make_pair(it, key_exists);
         }
 
-        node_pointer key_found = find_ptr(val);
-        if (key_found != end_) {
-            key_found = NULL;
-            iterator it(key_found);
-            return ft::make_pair(it, false);
-        }
-        
         iterator parent(get_root());
         node_pointer& pos = find_insert_pos(parent, val);
 
@@ -165,9 +158,6 @@ class RBTree {
             right_end_ = right_end_->right;
 
         insert_fix(pos);
-        // printTree();
-        // std::cout << "\n------------------------" << std::endl;
-        // std::cout << "Is valid: " << std::boolalpha << ft::valid_RBtree(end().base()->left) << std::endl;
 
         return ft::make_pair(it, key_exists);
     }
@@ -181,11 +171,6 @@ class RBTree {
             get_root()->is_black = true;
 
             return iterator(begin_);
-        }
-
-        iterator key_found = find_ptr(val);
-        if (key_found == end()) {
-            return key_found;
         }
 
         iterator root(get_root());
@@ -223,19 +208,14 @@ class RBTree {
 
         node_pointer toBeDeleted = node.base();
 
-        node_pointer tmp = NULL;
-        BST_remove(toBeDeleted, tmp);
+        BST_remove(toBeDeleted);
 
-        if (tmp) 
-            delete_fix(tmp);
-        else
-            delete_fix(toBeDeleted);
         delete_node(toBeDeleted);
-        
-        printTree();
-        std::cout << "\n------------------------" << std::endl;
-        std::cout << "Is valid: " << std::boolalpha << ft::valid_RBtree(end().base()->left)
-                  << std::endl;
+
+        // printTree();
+        // std::cout << "\n------------------------" << std::endl;
+        // std::cout << "Is valid: " << std::boolalpha << ft::valid_RBtree(end().base()->left)
+        //           << std::endl;
 
         return iterator(it.base());
     }
@@ -459,7 +439,7 @@ class RBTree {
         }
 
         // Key Not Found
-        return end_;
+        return NULL;
     }
 
     // Starting at root, check each key
@@ -472,7 +452,7 @@ class RBTree {
         while (true) {
 
             // value_compare checks if left parameter is less than right parameter
-            if (!key_is_less(key, *current_node, value_compare())) {
+            if (key_is_less(*current_node, key, value_compare())) {
                 // current_node > key = false --> Right
                 if (!current_node.base()->right) {
                     return current_node.base()->right;
@@ -501,6 +481,10 @@ class RBTree {
     template <typename Key>
     node_pointer& find_insert_pos(iterator& root, iterator& hint, const Key& key) {
 
+        //! THIS NEEDS A LITTLE REWORK
+        if (hint == end())
+            return find_insert_pos(root, key);
+
         iterator hint_parent(hint.base()->parent);
 
         if (key_is_less(key, *hint_parent, value_compare())) {
@@ -528,7 +512,7 @@ class RBTree {
                 // Key doesn't fit -> start from root
                 return find_insert_pos(root, key);
 
-        } else if (!key_is_less(key, *hint_parent, value_compare())) {
+        } else if (key_is_less(*hint_parent, key, value_compare())) {
             if (node_is_left_child(hint.base())) {
                 // key doesn't fit -> start from root
                 return find_insert_pos(root, key);
@@ -540,7 +524,7 @@ class RBTree {
                 } else
                     // Node has child --> start from root
                     return find_insert_pos(root, key);
-            } else {
+            } else if (key_is_less(*hint, key, value_compare())) {
                 // key fits --> insert right
                 if (!hint.base()->right) {
                     root = hint;
@@ -589,21 +573,26 @@ class RBTree {
     // Delete the node from the tree
     void delete_node(node_pointer node) {
 
-        if (node_is_left_child(node))
-            node->parent->left = NULL;
-        else
-            node->parent->right = NULL;
-        value_alloc_.destroy(&node->value);
-        node_alloc_.deallocate(node, 1);
-        --size_;
+        if (node) {
+            if (node_is_left_child(node))
+                node->parent->left = NULL;
+            else
+                node->parent->right = NULL;
+            value_alloc_.destroy(&node->value);
+            node_alloc_.deallocate(node, 1);
+            --size_;
 
-        if (get_root()) {
-            begin_ = tree_min(get_root());
-            right_end_ = tree_max(get_root());
-        } else {
-            begin_ = end_;
-            right_end_ = end_;
+            if (get_root()) {
+                begin_ = tree_min(get_root());
+                right_end_ = tree_max(get_root());
+            } else {
+                begin_ = end_;
+                right_end_ = end_;
+            }
         }
+        node->parent = NULL;
+        node->left = NULL;
+        node->right = NULL;
     }
 
     void clear_tree(node_pointer node) {
@@ -712,70 +701,242 @@ class RBTree {
         }
     }
 
-    void delete_fix(node_pointer current_node) {
+    void delete_fix(node_pointer node) {
 
-        iterator root(get_root());
-
-        while (true) {
-
-            if (current_node == root.base())
-                break;
-            else if (!current_node->is_black)
-                break;
-
-            // CASE 1 -> If Sibling is RED
-            else if (get_sibling(current_node) && !get_sibling(current_node)->is_black) {
-
-                current_node->parent->is_black = false;
-
-                get_sibling(current_node)->is_black = true;
-
-                if (node_is_left_child(get_sibling(current_node))) {
-                    right_rotate(current_node->parent);
-
-                } else {
-                    left_rotate(current_node->parent);
+        node_pointer sibling;
+            
+        while (node != get_root() && node->is_black == true) {
+            
+            // if node is left child
+            if (node_is_left_child(node)) {
+                sibling = get_sibling(node);
+                
+                if (sibling->is_black == false) { // case 3.1 -> if sibling is RED
+                
+                    sibling->is_black = true; // color sibling black
+                    node->parent->is_black = false; // color node's parent RED
+                    left_rotate(node->parent);
+                    
+                    if (node->parent->right)
+                        sibling = get_sibling(node);
                 }
-
-                // CASE 2 -> if Nephew is RED (TERMINAL CASE)
-            } else if (get_nephew(current_node) && !get_nephew(current_node)->is_black) {
-
-                get_sibling(current_node)->is_black = current_node->parent->is_black;
-
-                current_node->parent->is_black = true;
-
-                get_nephew(current_node)->is_black = true;
-
-                if (node_is_left_child(get_sibling(current_node))) {
-                    right_rotate(current_node->parent);
+                // case 3.2 -> Both niece and Nephew are Black
+                if ((!sibling->left || sibling->left->is_black) &&
+                    (!sibling->right || sibling->right->is_black)) { 
+                    
+                    sibling->is_black = false; // Color RED
+                    node = node->parent;
+                    
                 } else {
-                    left_rotate(current_node->parent);
+                    if (!sibling->right || sibling->right->is_black) { // case 3.3
+                        sibling->is_black = false;
+                        right_rotate(sibling);
+                        sibling = get_sibling(node);
+                        sibling->is_black = true;
+                    }
+                    
+                    sibling->is_black = node->parent->is_black; // case 3.4
+                    node->parent->is_black = true;
+                    if (sibling->right) {
+                        sibling->right->is_black = true;
+                        left_rotate(node->parent);
+                    }
+                    node = get_root();
+                    // printTree();
+                    // std::cout << "\n\n-------------------------\n" << std::endl;
+                    break;
                 }
-                current_node = current_node->parent;
-                break;
-
-                // CASE 3 -> if Niece is RED
-            } else if (get_niece(current_node) && !get_niece(current_node)->is_black) {
-
-                get_niece(current_node)->is_black = true;
-
-                get_sibling(current_node)->is_black = false;
-
-                if (node_is_left_child(get_niece(current_node))) {
-                    right_rotate(get_niece(current_node)->parent);
-
+            }
+            
+            // if node is right child
+            else {
+                node_pointer sibling = get_sibling(node);
+                
+                if (sibling->is_black == false) { // case 3.1
+                
+                    sibling->is_black = true;
+                    node->parent->is_black = false;
+                    right_rotate(node->parent);
+                    
+                    if (node->parent->left)
+                        sibling = get_sibling(node);
+                }
+                if ((!sibling->left || sibling->left->is_black) &&
+                    (!sibling->right || sibling->right->is_black)) { // case 3.2
+                
+                    sibling->is_black = false;
+                    node = node->parent;
+                    
                 } else {
-                    left_rotate(get_niece(current_node)->parent);
+                    if (!sibling->left || sibling->left->is_black == true) { // case 3.3
+                        sibling->is_black = false;
+                        left_rotate(sibling);
+                        if (sibling->right)
+                            sibling->right->is_black = true;
+                        sibling = node->parent->left;
+                    }
+                    
+                    sibling->is_black = node->parent->is_black; // case 3.4
+                    node->parent->is_black = true;
+                    if (sibling->left) {
+                        sibling->left->is_black = true;
+                        right_rotate(node->parent);
+                    }
+                    node = get_root();
+                    break;
                 }
-
-                // CASE 4 -> Current_node, Sibling, Niece and Nephew are all Black
-            } else {
-                if (get_sibling(current_node))
-                    get_sibling(current_node)->is_black = false;
-                current_node = current_node->parent;
             }
         }
-        current_node->is_black = true;
+        if (node)
+            node->is_black = true;
+        get_root()->is_black = true;
+        
+        // if ((node_is_left_child(current_node) && current_node->parent->left == NULL) ||
+        //     (!node_is_left_child(current_node) && current_node->parent->right == NULL))
+        //     return;
+
+        // for (; current_node != get_root() && current_node->is_black;) {
+
+        //     if (node_is_left_child(current_node)) {
+        //         node_pointer sibling = get_sibling(current_node);
+        //         // If sibling is RED
+        //         if (get_sibling(current_node)->is_black == false) {
+
+        //             current_node->parent->is_black = false; // COLOR RED
+        //             sibling->is_black = true;               // COLOR BLACK
+
+        //             left_rotate(current_node->parent);
+        //             if (get_sibling(current_node))
+        //                 sibling = get_sibling(current_node);
+        //             else
+        //                 break;
+        //         }
+        //         if ((sibling->left && sibling->right && sibling->left->is_black &&
+        //              sibling->right->is_black) ||
+        //             node_is_leaf(sibling)) {
+        //             sibling->is_black = false;
+        //             current_node = current_node->parent;
+        //         } else {
+        //             if (sibling->right && sibling->left && sibling->right->is_black) {
+
+        //                 sibling->left->is_black = true;
+        //                 right_rotate(sibling);
+        //                 sibling->is_black = false;
+        //                 sibling = get_sibling(current_node);
+        //             }
+        //             sibling->is_black = current_node->parent->is_black;
+        //             current_node->parent->is_black = true;
+        //             if (sibling->right) {
+        //                 sibling->right->is_black = true;
+        //                 left_rotate(current_node->parent);
+        //             }
+        //             current_node = get_root();
+        //         }
+        //     } else if (!node_is_left_child(current_node)) {
+        //         node_pointer sibling = get_sibling(current_node);
+        //         if (get_sibling(current_node)->is_black == false) {
+
+        //             current_node->parent->is_black = false; // COLOR RED
+        //             sibling->is_black = true;               // COLOR BLACK
+
+        //             right_rotate(current_node->parent);
+        //             if (get_sibling(current_node))
+        //                 sibling = get_sibling(current_node);
+        //             else
+        //                 break;
+        //         }
+        //         if ((sibling->left && sibling->right && sibling->left->is_black &&
+        //              sibling->right->is_black) ||
+        //             node_is_leaf(sibling)) {
+        //             sibling->is_black = false;
+        //             current_node = current_node->parent;
+        //         } else {
+        //             if (sibling->right && sibling->left && sibling->right->is_black) {
+
+        //                 sibling->right->is_black = true;
+        //                 left_rotate(sibling);
+        //                 sibling->is_black = false;
+        //                 sibling = get_sibling(current_node);
+        //             }
+        //             sibling->is_black = current_node->parent->is_black;
+        //             current_node->parent->is_black = true;
+        //             if (sibling->left) {
+        //                 sibling->left->is_black = true;
+        //                 right_rotate(current_node->parent);
+        //             }
+        //             current_node = get_root();
+        //         }
+        //     } else
+        //         return;
+        // }
+        // current_node->is_black = true;
+
+        // iterator root(get_root());
+
+        // while (true) {
+
+        //     if (current_node == root.base())
+        //         break;
+        //     else if (current_node->is_black == false)
+        //         break;
+
+        //     // CASE 1 -> If Sibling is RED
+        //     else if (get_sibling(current_node) && !get_sibling(current_node)->is_black) {
+
+        //         current_node->parent->is_black = false;
+
+        //         get_sibling(current_node)->is_black = true;
+
+        //         if (node_is_left_child(get_sibling(current_node))) {
+        //             right_rotate(current_node->parent);
+
+        //         } else {
+        //             left_rotate(current_node->parent);
+        //         }
+
+        //         // CASE 2 -> if Nephew is RED (TERMINAL CASE)
+        //     } else if (get_nephew(current_node) && !get_nephew(current_node)->is_black) {
+
+        //         get_sibling(current_node)->is_black = current_node->parent->is_black;
+
+        //         current_node->parent->is_black = true;
+
+        //         get_nephew(current_node)->is_black = true;
+
+        //         if (node_is_left_child(get_sibling(current_node))) {
+        //             right_rotate(current_node->parent);
+        //         } else {
+        //             left_rotate(current_node->parent);
+        //         }
+        //         printTree();
+        //         std::cout << "\n------------------------" << std::endl;
+
+        //         current_node = get_root();
+        //         break;
+
+        //         // CASE 3 -> if Niece is RED
+        //     } else if (get_niece(current_node) && !get_niece(current_node)->is_black) {
+
+        //         get_niece(current_node)->is_black = true;
+
+        //         get_sibling(current_node)->is_black = false;
+
+        //         if (node_is_left_child(get_niece(current_node))) {
+        //             right_rotate(get_niece(current_node)->parent);
+
+        //         } else {
+        //             left_rotate(get_niece(current_node)->parent);
+        //         }
+
+        //         // CASE 4 -> Current_node, Sibling, Niece and Nephew are all Black
+        //     } else {
+        //         if (get_sibling(current_node))
+        //             get_sibling(current_node)->is_black = false;
+        //         current_node = current_node->parent;
+        //     }
+        // }
+        // current_node->is_black = true;
+        // get_root()->is_black = true;
     }
 
     void left_rotate(node_pointer current_node) {
@@ -787,9 +948,11 @@ class RBTree {
             tmp->left->parent = current_node;
 
         tmp->parent = current_node->parent;
-        if (current_node->parent == end_)
+        if (current_node->parent == end_) {
+
+            get_root() = tmp;
             end_->left = tmp;
-        else if (current_node == current_node->parent->left)
+        } else if (current_node == current_node->parent->left)
             current_node->parent->left = tmp;
         else
             current_node->parent->right = tmp;
@@ -807,9 +970,10 @@ class RBTree {
             tmp->right->parent = current_node;
 
         tmp->parent = current_node->parent;
-        if (current_node->parent == end_)
+        if (current_node->parent == end_) {
+            get_root() = tmp;
             end_->left = tmp;
-        else if (current_node == current_node->parent->right)
+        } else if (current_node == current_node->parent->right)
             current_node->parent->right = tmp;
         else
             current_node->parent->left = tmp;
@@ -818,57 +982,85 @@ class RBTree {
         current_node->parent = tmp;
     }
 
-    void BST_remove(node_pointer& toBeDeleted, node_pointer& temp) {
+    void BST_remove(node_pointer& toBeDeleted) {
 
         // Case 1 -> Node is a leaf
         if (node_is_leaf(toBeDeleted)) {
+            delete_fix(toBeDeleted);
             return;
-            
+
             // Case 2 -> Node has only one child
         } else if (node_only_child(toBeDeleted)) {
 
-            node_pointer child = (toBeDeleted->left) ? toBeDeleted->left : toBeDeleted->right;
-
-            // Replace toBeDeleted by it's child
-            if (node_is_left_child(toBeDeleted)) {
-                toBeDeleted->parent->left = child;
-            } else {
-                toBeDeleted->parent->right = child;
-            }
+            node_pointer child = toBeDeleted->left ? child = toBeDeleted->left : toBeDeleted->right;
 
             child->parent = toBeDeleted->parent;
+
+            if (child->parent->left == toBeDeleted)
+                child->parent->left = child;
+            else
+                child->parent->right = child;
+
+            toBeDeleted->right = NULL;
+            toBeDeleted->left = NULL;
             toBeDeleted->parent = child;
-            (toBeDeleted->left) ? child->left = toBeDeleted : child->right = toBeDeleted;
-            (toBeDeleted->left) ? toBeDeleted->left = NULL : toBeDeleted->right = NULL;
 
-            temp = child;
+            get_root()->is_black = true;
 
+            delete_fix(child);
             // Case 3 -> toBeDeleted Node has two child
         } else {
 
-            bool color = toBeDeleted->is_black;
-
             // Find the largest value in the left Subtree of the toBeDeleted node
             node_pointer successor = find_successor(toBeDeleted->left);
-            node_pointer tmp = NULL;
-            
-            // if (successor->parent == toBeDeleted && node_is_leaf(successor))
-            tmp = special_swap(toBeDeleted, successor);
-            // else
-            //    tmp = swap_nodes(toBeDeleted, successor);
 
-            // printTree();
-            // std::cout << "\n------------------------" << std::endl;
-
-            successor->is_black = color;
-            
-            temp = tmp;
-            // printTree();
+            swap_nodes(toBeDeleted, successor);
+            BST_remove(toBeDeleted);
+            // if (toBeDeleted->left) {
+            //     node_pointer tmp = fix_branch(toBeDeleted);
+            //     delete_fix(tmp);
+            // }
+            // delete_fix(toBeDeleted);
         }
     }
 
-    node_pointer special_swap(node_pointer target, node_pointer successor) {
-        
+    node_pointer fix_branch(node_pointer current_node) {
+
+        node_pointer child;
+
+        if (current_node->left) {
+            child = current_node->left;
+            current_node->left = NULL;
+        } else {
+            child = current_node->right;
+            current_node->right = NULL;
+        }
+
+        if (get_root() == current_node)
+            get_root() = child;
+
+        node_pointer tmp = child;
+        tmp->is_black = child->parent->is_black;
+
+        while (tmp->right || tmp->left) {
+            if (tmp->left)
+                tmp = tmp->left;
+            else if (tmp->right)
+                tmp = tmp->right;
+            tmp->is_black = tmp->parent->is_black;
+        }
+
+        child->parent = current_node->parent;
+        if (node_is_left_child(current_node))
+            current_node->parent->left = child;
+        else
+            current_node->parent->right = child;
+
+        return child;
+    }
+
+    void special_swap(node_pointer target, node_pointer successor) {
+
         node_pointer temp = new_node(successor->value);
         node_pointer child = NULL;
 
@@ -885,9 +1077,8 @@ class RBTree {
         target->right = NULL;
         target->parent = temp;
 
-        
         delete_node(successor);
-        
+
         if (child) {
             child->parent = temp;
             temp->left = child;
@@ -895,11 +1086,11 @@ class RBTree {
             child->left = target;
         }
 
-        printTree();
+        // printTree();
 
         return target;
     }
-    
+
     void reset_pointers() {
         begin_ = end_;
         right_end_ = end_;
@@ -911,79 +1102,134 @@ class RBTree {
     }
 
     // Swaps the target Node with it's successor
-    
-    node_pointer swap_nodes(node_pointer target, node_pointer successor) {
 
-        // node_pointer child = NULL;
-        // node_pointer tmp = new_node(target->value);
-        // tmp->parent = successor->parent;
-        // tmp->left = successor->left;
-        // tmp->right = successor->right;
+    void swap_nodes(node_pointer target, node_pointer successor) {
 
-        // if (successor->left)
-        //     child = successor->left;
-            
-        // if (target->left == successor)
-        //     target->left = NULL;
-        
-        // successor->parent = target->parent;
-        // successor->parent->left = successor;
-        // successor->left = target->left;
-        // if (successor->left)
-        //     successor->left->parent = successor;
-        // successor->right = target->right;
-        // if (successor->right)
-        //     successor->right->parent = successor;
+        Node tmp = *target;
 
-        // target->parent = tmp->parent;
-        // target->parent->left = target;
-        // target->left = tmp->left;
-        // if (target->left) 
-        //     target->left->parent = target;
-        // target->right = tmp->right;
-        // if (target->right)
-        //     target->right->parent = target;
+        target->is_black = successor->is_black;
+        successor->is_black = tmp.is_black;
 
-         // Searching in left sub-tree, successor cannot have a right child at this point
+        if (target == get_root())
+            get_root() = successor;
 
-        node_pointer child = NULL;
-        if (!node_is_leaf(successor))
-            child = successor->left;
+        if (node_is_left_child(target)) {
+            if (target->parent != end_)
+                target->parent->left = successor;
 
-        successor->parent = target->parent;
-
-        if (target->left == successor)
-            target->left = NULL;
-        else {
-            successor->left = target->left;
-            successor->left->parent = successor;
+        } else {
+            if (target->parent != end_)
+                target->parent->right = successor;
         }
 
-        if (target->right == successor)
-            target->right = NULL;
-        else {
-            successor->right = target->right;
-            successor->right->parent = successor;
-        }
-
-        if (node_is_left_child(target))
-            target->parent->left = successor;
+        if (successor->parent == target)
+            target->parent = successor;
         else
-            target->parent->right = successor;
+            target->parent = successor->parent;
 
-        // if (child) {
-        //     target->parent = child;
-        //     target->parent->right = target;
+        if (successor->parent != target) {
+            if (node_is_left_child(successor))
+                successor->parent->left = target;
+            else
+                successor->parent->right = target;
+        }
 
-        // } else {
-        //     target->parent = successor;
-        //     successor->left = target;
-        // }
-        target->right = NULL;
+        target->left = successor->left;
+        target->right = successor->right;
+        successor->parent = tmp.parent;
+
+        if (target->left)
+            target->parent->left = target;
+        if (tmp.left != successor)
+            successor->left = tmp.left;
+        else
+            successor->left = target;
+        if (successor->left)
+            successor->left->parent = successor;
+
+        if (target->right)
+            target->parent->right = target;
+
+        if (tmp.right != successor)
+            successor->right = tmp.right;
+        else
+            successor->right = target;
+
+        if (successor->right)
+            successor->right->parent = successor;
 
         // printTree();
         // std::cout << "\n------------------------" << std::endl;
-        return child;
+
+        // node_pointer parent = successor->parent;
+        // if (parent == target)
+        //     parent = NULL;
+        // node_pointer child = successor->left;
+
+        // if (successor->parent != target && node_is_leaf(successor) && successor->is_black ==
+        // false) {
+
+        //     successor->parent = target->parent;
+
+        //     if (node_is_left_child(target))
+        //         successor->parent->left = successor;
+        //     else
+        //         successor->parent->right = successor;
+
+        //     successor->right = target->right;
+        //     successor->right->parent = successor;
+        //     successor->left = target->left;
+        //     successor->left->parent = successor;
+
+        //     target->parent = parent;
+        //     target->parent->right = target;
+        //     parent->right = target;
+
+        //     target->left = NULL;
+        //     target->right = NULL;
+
+        //     if (target->is_black == true) {
+        //         successor->is_black = target->is_black;
+        //         target->is_black = false;
+        //     }
+        //     printTree();
+        //     std::cout << "\n------------------------" << std::endl;
+        //     return;
+        // }
+        // // if Successor have a child, connect it to the successor's parent and vice versa
+        // if (child) {
+        //     child->parent = successor->parent;
+        //     if (node_is_left_child(successor))
+        //         successor->parent->left = child;
+        //     else
+        //         successor->parent->right = child;
+        // }
+
+        // successor->parent = target->parent;
+        // successor->parent->left = successor;
+
+        // // Connect successor to target's right child;
+        // successor->right = target->right;
+
+        // // since we are looking at left subtree, target->right should always be null;
+        // target->right = NULL;
+
+        // successor->right->parent = successor;
+
+        // // Connect target's parent to the successor
+        // if (node_is_left_child(target))
+        //     target->parent->left = successor;
+        // else
+        //     target->parent->right = successor;
+
+        // successor->left = target;
+
+        // target->parent = successor;
+
+        // if (target->parent == successor && child == NULL)
+        //     target->left = NULL;
+        // printTree();
+        // std::cout << "\n------------------------" << std::endl;
     }
     // clang-format off
   private:
