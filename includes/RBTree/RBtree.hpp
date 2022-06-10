@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 09:38:08 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/10 16:44:34 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/10 16:45:06 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -431,7 +431,7 @@ class RBTree {
 
         if (!empty()) {
             
-            node_pointer ptr = end_->left;
+            node_pointer ptr = get_root();
 
             while (ptr != NULL) {
                 if (key_is_less(key, ptr->value, value_compare())) {
