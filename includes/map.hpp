@@ -6,13 +6,13 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 08:11:20 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/10 13:54:27 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/13 09:47:25 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "RBTree/RBtree.hpp"
+#include "RBtree.hpp"
 #include "Iterator/Iterator.hpp"
 #include "utilities.hpp"
 
