@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/13 10:16:22 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/13 09:47:51 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/17 12:25:58 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ class stack {
     /**
      * @return Returns true if the stack is empty
      */
-    bool empty() { return c.empty(); }
+    bool empty() const { return c.empty(); }
 
     /**
      * @return Returns the number of elements in the stack

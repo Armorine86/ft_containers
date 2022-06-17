@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 09:38:08 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/13 09:48:12 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/17 15:37:14 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,9 +189,9 @@ class RBTree {
         if (right_end_->parent && right_end_->right)
             right_end_ = right_end_->right;
 
-        insert_fix(pos);
+        return insert_fix(pos);
 
-        return pos;
+        // return pos;
     }
 
     template <typename InputIter>
@@ -404,7 +404,7 @@ class RBTree {
             else
                 std::cout << BRED << "(R)";
 
-            std::cout << root/*->value.first*/ << END << std::endl;
+            std::cout << root->value.first << END << std::endl;
             printHelper(root->right, indent, true);
             printHelper(root->left, indent, false);
         }
@@ -494,8 +494,10 @@ class RBTree {
 
             // If Hint is Greater than root and less than key
             if (key_is_less(key, *hint, Compare())) {
-                if (!hint.base()->left)
+                if (!hint.base()->left) {
+                    root = hint.base();
                     return hint.base()->left;
+                }
                 return find_insert_pos(hint, key);
 
                 // If key is Greater than hint
@@ -508,8 +510,10 @@ class RBTree {
         } else if (key_is_less(*hint, *root, Compare())) {
 
             if (key_is_less(key, *hint, Compare())) {
-                if (!hint.base()->left)
+                if (!hint.base()->left) {
+                    root = hint.base();
                     return hint.base()->left;
+                }
                 return find_insert_pos(hint, key);
 
             } else if (key_is_less(*hint, key, Compare())) {
@@ -674,7 +678,7 @@ class RBTree {
     // Case 1: Root must always be black.
     // Case 2: new_node's uncle is RED (inside case 3)
     // Case 3: Parent is either Left or Right Child
-    void insert_fix(node_pointer new_node) {
+    node_pointer insert_fix(node_pointer new_node) {
 
         node_pointer root = get_root();
 
@@ -683,6 +687,8 @@ class RBTree {
             insert_case_3(new_node);
             insert_case_1();
         }
+
+        return new_node;
     }
 
     void delete_fix(node_pointer node) {

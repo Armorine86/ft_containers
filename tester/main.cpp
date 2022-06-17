@@ -8,7 +8,6 @@
 #include <string>
 #include <vector>
 
-#define TESTED_TYPE int
 #define NAMESPACE ft
 #define STRVECTOR NAMESPACE::vector<std::string>
 
