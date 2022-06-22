@@ -6,11 +6,13 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 13:27:42 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/17 15:58:02 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/21 20:43:34 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "map.hpp"
+#include <cstdlib>
+#include <cstddef>
 #include <map>
 #include <iostream>
 #include <limits>
@@ -18,6 +20,19 @@
 #ifndef NAMESPACE
  #define NAMESPACE ft
 #endif
+
+template <typename Key, typename T>
+void	compare_check(const NAMESPACE::map<Key, T> &left, const NAMESPACE::map<Key, T> &right,  std::string msg, int line)
+{
+
+	std::cout << "*** Line: " << line << " ***\n";
+	std::cout <<  "[" << msg << "]\n"  << std::endl;
+	std::cout << "equal: " << (left == right) << " | not equal: " << (left != right) << std::endl;
+	std::cout << "lesser than: " << (left <  right) << " | lesser or equal: " << (left <= right) << std::endl;
+	std::cout << "greater than: " << (left >  right) << " | greater or equal: " << (left >= right) << std::endl;
+
+	std::cout << std::endl;
+}
 
 template <typename Key, typename T>
 NAMESPACE::map<Key, T> build_map() {
@@ -295,5 +310,160 @@ int main() {
 		}
 	}
 	
-	//TODO REST OF MAP TESTS
+	{
+		std::cout << "\n=========================================================\n";
+		std::cout << "||                       LOOKUP                        ||\n";
+		std::cout << "=========================================================\n\n";
+
+		{
+			std::cout << "count() Function\n";
+			std::cout << "================\n" << std::endl;
+
+			NAMESPACE::map<int, int> m;
+
+			std::cout << "Map current count for key 64: " << m.count(64) << "\n" << std::endl;
+
+			m.insert(NAMESPACE::make_pair(64, 1));
+			print_map(m, __LINE__);
+
+			std::cout << "Map current count for key 64: " << m.count(64) << "\n" << std::endl;
+
+			m.insert(NAMESPACE::make_pair(64, 1));
+
+			std::cout << "Map current count for key 64: " << m.count(64) << "\n" << std::endl;
+		}
+
+		{
+			std::cout << "find() Function\n";
+			std::cout << "===============\n" << std::endl;
+
+			
+			NAMESPACE::map<int, int> m(build_map<int, int>());
+			NAMESPACE::map<int, int>::iterator it;
+			
+			print_map(m, __LINE__);
+
+			bool found = false;
+			
+			it = m.find(3);
+			it != m.end() ? found = true: found = false;
+			std::cout << std::boolalpha;
+			std::cout << "*** line: " << __LINE__ << " ***\n";
+			std::cout << "Key [3] found: " <<  found << "\n" << std::endl;
+
+			it = m.find(10);
+			it != m.end() ? found = true: found = false;
+			std::cout << std::boolalpha;
+			std::cout << "*** line: " << __LINE__ << " ***\n";
+			std::cout << "Key [10] found: " <<  found << "\n" << std::endl;
+
+			it = m.find(255);
+			it != m.end() ? found = true: found = false;
+			std::cout << std::boolalpha;
+			std::cout << "*** line: " << __LINE__ << " ***\n";
+			std::cout << "Key [255] found: " <<  found << "\n" << std::endl;
+			std::cout << std::endl;
+			
+		}
+
+		{
+			std::cout << "equal_range() Function\n";
+			std::cout << "======================\n" << std::endl;
+
+			NAMESPACE::map<int, int> m(build_map<int, int>());
+			NAMESPACE::pair<NAMESPACE::map<int, int>::iterator, NAMESPACE::map<int, int>::iterator> p;
+			
+			print_map(m, __LINE__);
+
+			p = m.equal_range(3);
+
+			if (p.second == m.find(4))
+				std::cout << "*** line: " << __LINE__ << " ***\n" << "end of equal_range (p.second) is one-past p.first\n\n";
+			else 
+            	std::cout << "*** line: " << __LINE__ << " ***\n" << "unexpected; p.second expected to be one-past p.first\n\n";
+			
+			p = m.equal_range(-1);
+
+			if (p.second == m.begin())
+            	std::cout << "*** line: " << __LINE__ << " ***\n" << "p.second is iterator to first element greater-than -1\n\n"; 
+			else
+           		std::cout << "*** line: " << __LINE__ << " ***\n" << "unexpected p.second\n\n";
+			
+			p = m.equal_range(m.size() - 1);
+
+			if (p.second == m.end())
+            	std::cout << "*** line: " << __LINE__ << " ***\n" << "p.second is iterator to first element greater-than -1\n\n"; 
+			else
+           		std::cout << "*** line: " << __LINE__ << " ***\n" << "unexpected p.second\n\n";
+        }
+
+		{
+			NAMESPACE::map<char,int> m;
+			m['I'] = 1;
+			m['l'] = 2;
+			m['o'] = 3;
+			m['v'] = 4;
+			m['e'] = 5;
+			m['4'] = 6;
+			m['2'] = 7;
+			
+			print_map(m, __LINE__);
+			
+			std::cout << "*** line: " << __LINE__ << " ***\n";
+			std::cout << "lower bound of 'l' is: " << m.lower_bound ('l')->first << std::endl;
+			std::cout << "upper bound of 'l' is: " << m.upper_bound ('l')->first << std::endl;
+
+			std::cout << std::endl;
+			
+			const NAMESPACE::map<char,int> const_mymap = m;
+			
+			std::cout << "*** line: " << __LINE__ << " ***\n";
+			std::cout << "lower bound of 'e' is: " << m.lower_bound ('e')->first << std::endl;
+			std::cout << "upper bound of 'e' is: " << m.upper_bound ('e')->first << std::endl;
+		}
+	}
+
+	{
+		std::cout << "\n=========================================================\n";
+		std::cout << "||                     KEY COMP                        ||\n";
+		std::cout << "=========================================================\n\n";
+
+		NAMESPACE::map<int, int> m(build_map<int, int>());
+		print_map(m, __LINE__);
+
+		for (NAMESPACE::map<int, int>::iterator first = m.begin(); first != m.end(); ++first) {
+			NAMESPACE::map<int, int>::iterator it = m.find(rand() % m.size() - 1);
+			NAMESPACE::map<int, int>::key_compare comp;
+		
+			std::cout << std::boolalpha;
+			std::cout	<< "key: " << it->first
+						<< " is less than: " << first->first << " --> "
+						<< comp(it->first, first->first) << std::endl;
+		}
+	}
+
+	{
+		std::cout << "\n=========================================================\n";
+		std::cout << "||                COMPARE OPERATORS                    ||\n";
+		std::cout << "=========================================================\n\n";
+
+		NAMESPACE::map<int, int> m(build_map<int, int>());
+		NAMESPACE::map<int, int> m2(build_map<int, int>());
+		
+		compare_check(m, m, "m VS m", __LINE__);
+		compare_check(m, m2, "m VS m2", __LINE__);
+
+		compare_check(m, m2, "m VS m2", __LINE__);
+		compare_check(m2, m, "m2 VS m", __LINE__);
+
+		m = m2;
+
+		compare_check(m, m2, "m VS m2", __LINE__);
+		compare_check(m2, m, "m2 VS m", __LINE__);
+
+		swap(m, m2);
+
+		compare_check(m, m2, "m VS m2", __LINE__);
+		compare_check(m2, m, "m2 VS m", __LINE__);
+	}
 }

@@ -6,12 +6,13 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 08:34:27 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/17 14:58:13 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/21 20:41:21 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vector.hpp"
 
+#include <cstdlib>
 #include <exception>
 #include <iterator>
 #include <list>
