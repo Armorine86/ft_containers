@@ -39,13 +39,11 @@ TESTER_FILES_PATH	= 	$(TESTER_PATH)/tests/
 SRCS 				=	$(addprefix $(SRCS_PATH), $(SRC_FILES))
 ITERATOR_SRCS		= 	$(addprefix $(ITERATOR_PATH), $(VECTOR_FILES))
 TREE_SRCS			= 	$(addprefix $(TREE_PATH), $(RBTREE_HDRS))
-# STACK_SRCS			=	$(addprefix $(STACK_PATH), $(STACK_FILES))
+
 TESTER_SRCS			=	$(addprefix $(TESTER_FILES_PATH), $(TESTER_FILES))
 
-OBJS_FILES			= 	$(SRC_FILES:.cpp=.o) #$(VECTOR_FILES:.cpp=.o) $(STACK_FILES:.cpp=.o)\
-						$(MAP_FILES:.cpp=.o) $(TESTER_FILES:.cpp=.o)
+OBJS_FILES			= 	$(SRC_FILES:.cpp=.o)
 
-# INCLUDES			=	$(addprefix $(INC_PATH), $(INC_FILES))	
 OBJS 				=	$(addprefix $(OBJS_PATH), $(OBJS_FILES))
 
 VPATH				=	$(SRCS_PATH) $(ITERATOR_PATH) $(TESTER_PATH)
@@ -55,8 +53,6 @@ ALL_INCLUDES		= 	$(addprefix $(INC_PATH), $(TREE_PATH))\
 						$(addprefix $(INC_PATH), $(TREE_PATH))\
 						$(INC_PATH)
 						
-
-USAGE				=	#Program Usage Message
 
 $(OBJS_PATH)%.o: %.cpp
 	@$(CC) $(CFLAGS) $(addprefix -I, $(ALL_INCLUDES)) -c $< -o $@
@@ -73,17 +69,6 @@ $(OBJS_PATH):
 	@mkdir -p $(OBJS_PATH)
 	@echo "\033[34;1mCreating Object Directory\n\033[0m"
 	@printf "\033[32;1m\nCompiling with: \033[38;5;208m$(CFLAGS)\033[0m\\n\\n"
-
-# linux :	$(OBJS_PATH) $(OBJS)
-# 	@echo "\033[95mCompiling Program\033[0m"
-# 	$(CC) $(OBJS) -o $(NAME)
-# 	@echo "\\n\033[32;1mProgram is Ready\033[0m \\n"
-# 	@echo $(USAGE)
-
-# linux_debug: CFLAGS += -g -fstandalone-debug -fno-limit-debug-info
-# linux_debug: linux
-
-# linux_redebug : fclean linux_debug
 
 release: CFLAGS += -O3
 release: all
