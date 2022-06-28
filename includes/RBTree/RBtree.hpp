@@ -12,8 +12,8 @@
 
 #pragma once
 
-#include "../pair.hpp"
 #include "../colors.hpp"
+#include "../pair.hpp"
 #include "node.hpp"
 #include "tree_iterator.hpp"
 #include "tree_utils.hpp"
@@ -160,8 +160,6 @@ class RBTree {
         if (right_end_->parent && right_end_->right)
             right_end_ = right_end_->right;
 
-        
-
         return ft::make_pair(it, key_exists);
     }
 
@@ -178,7 +176,7 @@ class RBTree {
 
         iterator root(get_root());
         node_pointer& pos = find_insert_pos(root, hint, val);
-        
+
         if (!pos) {
             pos = new_node(val);
             pos->parent = root.base();
@@ -304,15 +302,14 @@ class RBTree {
 
     template <typename Key>
     iterator lower_bound(const Key& key) {
-    
+
         node_pointer ptr = get_root();
         iterator it(end_);
         while (ptr != NULL) {
             if (!value_compare()(ptr->value, key)) {
                 it = iterator(ptr);
                 ptr = ptr->left;
-            }
-            else
+            } else
                 ptr = ptr->right;
         }
         return it;
@@ -320,15 +317,14 @@ class RBTree {
 
     template <typename Key>
     const_iterator lower_bound(const Key& key) const {
-        
+
         node_pointer ptr = get_root();
         const_iterator it(end_);
         while (ptr != NULL) {
             if (!value_compare()(ptr->value, key)) {
                 it = const_iterator(ptr);
                 ptr = ptr->left;
-            }
-            else
+            } else
                 ptr = ptr->right;
         }
         return it;
@@ -343,11 +339,10 @@ class RBTree {
             if (key_is_less(key, ptr->value, value_compare())) {
                 it = iterator(ptr);
                 ptr = ptr->left;
-            }
-            else
+            } else
                 ptr = ptr->right;
         }
-        
+
         return it;
     }
 
@@ -360,11 +355,10 @@ class RBTree {
             if (key_is_less(key, ptr->value, value_compare())) {
                 it = const_iterator(ptr);
                 ptr = ptr->left;
-            }
-            else
+            } else
                 ptr = ptr->right;
         }
-        
+
         return it;
     }
 
@@ -430,19 +424,18 @@ class RBTree {
     node_pointer find_ptr(const Key& key) const {
 
         if (!empty()) {
-            
+
             node_pointer ptr = get_root();
 
             while (ptr != NULL) {
                 if (key_is_less(key, ptr->value, value_compare())) {
                     ptr = ptr->left;
-                }
-                else if (key_is_less(ptr->value, key, value_compare()))
+                } else if (key_is_less(ptr->value, key, value_compare()))
                     ptr = ptr->right;
                 else
                     return ptr;
             }
-            return ptr;   
+            return ptr;
         }
         return end_;
     }
@@ -571,12 +564,12 @@ class RBTree {
                 node->parent->left = NULL;
             else
                 node->parent->right = NULL;
-                
+
             if (node->parent)
                 node->parent = NULL;
             node->left = NULL;
             node->right = NULL;
-            
+
             value_alloc_.destroy(&node->value);
             node_alloc_.deallocate(node, 1);
 
@@ -747,7 +740,7 @@ class RBTree {
 
                 if (!sibling)
                     break;
-                if (sibling->is_black == false) { //! PROTECT SIBLING case 1 
+                if (sibling->is_black == false) { //! PROTECT SIBLING case 1
 
                     sibling->is_black = true;
                     node->parent->is_black = false;
@@ -874,7 +867,7 @@ class RBTree {
     void swap_nodes(node_pointer target, node_pointer successor) {
 
         Node tmp = *target;
-        
+
         // node_pointer successor_parent = successor->parent;
 
         target->is_black = successor->is_black;
@@ -933,7 +926,7 @@ class RBTree {
 
         // target->parent = successor_parent;
         // successor_parent->right = target;
-        
+
         // printTree();
         // std::cout << "\n------------------------" << std::endl;
     }

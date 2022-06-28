@@ -228,10 +228,10 @@ NodePtr get_niece(NodePtr& current_node) {
     // If current_node is a left child, the Niece is the left child of
     // current_node's sibling
     // if (get_sibling(current_node)) {
-        if (node_is_left_child(current_node))
-            return get_sibling(current_node)->left;
-        else
-            return get_sibling(current_node)->right;
+    if (node_is_left_child(current_node))
+        return get_sibling(current_node)->left;
+    else
+        return get_sibling(current_node)->right;
     // }
     // return NULL;
 }
@@ -250,10 +250,10 @@ NodePtr get_nephew(NodePtr& current_node) {
     // current_node's sibling
 
     // if (get_sibling(current_node)) {
-        if (node_is_left_child(current_node))
-            return get_sibling(current_node)->right;
-        else
-            return get_sibling(current_node)->left;
+    if (node_is_left_child(current_node))
+        return get_sibling(current_node)->right;
+    else
+        return get_sibling(current_node)->left;
     // }
     // return NULL;
 }

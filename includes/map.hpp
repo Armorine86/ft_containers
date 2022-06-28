@@ -12,8 +12,8 @@
 
 #pragma once
 
-#include "RBTree/RBtree.hpp"
 #include "Iterator/Iterator.hpp"
+#include "RBTree/RBtree.hpp"
 #include "utilities.hpp"
 
 #include <stdexcept>
@@ -248,9 +248,7 @@ class map {
 
     key_compare key_comp() const { return key_compare(); }
 
-    map::value_compare value_comp() const {
-        return value_compare(key_comp());
-    }
+    map::value_compare value_comp() const { return value_compare(key_comp()); }
 
     //* =============== UTIL FUNCTIONS ===============
 

@@ -12,10 +12,9 @@
 
 #pragma once
 
-#include "utilities.hpp"
 #include "Iterator/Iterator.hpp"
 #include "Iterator/type_traits.hpp"
-
+#include "utilities.hpp"
 
 #include <cstddef>
 #include <iostream>

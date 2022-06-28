@@ -1,9 +1,21 @@
-
 =========================================================
-||                     KEY COMP                        ||
+||                 MEMBER FUNCTIONS                    ||
 =========================================================
 
-*** line: 399 ***
+Constructor
+===========
+
+*** line: 79 ***
+set Content:
+
+
+set size: 0
+
+----------------------------------------------------------------------
+
+
+fill Constructor:
+*** line: 84 ***
 set Content:
 key: 249 key: 878 key: 2633 key: 4149 key: 4267 key: 5278 key: 6729 key: 7826 key: 8169 key: 8821 key: 10672 key: 11272 key: 11357 key: 12709 key: 13165 key: 16745 key: 17612 key: 18042 key: 18658 key: 19091 key: 19336 key: 20335 key: 20933 key: 22157 key: 22503 
 
@@ -12,86 +24,408 @@ set size: 25
 ----------------------------------------------------------------------
 
 
-key: 249 is less than: 4149 --> true
-key: 878 is less than: 8169 --> true
-key: 2633 is less than: 19091 --> true
-key: 4149 is less than: 18658 --> true
-key: 4267 is less than: 16745 --> true
-key: 5278 is less than: 22503 --> true
-key: 6729 is less than: 20335 --> true
-key: 7826 is less than: 5278 --> false
-key: 8169 is less than: 4149 --> false
-key: 8821 is less than: 20933 --> true
-key: 10672 is less than: 17612 --> true
-key: 11272 is less than: 22503 --> true
-key: 11357 is less than: 22503 --> true
-key: 12709 is less than: 878 --> false
-key: 13165 is less than: 4149 --> false
-key: 16745 is less than: 2633 --> false
-key: 17612 is less than: 8169 --> false
-key: 18042 is less than: 4149 --> false
-key: 18658 is less than: 8169 --> false
-key: 19091 is less than: 22157 --> true
-key: 19336 is less than: 6729 --> false
-key: 20335 is less than: 10672 --> false
-key: 20933 is less than: 12709 --> false
-key: 22157 is less than: 16745 --> false
-key: 22503 is less than: 13165 --> false
+Range Constructor:
+*** line: 91 ***
+set Content:
+key: 249 key: 878 key: 2633 key: 4149 key: 4267 key: 5278 key: 6729 key: 7826 key: 8169 key: 8821 key: 10672 key: 11272 key: 11357 key: 12709 key: 13165 key: 16745 key: 17612 key: 18042 key: 18658 key: 19091 key: 19336 key: 20335 key: 20933 key: 22157 key: 22503 
+
+set size: 25
+
+----------------------------------------------------------------------
+
+
+Copy Constructor:
+*** line: 95 ***
+set Content:
+key: 249 key: 878 key: 2633 key: 4149 key: 4267 key: 5278 key: 6729 key: 7826 key: 8169 key: 8821 key: 10672 key: 11272 key: 11357 key: 12709 key: 13165 key: 16745 key: 17612 key: 18042 key: 18658 key: 19091 key: 19336 key: 20335 key: 20933 key: 22157 key: 22503 
+
+set size: 25
+
+----------------------------------------------------------------------
+
+
+Assignement Operator:
+=====================
+
+*** line: 101 ***
+set Content:
+key: 629 key: 2722 key: 3549 key: 3635 key: 8228 key: 9530 key: 10298 key: 13124 key: 14063 key: 14425 key: 15668 key: 15977 key: 16708 key: 22801 key: 23865 key: 24115 
+
+set size: 16
+
+----------------------------------------------------------------------
+
+
+*** line: 104 ***
+set Content:
+key: 629 key: 2722 key: 3549 key: 3635 key: 8228 key: 9530 key: 10298 key: 13124 key: 14063 key: 14425 key: 15668 key: 15977 key: 16708 key: 22801 key: 23865 key: 24115 
+
+set size: 16
+
+----------------------------------------------------------------------
+
+
+
+=========================================================
+||                    GET ALLOCATOR                    ||
+=========================================================
+
+*** line: 121 ***
+The allocated array has a size of 5 bytes.
+
+=========================================================
+||                     ITERATORS                       ||
+=========================================================
+
+begin() Function
+===============
+
+*** line: 137 ***
+set Content:
+key: 968 key: 2904 key: 3144 key: 4530 key: 5337 key: 5399 key: 5828 key: 6566 key: 7397 key: 9195 key: 10404 key: 13008 key: 15412 key: 16298 key: 19175 key: 19298 key: 19358 key: 19897 key: 21123 key: 21231 key: 21882 key: 23557 
+
+set size: 22
+
+----------------------------------------------------------------------
+
+
+*** line: 142 ***
+Key at begin(): 968
+
+end() Function
+===============
+
+*** line: 149 ***
+Key at end() - 1: 23557
+*** line: 156 ***
+set Content:
+key: 5640 key: 5767 key: 6616 key: 8454 key: 10695 key: 11123 key: 12289 key: 12335 key: 14738 key: 17082 key: 22942 key: 22972 key: 23590 key: 23671 key: 23905 key: 24095 
+
+set size: 16
+
+----------------------------------------------------------------------
+
+
+
+rbegin() Function
+===============
+
+*** line: 163 ***
+Key at begin(): 24095
+
+rend() Function
+===============
+
+*** line: 170 ***
+Key at end() - 1: 5640
+
+=========================================================
+||                      CAPACITY                       ||
+=========================================================
+
+empty() Function
+===============
+*** line: 184 ***
+set Content:
+
+
+set size: 0
+
+----------------------------------------------------------------------
+
+
+set is empty: true
+
+*** line: 190 ***
+set Content:
+key: 1770 key: 1815 key: 2295 key: 4094 key: 5211 key: 5539 key: 6968 key: 7217 key: 7420 key: 9590 key: 10547 key: 12844 key: 13534 key: 14947 key: 15033 key: 15394 key: 15396 key: 15534 key: 17385 key: 18738 key: 19397 key: 19885 key: 20159 key: 21011 key: 21210 key: 24152 key: 24915 
+
+set size: 27
+
+----------------------------------------------------------------------
+
+
+set is empty: false
+
+
+=========================================================
+||                      MODIFIERS                      ||
+=========================================================
+
+clear() Function
+================
+
+*** line: 206 ***
+set Content:
+key: 1407 key: 2995 key: 4874 key: 5193 key: 12335 key: 12767 key: 13755 key: 15556 key: 15680 key: 16855 key: 18872 key: 20094 key: 20963 key: 22761 
+
+set size: 14
+
+----------------------------------------------------------------------
+
+
+*** line: 209 ***
+set Content:
+
+
+set size: 0
+
+----------------------------------------------------------------------
+
+
+insert() Function
+=================
+
+*** line: 219 ***
+Iterator element Key: 64
+*** line: 221 ***
+set Content:
+key: 64 
+
+set size: 1
+
+----------------------------------------------------------------------
+
+
+*** line: 224 ***
+Iterator element Key: 100
+*** line: 226 ***
+set Content:
+key: 64 key: 100 
+
+set size: 2
+
+----------------------------------------------------------------------
+
+
+*** line: 229 ***
+Iterator element Key / Value: 69
+*** line: 231 ***
+set Content:
+key: 64 key: 69 key: 100 
+
+set size: 3
+
+----------------------------------------------------------------------
+
+
+*** line: 245 ***
+set Content:
+key: 5180 key: 11775 key: 12525 key: 12638 
+
+set size: 4
+
+----------------------------------------------------------------------
+
+
+erase() Function
+================
+
+*** line: 253 ***
+set Content:
+key: 447 key: 550 key: 2504 key: 3178 key: 3209 key: 3553 key: 5400 key: 5773 key: 6648 key: 8016 key: 8155 key: 9378 key: 9630 key: 9748 key: 12357 key: 13554 key: 14305 key: 15557 key: 16976 key: 20053 key: 20370 key: 21564 
+
+set size: 22
+
+----------------------------------------------------------------------
+
+
+*** line: 256 ***
+set Content:
+key: 447 key: 550 key: 2504 key: 3178 key: 3209 key: 3553 key: 5400 key: 5773 key: 6648 key: 8016 key: 8155 key: 9378 key: 9630 key: 9748 key: 12357 key: 13554 key: 14305 key: 15557 key: 16976 key: 20053 key: 20370 key: 21564 
+
+set size: 22
+
+----------------------------------------------------------------------
+
+
+*** line: 265 ***
+set Content:
+key: 447 key: 550 key: 5400 key: 5773 key: 6648 key: 8016 key: 8155 key: 9378 key: 9630 key: 9748 key: 12357 key: 13554 key: 14305 key: 15557 key: 16976 key: 20053 key: 20370 key: 21564 
+
+set size: 18
+
+----------------------------------------------------------------------
+
+
+swap() Function
+===============
+
+*** line: 276 ***
+set Content:
+key: 1197 key: 4873 key: 7730 key: 11200 key: 12304 key: 13588 key: 16238 key: 18947 key: 18960 key: 20591 key: 20614 key: 20737 key: 23762 key: 24546 
+
+set size: 14
+
+----------------------------------------------------------------------
+
+
+
+=========================================================
+||                       LOOKUP                        ||
+=========================================================
+
+count() Function
+================
+
+set current count for key 64: 0
+
+*** line: 294 ***
+set Content:
+key: 64 
+
+set size: 1
+
+----------------------------------------------------------------------
+
+
+set current count for key 64: 1
+
+set current count for key 64: 1
+
+find() Function
+===============
+
+*** line: 310 ***
+set Content:
+key: 357 key: 973 key: 1563 key: 4473 key: 4593 key: 5395 key: 5658 key: 10917 key: 11113 key: 11748 key: 13729 key: 14824 key: 19419 key: 20035 key: 20406 key: 22747 key: 23354 
+
+set size: 17
+
+----------------------------------------------------------------------
+
+
+*** line: 317 ***
+Key [3] found: false
+
+*** line: 323 ***
+Key [10] found: false
+
+*** line: 329 ***
+Key [255] found: false
+
+
+equal_range() Function
+======================
+
+*** line: 341 ***
+set Content:
+key: 124 key: 1958 key: 2771 key: 2971 key: 4879 key: 6258 key: 7574 key: 7723 key: 7920 key: 10231 key: 10299 key: 10621 key: 14503 key: 15318 key: 15879 key: 16560 key: 16771 key: 17801 key: 18676 key: 18751 key: 19970 key: 20203 key: 23934 key: 24520 key: 24542 
+
+set size: 25
+
+----------------------------------------------------------------------
+
+
+*** line: 349 ***
+unexpected; p.second expected to be one-past p.first
+
+*** line: 355 ***
+p.second is iterator to first element greater-than -1
+
+*** line: 367 ***
+unexpected p.second
+
+*** line: 382 ***
+set Content:
+key: 2 key: 4 key: I key: e key: l key: o key: v 
+
+set size: 7
+
+----------------------------------------------------------------------
+
+
+*** line: 384 ***
+lower bound of 'l' is: l
+upper bound of 'l' is: o
+
+*** line: 392 ***
+lower bound of 'e' is: e
+upper bound of 'e' is: l
+
+=========================================================
+||                     KEY COMP                        ||
+=========================================================
+
+*** line: 404 ***
+set Content:
+key: 1257 key: 1403 key: 4788 key: 5418 key: 7307 key: 8320 key: 9649 key: 10690 key: 12410 key: 15324 key: 15553 key: 15960 key: 19910 key: 22012 key: 24008 
+
+set size: 15
+
+----------------------------------------------------------------------
+
+
+key: 1257 is less than: 24008 --> true
+key: 1403 is less than: 19910 --> true
+key: 4788 is less than: 15960 --> true
+key: 5418 is less than: 19910 --> true
+key: 7307 is less than: 24008 --> true
+key: 8320 is less than: 8320 --> false
+key: 9649 is less than: 15960 --> true
+key: 10690 is less than: 19910 --> true
+key: 12410 is less than: 12410 --> false
+key: 15324 is less than: 4788 --> false
+key: 15553 is less than: 1257 --> false
+key: 15960 is less than: 7307 --> false
+key: 19910 is less than: 8320 --> false
+key: 22012 is less than: 12410 --> false
+key: 24008 is less than: 8320 --> false
 
 =========================================================
 ||                COMPARE OPERATORS                    ||
 =========================================================
 
-*** Line: 421 ***
+*** Line: 425 ***
 [m VS m]
 
 equal: true | not equal: false
 lesser than: false | lesser or equal: true
 greater than: false | greater or equal: true
 
-*** Line: 422 ***
+*** Line: 426 ***
 [m VS m2]
 
 equal: false | not equal: true
 lesser than: false | lesser or equal: false
 greater than: true | greater or equal: true
 
-*** Line: 424 ***
+*** Line: 428 ***
 [m VS m2]
 
 equal: false | not equal: true
 lesser than: false | lesser or equal: false
 greater than: true | greater or equal: true
 
-*** Line: 425 ***
+*** Line: 429 ***
 [m2 VS m]
 
 equal: false | not equal: true
 lesser than: true | lesser or equal: true
 greater than: false | greater or equal: false
 
-*** Line: 429 ***
+*** Line: 433 ***
 [m VS m2]
-
-equal: true | not equal: false
-lesser than: false | lesser or equal: true
-greater than: false | greater or equal: true
-
-*** Line: 430 ***
-[m2 VS m]
 
 equal: true | not equal: false
 lesser than: false | lesser or equal: true
 greater than: false | greater or equal: true
 
 *** Line: 434 ***
+[m2 VS m]
+
+equal: true | not equal: false
+lesser than: false | lesser or equal: true
+greater than: false | greater or equal: true
+
+*** Line: 438 ***
 [m VS m2]
 
 equal: true | not equal: false
 lesser than: false | lesser or equal: true
 greater than: false | greater or equal: true
 
-*** Line: 435 ***
+*** Line: 439 ***
 [m2 VS m]
 
 equal: true | not equal: false

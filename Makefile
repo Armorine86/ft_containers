@@ -25,21 +25,22 @@ RBTREE_HDRS			=	RBtree.hpp tree_iterator.hpp tree_node_types.hpp tree_utils.hpp\
 STACK_FILES			= 	
 STACK_HDRS			= 	Stack.hpp
 
-TESTER_FILES		=	
+TESTER_FILES		=	map.cpp set.cpp stack.cpp vector.cpp
 TESTER_HDRS			=	
 
-VECTOR_PATH			= 	Vector/
+ITERATOR_PATH		= 	Iterator/
 MAP_PATH			=	Map/
 TREE_PATH			=	RBTree/
 
 STACK_PATH			=	Stack/
-# TESTER_PATH			=	testers/
+TESTER_PATH			=	tester
+TESTER_FILES_PATH	= 	$(TESTER_PATH)/tests/
 
 SRCS 				=	$(addprefix $(SRCS_PATH), $(SRC_FILES))
-# VECTOR_SRCS			= 	$(addprefix $(VECTOR_PATH), $(VECTOR_FILES))
-# MAP_SRCS				= 	$(addprefix $(MAP_PATH), $(MAP_FILES))
+ITERATOR_SRCS		= 	$(addprefix $(ITERATOR_PATH), $(VECTOR_FILES))
+TREE_SRCS			= 	$(addprefix $(TREE_PATH), $(RBTREE_HDRS))
 # STACK_SRCS			=	$(addprefix $(STACK_PATH), $(STACK_FILES))
-# TESTER_SRCS			=	$(addprefix $(TESTER_PATH), $(TESTER_FILES))
+TESTER_SRCS			=	$(addprefix $(TESTER_FILES_PATH), $(TESTER_FILES))
 
 OBJS_FILES			= 	$(SRC_FILES:.cpp=.o) #$(VECTOR_FILES:.cpp=.o) $(STACK_FILES:.cpp=.o)\
 						$(MAP_FILES:.cpp=.o) $(TESTER_FILES:.cpp=.o)
@@ -47,12 +48,13 @@ OBJS_FILES			= 	$(SRC_FILES:.cpp=.o) #$(VECTOR_FILES:.cpp=.o) $(STACK_FILES:.cpp
 # INCLUDES			=	$(addprefix $(INC_PATH), $(INC_FILES))	
 OBJS 				=	$(addprefix $(OBJS_PATH), $(OBJS_FILES))
 
-VPATH				=	$(SRCS_PATH) #$(VECTOR_PATH) $(STACK_PATH) $(MAP_PATH) $(TESTER_PATH)
+VPATH				=	$(SRCS_PATH) $(ITERATOR_PATH) $(TESTER_PATH)
 
-ALL_INCLUDES		= 	$(INC_PATH) \
-						$(addprefix $(INC_PATH), $(VECTOR_PATH)) \
-						$(addprefix $(INC_PATH), $(MAP_PATH)) \
+ALL_INCLUDES		= 	$(addprefix $(INC_PATH), $(TREE_PATH))\
+						$(addprefix $(INC_PATH), $(ITERATOR_PATH))\
 						$(addprefix $(INC_PATH), $(TREE_PATH))\
+						$(INC_PATH)
+						
 
 USAGE				=	#Program Usage Message
 
@@ -92,7 +94,8 @@ debug:	$(NAME)
 redebug : fclean debug
 
 fmt:
-	clang-format -i $(SRCS) $(addsuffix *.hpp, $(ALL_INCLUDES))
+	clang-format -i $(TESTER_SRCS)
+	clang-format -i $(addsuffix *.hpp, $(ALL_INCLUDES))
 
 clean:
 	@$(RM) $(OBJS_FILES) $(OBJS_PATH) 

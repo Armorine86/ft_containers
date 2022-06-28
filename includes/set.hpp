@@ -56,8 +56,7 @@ class set {
   public:
     set() : rbtree(value_compare()) {}
 
-    explicit set(const key_compare& comp,
-                 const allocator_type& alloc = allocator_type())
+    explicit set(const key_compare& comp, const allocator_type& alloc = allocator_type())
         : rbtree(comp, alloc) {}
 
     template <typename InputIter>
