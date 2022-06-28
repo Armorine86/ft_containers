@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 08:34:27 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/27 22:47:40 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/28 09:33:10 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,36 +77,45 @@ int main() {
 		std::cout << "||                CONSTRUCTOR TESTS                    ||\n";
 		std::cout << "=========================================================\n\n";
 		
-		std::cout << "Default Constructor\n";
-		std::cout << "===================\n" << std::endl;
+		{
+			std::cout << "Default Constructor\n";
+			std::cout << "===================\n" << std::endl;
 
-		NAMESPACE::vector<int> default_v;
+			NAMESPACE::vector<int> default_v;
 
-		print_vec(default_v, __LINE__);
-
-		std::cout << "Fill Constructor\n";
-		std::cout << "================\n" << std::endl;
-
-		NAMESPACE::vector<int> fill_v(42, 60);
-
-		print_vec(fill_v, __LINE__);
-
-		std::cout << "Range Constructor\n";
-		std::cout << "=================\n" << std::endl;
-
-		NAMESPACE::vector<int>::iterator first = fill_v.begin();
-		NAMESPACE::vector<int>::iterator last = fill_v.end() - 10;
-
-		NAMESPACE::vector<int> range_v(first, last);
+			print_vec(default_v, __LINE__);
+		}
 		
-		print_vec(range_v, __LINE__);
+		{
+			std::cout << "Fill Constructor\n";
+			std::cout << "================\n" << std::endl;
 
-		std::cout << "Copy Constructor\n";
-		std::cout << "=================\n" << std::endl;
+			NAMESPACE::vector<int> fill_v(42, 60);
 
-		NAMESPACE::vector<int> copy_v(build_rand());
+			print_vec(fill_v, __LINE__);
+		}
 
-		print_vec(copy_v, __LINE__);
+		{
+			std::cout << "Range Constructor\n";
+			std::cout << "=================\n" << std::endl;
+
+			NAMESPACE::vector<int> fill_v(69,420);
+			NAMESPACE::vector<int>::iterator first = fill_v.begin();
+			NAMESPACE::vector<int>::iterator last = fill_v.end() - 10;
+
+			NAMESPACE::vector<int> range_v(first, last);
+			
+			print_vec(range_v, __LINE__);
+		}
+
+		{
+			std::cout << "Copy Constructor\n";
+			std::cout << "=================\n" << std::endl;
+
+			NAMESPACE::vector<int> copy_v(build_rand());
+
+			print_vec(copy_v, __LINE__);
+		}
 	}
 
 	{
@@ -170,53 +179,65 @@ int main() {
 		std::cout << "||                   ELEMENTS ACCESS                   ||\n";
 		std::cout << "=========================================================\n\n";
 
-		std::cout << "at() Function\n";
-		std::cout << "===========\n" << std::endl;
+		{
+			std::cout << "at() Function\n";
+			std::cout << "===========\n" << std::endl;
 
-		NAMESPACE::vector<int> rand_v(build_rand());
-		
-		print_vec(rand_v, __LINE__);
-		
-		std::cout << " *** Line: " << __LINE__ << " ***" << "\nValue at index [42]: " << rand_v.at(42) << "\n" << std::endl;
+			NAMESPACE::vector<int> rand_v(build_rand());
+			
+			print_vec(rand_v, __LINE__);
+			
+			std::cout << " *** Line: " << __LINE__ << " ***" << "\nValue at index [42]: " << rand_v.at(42) << "\n" << std::endl;
 
-		try {
-			std::cout << " *** Line: " << __LINE__ << " ***" << "\nValue at index [" << rand_v.size() << "]: " << rand_v.at(rand_v.size()) << "\n" << std::endl;
-		} catch (std::exception &e) {
-			std::cout << "COUGTH EXCEPTION: Index out of range " << std::endl;
+			try {
+				std::cout << " *** Line: " << __LINE__ << " ***" << "\nValue at index [" << rand_v.size() << "]: " << rand_v.at(rand_v.size()) << "\n" << std::endl;
+			} catch (std::exception &e) {
+				std::cout << "COUGTH EXCEPTION: Index out of range " << std::endl;
+			}
 		}
 		
+		{
+			std::cout << "\nOperator []\n";
+			std::cout << "===========\n" << std::endl;
 
-		std::cout << "\nOperator []\n";
-		std::cout << "===========\n" << std::endl;
+			NAMESPACE::vector<int> rand_v(build_rand());
 
-		std::cout << " *** Line: " << __LINE__ << " ***" << "\nValue at index [69]: " << rand_v[69] << "\n" << std::endl;
-		
-		try {
-			std::cout << " *** Line: " << __LINE__ << " ***" << "\nValue at index [" << rand_v.size() << "]: " << rand_v[rand_v.size()] << "\n" << std::endl;
-		} catch (std::exception &e) {
-			std::cout << "COUGTH EXCEPTION: Index out of range " << "\n" << std::endl;
+			std::cout << " *** Line: " << __LINE__ << " ***" << "\nValue at index [69]: " << rand_v[69] << "\n" << std::endl;
+			
+			try {
+				std::cout << " *** Line: " << __LINE__ << " ***" << "\nValue at index [" << rand_v.size() << "]: " << rand_v[rand_v.size()] << "\n" << std::endl;
+			} catch (std::exception &e) {
+				std::cout << "COUGTH EXCEPTION: Index out of range " << "\n" << std::endl;
+			}
 		}
 
 		std::cout << std::endl;
 
-		std::cout << "Front / Back Functions\n";
-		std::cout << "======================\n" << std::endl;
+		{
+			std::cout << "Front / Back Functions\n";
+			std::cout << "======================\n" << std::endl;
 
-		std::cout << " *** Line: " << __LINE__ << " ***" << "\nValue at front: " << rand_v.front() << "\n" << std::endl;
-		std::cout << " *** Line: " << __LINE__ << " ***" << "\nValue at back: " << rand_v.back() << "\n" << std::endl;
-		
+			NAMESPACE::vector<int> rand_v(build_rand());
 
-		std::cout << "data() Function\n";
-		std::cout << "===============\n" << std::endl;
+			std::cout << " *** Line: " << __LINE__ << " ***" << "\nValue at front: " << rand_v.front() << "\n" << std::endl;
+			std::cout << " *** Line: " << __LINE__ << " ***" << "\nValue at back: " << rand_v.back() << "\n" << std::endl;
+		}
 
-		int *data = rand_v.data();
+		{
+			std::cout << "data() Function\n";
+			std::cout << "===============\n" << std::endl;
 
-		std::cout << " *** Line: " << __LINE__ << " ***" << "\nValue pointed by data: " << *rand_v.data() << "\n" << std::endl;
+			NAMESPACE::vector<int> rand_v(build_rand());
 
-		std::cout << "\nChanging value of data to 42...\n" << std::endl;
-		*data = 42;
+			int *data = rand_v.data();
 
-		std::cout << " *** Line: " << __LINE__ << " ***" << "\nValue pointed by data: " << *rand_v.data() << "\n" << std::endl;
+			std::cout << " *** Line: " << __LINE__ << " ***" << "\nValue pointed by data: " << *rand_v.data() << "\n" << std::endl;
+
+			std::cout << "\nChanging value of data to 42...\n" << std::endl;
+			*data = 42;
+
+			std::cout << " *** Line: " << __LINE__ << " ***" << "\nValue pointed by data: " << *rand_v.data() << "\n" << std::endl;
+		}
 	}
 
 	{
@@ -225,56 +246,26 @@ int main() {
 		std::cout << "=========================================================\n\n";
 
 		std::cout << "begin() Function\n";
-		std::cout << "===============\n" << std::endl;
+		std::cout << "================\n" << std::endl;
 
 		NAMESPACE::vector<int> rand_v(build_rand());
-		
 		NAMESPACE::vector<int>::iterator begin = rand_v.begin();
-
 		print_vec(rand_v, __LINE__);
 
-		std::cout << " *** Line: " << __LINE__ << " ***" << "\nValue of begin() iterator: " << *begin << "\n" << std::endl;
-
-
-		std::cout << "Moving begin iterator forward x10...\n" << std::endl;
+		std::cout << " *** Line: " << __LINE__ << " ***" << "\nValue pointed by begin: " << *begin << "\n" << std::endl;
+		
 		std::advance(begin, 10);
 		
-		try {
-
-			NAMESPACE::vector<int> v(50, 42);
-			NAMESPACE::vector<int>::iterator begin = v.begin();
-
-			print_vec(v, __LINE__);
-			--begin;
-			std::cout << " *** Line: " << __LINE__ << " ***" << "\nValue of begin() iterator: " << *begin << "\n" << std::endl;
-		} catch (std::exception &e) {
-			std::cout << "COUGHT EXCEPTION: Iterator out of bound\n" << std::endl;
-		}
-
-		std::cout << "*** Line: " << __LINE__ << " ***" << "\nValue of begin() iterator: " << *begin << "\n" << std::endl;
-		
-		std::cout << "end() Function\n";
-		std::cout << "===============\n" << std::endl;
+		std::cout << " *** Line: " << __LINE__ << " ***" << "\nValue pointed by begin: " << *begin << "\n" << std::endl;
 
 		NAMESPACE::vector<int>::iterator end = rand_v.end();
 
-		std::cout << "*** Line: " << __LINE__ << " ***" << "\nValue of end() iterator: " << *end << "\n" << std::endl;
+		std::cout << " *** Line: " << __LINE__ << " ***" << "\nValue pointed by end: " << *end << "\n" << std::endl;
 
-		std::cout << "Moving end iterator backward x10...\n" << std::endl;
-		std::advance(end, -10);
+		std::advance(end, -1);
 
-		std::cout << "*** Line: " << __LINE__ << " ***" << "\nValue of end() iterator: " << *end << "\n" << std::endl;
+		std::cout << " *** Line: " << __LINE__ << " ***" << "\nValue pointed by end: " << *end << "\n" << std::endl;
 
-		try {
-			NAMESPACE::vector<int> v(build_rand());
-			NAMESPACE::vector<int>::iterator end = v.end();
-
-			print_vec(v, __LINE__);
-			
-			std::cout << "*** Line: " << __LINE__ << " ***" << "\nValue of end() iterator: " << *end << "\n" << std::endl;
-		} catch (std::exception &e) {
-			std::cout << "COUGHT EXCEPTION: Iterator out of bound\n" << std::endl;
-		}
 	}
 
 	{
@@ -282,57 +273,27 @@ int main() {
 		std::cout << "||                 REVERSE ITERATORS                   ||\n";
 		std::cout << "=========================================================\n\n";
 
-		std::cout << "begin() Function\n";
-		std::cout << "===============\n" << std::endl;
-
-		NAMESPACE::vector<int> rand_v(build_rand());
+		std::cout << "rbegin() Function\n";
+		std::cout << "================\n" << std::endl;
 		
+		NAMESPACE::vector<int> rand_v(build_rand());
 		NAMESPACE::vector<int>::reverse_iterator rbegin = rand_v.rbegin();
-
 		print_vec(rand_v, __LINE__);
 
-		std::cout << " *** Line: " << __LINE__ << " ***" << "\nValue of rbegin() iterator: " << *rbegin << "\n" << std::endl;
+		std::cout << " *** Line: " << __LINE__ << " ***" << "\nValue pointed by rbegin: " << *rbegin << "\n" << std::endl;
 
-
-		std::cout << "Moving begin iterator forward x10...\n" << std::endl;
 		std::advance(rbegin, 10);
-		
-		try {
 
-			NAMESPACE::vector<int> v(build_rand());
-			NAMESPACE::vector<int>::reverse_iterator rbegin = v.rbegin();
-
-			print_vec(v, __LINE__);
-			--rbegin;
-			std::cout << " *** Line: " << __LINE__ << " ***" << "\nValue of begin() iterator: " << *rbegin << "\n" << std::endl;
-		} catch (std::exception &e) {
-			std::cout << "COUGHT EXCEPTION: Iterator out of bound\n" << std::endl;
-		}
-
-		std::cout << " *** Line: " << __LINE__ << " ***" << "\nValue of begin() iterator: " << *rbegin << "\n" << std::endl;
-		
-		std::cout << "end() Function\n";
-		std::cout << "===============\n" << std::endl;
+		std::cout << " *** Line: " << __LINE__ << " ***" << "\nValue pointed by rbegin: " << *rbegin << "\n" << std::endl;
 
 		NAMESPACE::vector<int>::reverse_iterator rend = rand_v.rend();
 
-		std::cout << " *** Line: " << __LINE__ << " ***" << "\nValue of end() iterator: " << *rend << "\n" << std::endl;
+		std::cout << " *** Line: " << __LINE__ << " ***" << "\nValue pointed by rend: " << *rend << "\n" << std::endl;
 
-		std::cout << "Moving end iterator backward x10...\n" << std::endl;
-		std::advance(rend, -10);
+		std::advance(rend, -1);
 
-		std::cout << " *** Line: " << __LINE__ << " ***" << "\nValue of end() iterator: " << *rend << "\n" << std::endl;
+		std::cout << " *** Line: " << __LINE__ << " ***" << "\nValue pointed by rend: " << *rend << "\n" << std::endl;
 
-		try {
-			NAMESPACE::vector<int> v(50, 42);
-			NAMESPACE::vector<int>::reverse_iterator rend = v.rend();
-
-			print_vec(v, __LINE__);
-			
-			std::cout << " *** Line: " << __LINE__ << " ***" << "\nValue of end() iterator: " << *rend << "\n" << std::endl;
-		} catch (std::exception &e) {
-			std::cout << "COUGHT EXCEPTION: Iterator out of bound\n" << std::endl;
-		}
 	}
 
 	{

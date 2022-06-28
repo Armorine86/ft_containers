@@ -33,13 +33,13 @@ mkdir -p "$logdir"
 
 test_fail()
 {
-    printf "$RED======TEST FAILED======= $b$END\n"
+    printf "$RED-----> $b: 🚫$END\n"
     printf "(Check tests/output/diff.out for more info)\n";
 }
 
 test_success()
 {
-    printf "$GREEN======TEST SUCCESS====== $b$END\n";
+    printf "$GREEN-----> $b: ✅$END\n";
 }
 
 print_output()

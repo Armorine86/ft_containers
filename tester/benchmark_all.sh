@@ -67,9 +67,9 @@ compile_tests()
 compare_output()
 {
 	printf "$BLUE********   FT_$b BENCHMARK   ********$END\n"
-    time -p bash -c "for ((i = 0; i < 4000; ++i)); do ./"$outdir/ft_$b.out" > "$logdir/ft_$b"; done;"
+    time -p bash -c "for ((i = 0; i < 2000; ++i)); do ./"$outdir/ft_$b.out" > "$logdir/ft_$b"; done;"
 	printf "$YELLOW********   STD_$b BENCHMARK   ********$END\n"
-    time -p bash -c "for ((i = 0; i < 4000; ++i)); do ./"$outdir/std_$b.out" > "$logdir/ft_$b"; done;"
+    time -p bash -c "for ((i = 0; i < 2000; ++i)); do ./"$outdir/std_$b.out" > "$logdir/ft_$b"; done;"
 }
 
 printf "\n"
