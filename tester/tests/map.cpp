@@ -6,11 +6,12 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 13:27:42 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/21 20:43:34 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/27 21:03:54 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "map.hpp"
+#include "../../includes/map.hpp"
+
 #include <cstdlib>
 #include <cstddef>
 #include <map>
@@ -18,7 +19,7 @@
 #include <limits>
 
 #ifndef NAMESPACE
- #define NAMESPACE ft
+ #define NAMESPACE std
 #endif
 
 template <typename Key, typename T>

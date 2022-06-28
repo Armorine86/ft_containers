@@ -6,14 +6,14 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 09:38:08 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/17 15:37:14 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/27 20:59:00 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "pair.hpp"
-#include "colors.hpp"
+#include "../pair.hpp"
+#include "../colors.hpp"
 #include "node.hpp"
 #include "tree_iterator.hpp"
 #include "tree_utils.hpp"
