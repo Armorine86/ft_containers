@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 09:38:08 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/27 20:59:00 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/27 22:20:08 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,20 +178,21 @@ class RBTree {
 
         iterator root(get_root());
         node_pointer& pos = find_insert_pos(root, hint, val);
-
+        
         if (!pos) {
             pos = new_node(val);
             pos->parent = root.base();
         }
 
+        iterator res(pos);
         if (begin_->left)
             begin_ = begin_->left;
         if (right_end_->parent && right_end_->right)
             right_end_ = right_end_->right;
 
-        return insert_fix(pos);
+        insert_fix(pos);
 
-        // return pos;
+        return res;
     }
 
     template <typename InputIter>
@@ -286,7 +287,7 @@ class RBTree {
     size_type count(const Key& key) const {
 
         node_pointer ptr = find_ptr(key);
-        if (ptr == end_)
+        if (ptr == end_ || ptr == NULL)
             return 0;
         return 1;
     }

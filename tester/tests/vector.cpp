@@ -6,11 +6,11 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 08:34:27 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/21 20:41:21 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/27 22:47:40 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "vector.hpp"
+#include "../../includes/vector.hpp"
 
 #include <cstdlib>
 #include <exception>
@@ -21,7 +21,7 @@
 #include <limits>
 
 #ifndef NAMESPACE
- #define NAMESPACE std
+ #define NAMESPACE ft
 #endif
 
 template <typename T>
@@ -45,13 +45,13 @@ void print_vec(const NAMESPACE::vector<T>& vec, const int& line) {
 		std::cout << vec[i] << " ";
 	
 	std::cout << "\n-------------------\n" << "Vec size: " << vec.size() << std::endl;
-	std::cout << "Vec capacity: " << vec.capacity() << std::endl;
+	// std::cout << "Vec capacity: " << vec.capacity() << std::endl;
 	std::cout << "============================================================\n" << std::endl;
 }
 
 NAMESPACE::vector<int> build_rand() {
 
-	int size = rand() % 250 + 25;
+	int size = rand() % 250 + 50;
 	NAMESPACE::vector<int> v;
 
 	for (int i = 0; i < size; ++i)
@@ -114,58 +114,55 @@ int main() {
 		std::cout << "||                  MEMBER FUNCTIONS                   ||\n";
 		std::cout << "=========================================================\n\n";
 
-		std::cout << "Assign Operator\n";
-		std::cout << "===============\n" << std::endl;
+		{
+			std::cout << "Assign Operator\n";
+			std::cout << "===============\n" << std::endl;
 
-		NAMESPACE::vector<int> rand_v(build_rand());
-		NAMESPACE::vector<int> v;
-		
-		print_vec(rand_v, __LINE__);
-		print_vec(v, __LINE__);
-
-		v = rand_v;
-		
-		print_vec(v, __LINE__);
-
-		std::cout << "Assign Function\n";
-		std::cout << "===============\n" << std::endl;
-
-		NAMESPACE::vector<int>::iterator first = rand_v.begin() + 5;
-		NAMESPACE::vector<int>::iterator last = rand_v.end() - 15;
-		
-		NAMESPACE::vector<int> assigned_v(fill_vec());
-
-		print_vec(assigned_v, __LINE__);
-
-		assigned_v.assign(first, last);
-
-		print_vec(assigned_v, __LINE__);
-
-
-		std::cout << "Get Allocator\n";
-		std::cout << "=============\n" << std::endl;
-
-		NAMESPACE::vector<int> vector;
-        int *alloc_ptr;
-        unsigned int i;
-        
-		alloc_ptr = vector.get_allocator().allocate(42);
-        
-		for (i = 1; i < 43; i++) 
-            vector.get_allocator().construct(&alloc_ptr[i],i);
-        
-		std::cout << " *** Line: " << __LINE__ << " ***" << std::endl;
-        std::cout << "The allocated array contains:";
-        
-		for (i = 1; i < 43; i++) 
-            std::cout << ' ' << alloc_ptr[i];
-        
-		std::cout << std::endl;
-        
-		for (i = 1; i < 43; i++) 
-            vector.get_allocator().destroy(&alloc_ptr[i]);
+			NAMESPACE::vector<int> rand_v(build_rand());
+			NAMESPACE::vector<int> v;
 			
-        vector.get_allocator().deallocate(alloc_ptr,42);
+			print_vec(rand_v, __LINE__);
+			print_vec(v, __LINE__);
+
+			v = rand_v;
+			
+			print_vec(v, __LINE__);
+		}
+
+
+		{
+			std::cout << "Assign Function\n";
+			std::cout << "===============\n" << std::endl;
+			
+			NAMESPACE::vector<int> rand_v(build_rand());
+			NAMESPACE::vector<int>::iterator first = rand_v.begin() + 5;
+			NAMESPACE::vector<int>::iterator last = rand_v.end() - 15;
+			
+			NAMESPACE::vector<int> assigned_v(fill_vec());
+
+			print_vec(assigned_v, __LINE__);
+
+			assigned_v.assign(first, last);
+
+			print_vec(assigned_v, __LINE__);
+		}
+
+
+		{
+			std::cout << "Get Allocator\n";
+			std::cout << "=============\n" << std::endl;
+
+			NAMESPACE::vector<int> vector;
+			
+			NAMESPACE::vector<int>::allocator_type alloc = vector.get_allocator();
+			
+			int* ptr = alloc.allocate(42);			
+			std::cout << " *** Line: " << __LINE__ << " ***" << std::endl;
+			std::cout << "The allocated array contains:";
+			
+				
+			alloc.deallocate(ptr,42);
+		}
 	}
 
 	{
@@ -254,27 +251,27 @@ int main() {
 			std::cout << "COUGHT EXCEPTION: Iterator out of bound\n" << std::endl;
 		}
 
-		std::cout << " *** Line: " << __LINE__ << " ***" << "\nValue of begin() iterator: " << *begin << "\n" << std::endl;
+		std::cout << "*** Line: " << __LINE__ << " ***" << "\nValue of begin() iterator: " << *begin << "\n" << std::endl;
 		
 		std::cout << "end() Function\n";
 		std::cout << "===============\n" << std::endl;
 
 		NAMESPACE::vector<int>::iterator end = rand_v.end();
 
-		std::cout << " *** Line: " << __LINE__ << " ***" << "\nValue of end() iterator: " << *end << "\n" << std::endl;
+		std::cout << "*** Line: " << __LINE__ << " ***" << "\nValue of end() iterator: " << *end << "\n" << std::endl;
 
 		std::cout << "Moving end iterator backward x10...\n" << std::endl;
 		std::advance(end, -10);
 
-		std::cout << " *** Line: " << __LINE__ << " ***" << "\nValue of end() iterator: " << *end << "\n" << std::endl;
+		std::cout << "*** Line: " << __LINE__ << " ***" << "\nValue of end() iterator: " << *end << "\n" << std::endl;
 
 		try {
-			NAMESPACE::vector<int> v(50, 42);
+			NAMESPACE::vector<int> v(build_rand());
 			NAMESPACE::vector<int>::iterator end = v.end();
 
 			print_vec(v, __LINE__);
 			
-			std::cout << " *** Line: " << __LINE__ << " ***" << "\nValue of end() iterator: " << *end << "\n" << std::endl;
+			std::cout << "*** Line: " << __LINE__ << " ***" << "\nValue of end() iterator: " << *end << "\n" << std::endl;
 		} catch (std::exception &e) {
 			std::cout << "COUGHT EXCEPTION: Iterator out of bound\n" << std::endl;
 		}
@@ -302,7 +299,7 @@ int main() {
 		
 		try {
 
-			NAMESPACE::vector<int> v(50, 42);
+			NAMESPACE::vector<int> v(build_rand());
 			NAMESPACE::vector<int>::reverse_iterator rbegin = v.rbegin();
 
 			print_vec(v, __LINE__);
@@ -465,13 +462,12 @@ int main() {
 
 			NAMESPACE::vector<int> v;
 			NAMESPACE::vector<int>::iterator first;
-			NAMESPACE::vector<int>::iterator last;
 
 			v.insert(v.begin(), 42);
 			print_vec(v, __LINE__);
 
 			first = v.begin();
-			v.insert(first, 69);
+			first = v.insert(first, 69);
 			print_vec(v, __LINE__);
 
 			v.insert(first, 15, 5);

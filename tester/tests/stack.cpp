@@ -6,11 +6,13 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 08:34:27 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/17 13:14:56 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/27 22:23:25 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "stack.hpp"
+#include "../../includes/stack.hpp"
+
+#include <vector>
 #include <algorithm>
 #include <exception>
 #include <iterator>
@@ -60,7 +62,7 @@ void print_stack(const NAMESPACE::stack<T>& stack, int line) {
 
 NAMESPACE::stack<int> build_rand() {
 
-	int size = rand() % 250 + 25;
+	int size = 100;
 	NAMESPACE::stack<int> v;
 
 	for (int i = 0; i < size; ++i)

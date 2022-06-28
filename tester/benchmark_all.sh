@@ -1,7 +1,9 @@
 #!/bin/bash
 
 RED="\033[31;1m"
+YELLOW="\033[93;1m"
 GREEN="\033[32;1m"
+BLUE="\033[34;1m"
 END="\033[0m"
 
 cppdir="tests"
@@ -64,9 +66,10 @@ compile_tests()
 
 compare_output()
 {
-    ./"$outdir/ft_$b.out" > "$logdir/ft_$b" 2>> "$errlog"
-    ./"$outdir/std_$b.out" > "$logdir/std_$b" 2>> "$errlog"
-    diff -u "$logdir/ft_$b" "$logdir/std_$b" > "$diffdir/ft_$b.diff"
+	printf "$BLUE********   FT_$b BENCHMARK   ********$END\n"
+    time -p bash -c "for ((i = 0; i < 4000; ++i)); do ./"$outdir/ft_$b.out" > "$logdir/ft_$b"; done;"
+	printf "$YELLOW********   STD_$b BENCHMARK   ********$END\n"
+    time -p bash -c "for ((i = 0; i < 4000; ++i)); do ./"$outdir/std_$b.out" > "$logdir/ft_$b"; done;"
 }
 
 printf "\n"
@@ -74,12 +77,9 @@ if [ "$#" -ne 1 ]; then
     for f in "$cppdir"/*.cpp; do
         compile_tests
         compare_output
-        print_output
     done
 else
     f="$cppdir"/"$(basename $container)".cpp
     compile_tests
     compare_output
-    print_output
 fi
-printf "\n"

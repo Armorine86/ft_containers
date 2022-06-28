@@ -1,0 +1,39 @@
+insert() Function
+=================
+
+*** line: 259 ***
+Iterator element Key / Value: 64 || 42
+
+*** line: 262 ***
+Map Content:
+(key: 64 || value: 42) 
+
+Map size: 1
+
+----------------------------------------------------------------------
+
+
+*** line: 265 ***
+Iterator element Key / Value: 100 || 123456
+
+*** line: 268 ***
+Map Content:
+(key: 64 || value: 42) (key: 100 || value: 123456) 
+
+Map size: 2
+
+----------------------------------------------------------------------
+
+
+*** line: 271 ***
+Iterator element Key / Value: 69 || 420
+
+*** line: 274 ***
+Map Content:
+(key: 64 || value: 42) (key: 69 || value: 420) (key: 100 || value: 123456) 
+
+Map size: 3
+
+----------------------------------------------------------------------
+
+

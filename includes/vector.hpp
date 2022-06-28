@@ -6,15 +6,15 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/13 10:16:33 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/13 09:48:02 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/06/27 22:13:05 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include "utilities.hpp"
-#include "Iterator.hpp"
-#include "type_traits.hpp"
+#include "Iterator/Iterator.hpp"
+#include "Iterator/type_traits.hpp"
 
 
 #include <cstddef>
@@ -380,6 +380,7 @@ class vector {
         if (n <= 0)
             return;
 
+        check_size(n);
         bool need_realloc = (capacity() - size() < n) ? true : false;
 
         if (need_realloc) {
@@ -437,6 +438,7 @@ class vector {
             return;
 
         size_type n = std::distance(first, last);
+        check_size(n);
         bool need_realloc = (capacity() - size() < n) ? true : false;
 
         if (need_realloc) {
