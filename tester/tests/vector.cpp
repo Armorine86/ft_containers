@@ -6,7 +6,7 @@
 /*   By: mmondell <mmondell@student.42quebec.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 08:34:27 by mmondell          #+#    #+#             */
-/*   Updated: 2022/06/28 09:33:10 by mmondell         ###   ########.fr       */
+/*   Updated: 2022/07/04 11:52:37 by mmondell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -213,7 +213,7 @@ int main() {
 
             try {
                 std::cout << " *** Line: " << __LINE__ << " ***"
-                          << "\nValue at index [" << rand_v.size() << "]: " << rand_v[rand_v.size()]
+                          << "\nValue at index [" << rand_v.size() << "]: " << rand_v[rand_v.size() - 2]
                           << "\n"
                           << std::endl;
             } catch (std::exception& e) {
@@ -317,13 +317,13 @@ int main() {
                   << "\nValue pointed by rbegin: " << *rbegin << "\n"
                   << std::endl;
 
-        NAMESPACE::vector<int>::reverse_iterator rend = rand_v.rend();
+        NAMESPACE::vector<int>::reverse_iterator rend = rand_v.rend() - 1;
 
         std::cout << " *** Line: " << __LINE__ << " ***"
                   << "\nValue pointed by rend: " << *rend << "\n"
                   << std::endl;
 
-        std::advance(rend, -1);
+        std::advance(rend, 1);
 
         std::cout << " *** Line: " << __LINE__ << " ***"
                   << "\nValue pointed by rend: " << *rend << "\n"
